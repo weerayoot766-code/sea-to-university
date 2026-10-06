@@ -202,7 +202,14 @@ td .shin{width:110px}
 .tnames input{flex:1;min-width:0;font:inherit;font-size:.88rem;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 6px}
 .tnames button{font-size:.72rem;padding:1px 7px;border-radius:99px;border:0;background:var(--warn-soft);color:var(--warn);cursor:pointer;white-space:nowrap}
 tr.tnrow td{padding-top:0;background:var(--bg)}
-.foot{display:flex;justify-content:center;padding-top:8px}
+.foot{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding-top:8px}
+.site{margin-top:8px;padding:20px 16px 4px;border-top:1px solid var(--line);text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center}
+.site-name{font-family:var(--display);font-weight:700;font-size:1.05rem;color:var(--olive)}
+.site-by{font-size:.9rem}
+.site-addr{font-size:.85rem;color:var(--muted);max-width:34em;text-wrap:balance}
+.site-addr span{white-space:nowrap}
+.site-copy{font-size:.78rem;color:var(--muted);margin-top:6px}
+.btn.line{background:#06C755;border-color:#06C755;color:#fff}
 .fbq{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface)}
 .fbq .opts{display:flex;flex-wrap:wrap;gap:6px}
 .fbq .opts label{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border:1px solid var(--line);border-radius:99px;cursor:pointer;font-size:.9rem;background:var(--bg)}
@@ -233,7 +240,13 @@ a.btn{text-decoration:none;display:inline-block}
   </nav>
   <div id="banner"></div>
   <main id="view"></main>
-  <div class="foot"><button class="btn" data-tab="fb">💬 ส่งความเห็นเกี่ยวกับแอป</button></div>
+  <div class="foot"><button class="btn line" data-act="lineoa" id="lineFoot" hidden>🔔 ติดตามข่าวและฟีเจอร์ใหม่ทาง LINE</button><button class="btn" data-tab="fb">💬 ส่งความเห็นเกี่ยวกับแอป</button></div>
+  <footer class="site">
+    <div class="site-name">Sea To University</div>
+    <div class="site-by">โดย <b>ปรุงยาเภสัช</b></div>
+    <div class="site-addr">📍 <span>3/5 หมู่ 1</span> <span>ตำบลอิปัน</span> <span>อำเภอพระแสง</span> <span>จังหวัดสุราษฎร์ธานี</span></div>
+    <div class="site-copy">© <span id="yr">2026</span> ปรุงยาเภสัช สงวนลิขสิทธิ์</div>
+  </footer>
 </div>
 
 <script>
@@ -281,13 +294,6 @@ function blank(){
     plan:[],recall:{},classes:[],exceptions:[],dayCap:{},since:ds(new Date())
   };
 }
-function sample(){
-  const b=blank();
-  b.subjList=sampleSubj();
-  b.subjects=Object.fromEntries(SUBJ.map(s=>[s.c,{exam:s.exam,et:s.et,ee:s.ee,real:s.real,topics:s.topics,conf:s.conf,on:true}]));
-  b.classes=CLASSES.map((k,i)=>({...k,id:'k'+i}));b.settings.classEnd='2026-10-23';b.presetCheck=true;
-  return b;
-}
 function normalize(x){
   if(!x||typeof x!=='object'||!x.subjects)return null;
   // ข้อมูลจากเวอร์ชันก่อน: ยังไม่มีรายชื่อวิชา ให้สร้างจากวิชาเดิม เก็บความคืบหน้าไว้ครบ
@@ -310,6 +316,9 @@ S=normalize(S)||blank();
 if(!S.since){S.since=ds(new Date());try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 // ใส่ลิงก์ Google Form ตรงนี้ถ้ามี เช่น 'https://forms.gle/xxxx' ถ้าว่างไว้ ผู้ใช้จะส่งความเห็นผ่าน LINE แทน
 const FEEDBACK_FORM='';
+// ใส่ลิงก์ LINE OA ตรงนี้ เช่น 'https://lin.ee/xxxx' ถ้าว่างไว้ ปุ่มติดตาม LINE จะซ่อนทั้งหมด
+const LINE_OA='';
+const openLine=()=>{S.lineAsk=true;save();window.open(LINE_OA,'_blank','noopener');render()};
 if(!S.classes)S.classes=[];
 const capFor=d=>S.dayCap[d]??S.settings.capDays[pd(d).getDay()];
 function nextKind(code,exceptId){
@@ -474,7 +483,7 @@ function header(){
   let h='';
   const ex=active().filter(s=>!S.subjects[s.c].real);
   if(ex.length)h+=`<div class="banner info"><span class="small">ยังไม่มีวันสอบจริงของ <b>${ex.map(s=>esc(s.sh)).join(', ')}</b> ตอนนี้ใช้วันตัวอย่างไปก่อน ใส่วันจริงได้ที่แท็บ “สอบในโรงเรียน”</span><button class="btn" data-go="subj">ใส่วันสอบ</button></div>`;
-  if(S.presetCheck)h+=`<div class="banner info"><span class="small">ใส่ตารางเภสัชฯ ปี 1 เทอมนี้ให้แล้ว (8 วิชา) ลองตรวจ<b>ตารางเรียน</b>ว่าตรงกับกลุ่มเรียนของคุณ โดยเฉพาะคาบแล็บ แล้วตั้งความมั่นใจของแต่ละวิชาให้ตรงกับตัวเอง</span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-go="sched">ตรวจตารางเรียน</button><button class="btn" data-act="presetok">ตรวจแล้ว</button></span></div>`;
+  if(LINE_OA&&!S.lineAsk&&S.plan.filter(x=>x.done).length>=3)h+=`<div class="banner info"><span class="small">ใช้มาหลายวันแล้ว เก่งมาก! ติดตาม <b>Sea To University</b> ทาง LINE เพื่อรับข่าวฟีเจอร์ใหม่ ทิปส์อ่านหนังสือ และวันสำคัญของการสอบ</span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn line" data-act="lineoa">ติดตาม LINE</button><button class="btn" data-act="linelater">ไว้ทีหลัง</button></span></div>`;
   if(S.sample)h+=`<div class="banner info"><span class="small">ตอนนี้เป็น<b>ข้อมูลตัวอย่าง</b> พร้อมใช้จริงเมื่อไรให้ลบตัวอย่างแล้วเริ่มกรอกของตัวเอง</span><button class="btn" data-act="clearsample">ลบตัวอย่าง เริ่มของฉัน</button></div>`;
   if(missed)h+=`<div class="banner"><span class="small">มี ${missed} ช่วงอ่านที่ผ่านไปแล้วแต่ยังไม่ได้ติ๊ก งานที่ค้างจะถูกยกไปวันถัดไป</span><button class="btn primary" data-act="replan">จัดแผนใหม่</button></div>`;
   $('banner').innerHTML=h;$('banner').style.display=h?'flex':'none';$('banner').style.flexDirection='column';$('banner').style.gap='8px';
@@ -749,6 +758,7 @@ function fbUpdate(){const a=$('fb-line');if(a)a.href='https://line.me/R/share?te
 function viewFb(){
   const q=(name,label,opts)=>`<div class="fbq"><b>${label}</b><div class="opts">${opts.map((o,i)=>`<label><input type="radio" name="${name}" id="${name}-${i}" value="${o}">${o}</label>`).join('')}</div></div>`;
   return `<div class="section"><h2>ส่งความเห็นเกี่ยวกับแอป</h2><p class="small muted" style="margin:0">ใช้เวลาไม่ถึง 1 นาที ความเห็นของคุณช่วยตัดสินว่าจะพัฒนาอะไรต่อ ข้อความจะแนบสถิติการใช้งานคร่าว ๆ ไปด้วย (จำนวนวัน วิชา และช่วงที่ติ๊ก) ไม่มีชื่อหรือข้อมูลส่วนตัว</p>
+  ${LINE_OA?`<div class="fbq"><b>คุยกับทีมงานโดยตรงทาง LINE</b><span class="small muted">ติดตามเพื่อรับข่าวฟีเจอร์ใหม่ หรือพิมพ์ถามและแนะนำได้เลย</span><button class="btn line" data-act="lineoa">เปิด LINE Sea To University</button></div>`:''}
   ${FEEDBACK_FORM?`<div class="fbq"><b>ตอบแบบสอบถามออนไลน์</b><a class="btn primary" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">เปิดแบบสอบถาม</a></div>`:''}
   ${q('fb1','1. แอปช่วยให้อ่านตามแผนได้แค่ไหน',['1 ไม่ช่วยเลย','2','3','4','5 ช่วยมาก'])}
   ${q('fb2','2. เทอมหน้าจะใช้อีกไหม',['ใช้แน่นอน','อาจจะ','ไม่ใช้'])}
@@ -759,6 +769,8 @@ function viewFb(){
 }
 function render(){
   header();
+  $('yr').textContent=new Date().getFullYear();
+  $('lineFoot').hidden=!LINE_OA;
   document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
   $('wrap').dataset.level=S.level||'';$('tabs').hidden=!S.level;$('goaltab').textContent=S.level?LV().goalTab:'เป้าหมาย';
   if(!S.level&&tab!=='sched'&&tab!=='fb'){$('banner').style.display='none';$('view').innerHTML=picker();return}
@@ -825,8 +837,8 @@ document.addEventListener('click',e=>{
     S.dayCap[sel]=Math.max(capFor(sel),n+1);generate();render();return}
   if(act==='addk'){S.classes.push({id:uid(),d:1,s:'08:00',e:'09:00',c:S.subjList[0]?.c||''});save();render();return}
   if(act==='startadd'){tab='subj';showAdd=true;render();setTimeout(()=>{const i=$('n-th');if(i)i.focus()},0);return}
-  if(act==='presetok'){S.presetCheck=false;save();render();return}
-  if(act==='loadsample'){S=sample();sel=nowInfo().date;generate();render();return}
+  if(act==='lineoa'){openLine();return}
+  if(act==='linelater'){S.lineAsk=true;save();render();return}
   if(act==='clearsample'){S=blank();save();tab='subj';showAdd=true;render();return}
   if(act==='delno'){confirmDel=null;render();return}
   if(act==='addsubj'){
@@ -840,7 +852,7 @@ document.addEventListener('click',e=>{
     const used=new Set(S.subjList.map(x=>x.ci));let ci=0;while(used.has(ci)&&ci<11)ci++;if(used.has(ci))ci=S.subjList.length%12;
     S.subjList.push({c,th,sh:sh||(th.length>14?th.slice(0,14)+'…':th),cr:+$('n-cr').value||3,ci,auto:!$('n-c').value.trim()});
     S.subjects[c]={exam,et,ee,real:true,topics:Math.max(1,+$('n-tp').value||1),conf:+$('n-cf').value||3,on:true};
-    S.sample=false;S.presetCheck=false;showAdd=true;generate();render();
+    S.sample=false;showAdd=true;generate();render();
     const m=$('n-msg');if(m){m.style.color='var(--accent)';m.textContent=`เพิ่ม ${th} แล้ว เพิ่มวิชาต่อไปได้เลย`}
     return}
   if(act==='bkcopy'){bkCode=encodeBk();const done=()=>{bkMsg={t:'คัดลอกรหัสสำรองแล้ว นำไปวางใน LINE หรือโน้ตได้เลย'};render()};
