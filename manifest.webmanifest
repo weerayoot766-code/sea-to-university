@@ -1,0 +1,17 @@
+{
+  "name": "Sea To University",
+  "short_name": "Sea2Uni",
+  "description": "วางแผนอ่านหนังสือสำหรับนักเรียน ม.ต้น และ ม.ปลาย ทั้งสอบในโรงเรียน สอบเข้า ม.4 และ TCAS",
+  "lang": "th",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f1f6f9",
+  "theme_color": "#16679f",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

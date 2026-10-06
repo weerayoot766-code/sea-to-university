@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="วางแผนอ่านหนังสือสำหรับนักเรียน ม.ต้น และ ม.ปลาย ทั้งสอบในโรงเรียน สอบเข้า ม.4 และ TCAS">
+<meta name="theme-color" content="#16679f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sea2Uni">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Sea To University</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,500;0,600;0,700;1,500;1,600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+/* Layout: one narrow column like a student's planner. Ocean palette; ม.ต้น uses a teal accent, ม.ปลาย a deep-sea blue (set via data-level on .wrap). */
+:root{
+  --bg:#f1f6f9; --surface:#ffffff; --line:#d9e4ec; --fg:#132433; --muted:#566b7b;
+  --accent:#16679f; --accent-soft:#e2eff8; --teal:#0f8b86; --teal-soft:#dff3f1; --warn:#b4541c; --warn-soft:#fbeadf; --exam:#a8243b; --exam-soft:#f9e3e7; --olive:#134a78; --sand:#1a8aa0;
+  --c0:#2f7d4a; --c1:#6a9a2c; --c2:#3653b0; --c3:#8a3fa0; --c4:#b0602a; --c5:#b03a6b; --c6:#1f7f8f; --c7:#a38415; --c8:#7a5a2e; --c9:#5b6abf; --c10:#2a8f6f; --c11:#9c4a3a;
+  --display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
+  --body:"IBM Plex Sans Thai",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0d1720; --surface:#14222e; --line:#24384a; --fg:#e4eef5; --muted:#93a8b8;
+  --accent:#62b4ec; --accent-soft:#16324a; --teal:#4fd1c7; --teal-soft:#123a3a; --warn:#f0965e; --warn-soft:#3a2518; --exam:#f27b91; --exam-soft:#3d1c24; --olive:#8fc8f2; --sand:#5fd0dc;
+  --c0:#6cc48a; --c1:#a6cc5c; --c2:#8ea4f2; --c3:#cf8de2; --c4:#eba06a; --c5:#ee84b0; --c6:#5fc6d6; --c7:#e0c454; --c8:#d1ab78; --c9:#a9b3f0; --c10:#66d1ac; --c11:#ee9a86; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1720; --surface:#14222e; --line:#24384a; --fg:#e4eef5; --muted:#93a8b8;
+  --accent:#62b4ec; --accent-soft:#16324a; --teal:#4fd1c7; --teal-soft:#123a3a; --warn:#f0965e; --warn-soft:#3a2518; --exam:#f27b91; --exam-soft:#3d1c24; --olive:#8fc8f2; --sand:#5fd0dc;
+  --c0:#6cc48a; --c1:#a6cc5c; --c2:#8ea4f2; --c3:#cf8de2; --c4:#eba06a; --c5:#ee84b0; --c6:#5fc6d6; --c7:#e0c454; --c8:#d1ab78; --c9:#a9b3f0; --c10:#66d1ac; --c11:#ee9a86; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.25}
+h1{font-size:1.7rem;font-weight:700}
+h2{font-size:1.15rem;font-weight:600}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:96px;height:96px;border-radius:22px;flex:0 0 auto;background:#fff;box-shadow:0 1px 0 var(--line)}
+.brand h1{color:var(--olive)}
+.wrap[data-level="lower"]{--accent:var(--teal);--accent-soft:var(--teal-soft)}
+.lvbadge{display:inline-block;font-size:.75rem;font-weight:600;padding:1px 9px;border-radius:99px;background:var(--accent-soft);color:var(--accent);margin-right:6px}
+.picker{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.pick{display:flex;flex-direction:column;gap:6px;text-align:left;padding:18px;border-radius:16px;border:2px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;font:inherit}
+.pick:hover,.pick:focus-visible{border-color:var(--pc)}
+.pick b{font-family:var(--display);font-size:1.5rem;color:var(--pc)}
+.pick span{color:var(--muted);font-size:.9rem}
+.pick ul{margin:4px 0 0;padding-left:1.2em;font-size:.88rem;display:flex;flex-direction:column;gap:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chipbtn{font:inherit;font-size:.85rem;padding:4px 12px;border-radius:99px;border:1px dashed var(--accent);background:var(--surface);color:var(--accent);cursor:pointer}
+.chipbtn[disabled]{border-style:solid;opacity:.5;cursor:default}
+.tagline{margin:4px 0 0;font-family:var(--display);font-style:italic;font-weight:500;font-size:1.08rem;line-height:1.45;color:var(--sand);text-wrap:balance}
+.tagline .leaf{display:inline-block;width:64px;height:16px;vertical-align:middle;margin-left:6px;color:var(--sand)}
+@media (max-width:480px){.tagline{font-size:.95rem}.tagline .leaf{width:44px}}
+@media (max-width:480px){.logo{width:76px;height:76px;border-radius:18px}}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.count{display:flex;align-items:baseline;gap:8px}
+.count b{font-family:var(--display);font-size:2.4rem;color:var(--exam);line-height:1}
+nav{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+nav button{font:500 .95rem var(--body);background:none;border:0;color:var(--muted);padding:8px 12px;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+nav button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
+button{font-family:var(--body)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:.9rem}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.banner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-radius:10px;background:var(--warn-soft);color:var(--fg)}
+.banner.info{background:var(--accent-soft)}
+.strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.day{flex:0 0 auto;width:52px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 0;text-align:center;cursor:pointer;color:var(--fg)}
+.day .dw{font-size:.75rem;color:var(--muted)}
+.day .dn{font-family:var(--display);font-weight:600;font-size:1.1rem}
+.day .dots{display:flex;justify-content:center;gap:2px;height:6px;margin-top:2px}
+.day .dots i{width:5px;height:5px;border-radius:50%;background:var(--muted)}
+.day.exam{border-color:var(--exam)}
+.day.exam .dn{color:var(--exam)}
+.day[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.day[aria-pressed="true"] .dw{color:var(--bg)}
+.day[aria-pressed="true"] .dn{color:var(--bg)}
+.timeline{display:flex;flex-direction:column;gap:8px}
+.row{display:grid;grid-template-columns:96px 1fr auto;gap:12px;align-items:start;padding:12px 14px;border-radius:12px}
+.row .t{font-family:var(--mono);font-size:.85rem;color:var(--muted);padding-top:2px}
+.row .main{min-width:0}
+.row.cls{opacity:.7;padding-block:8px;border:1px dashed var(--line)}
+.row.cls .title{font-weight:400}
+.row.cls.off{opacity:.45}.row.cls.off .title{text-decoration:line-through}
+.btn.sm{padding:3px 10px;font-size:.8rem}
+.step{display:inline-flex;align-items:center;gap:6px;font-size:.88rem}
+.step button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;font-size:1rem}
+.step b{font-family:var(--mono);min-width:1.5em;text-align:center}
+.edit{margin-top:6px;font-size:.85rem}
+.edit summary{cursor:pointer;color:var(--muted);width:max-content}
+.daytools{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.capgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px}
+.capgrid label{display:flex;flex-direction:column;gap:4px;font-size:.85rem}
+.capgrid input{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 6px;width:100%}
+.addbox{border:1px dashed var(--line);border-radius:10px;padding:8px 12px}
+.addbox summary{cursor:pointer;color:var(--accent);font-weight:500}
+.form{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.form select,.form input,.krow select,.krow input{font:inherit;font-size:.88rem;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 6px;min-width:0}
+.klist{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.krow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.krow .grow{flex:1 1 160px}
+.dayhead{font-family:var(--display);font-weight:600;padding-top:12px;padding-bottom:2px}
+.row.examrow{background:var(--exam-soft);border:2px solid var(--exam)}
+.row.examrow .title{color:var(--exam)}
+.row.study{--sc:var(--muted);background:color-mix(in srgb,var(--sc) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--sc) 35%,var(--line))}
+.row.study .t{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:0;color:var(--fg)}
+.row.study .t b{font-size:1.05rem;font-weight:600;padding:3px 8px;border-radius:7px;background:var(--sc);color:var(--surface)}
+.row.study .t span{font-size:.78rem;color:var(--muted);padding-left:8px}
+.row.study .title{font-size:1.05rem}
+.row.study .chip{color:var(--fg);font-weight:500}
+.kind.learn{background:var(--surface);color:var(--fg)}
+.kind.practice{background:var(--fg);color:var(--surface);border-color:var(--fg)}
+.kind.mock{background:var(--exam);color:var(--surface);border-color:var(--exam)}
+.row.study.done{background:var(--accent-soft);border:2px solid var(--accent)}
+.row.study.done .t b{background:var(--accent)}
+.row.study.done .title{text-decoration:line-through;text-decoration-thickness:2px;color:var(--muted)}
+.row.study.done .chip .sw{background:var(--accent)!important}
+.donebadge{display:inline-flex;align-items:center;gap:4px;font-size:.8rem;font-weight:600;color:var(--accent);margin-top:4px}
+.row.study.missed{border:2px dashed var(--warn)}
+.row.study.moved{opacity:.55;border:1px dashed var(--line);background:var(--surface)}
+.row.missed .t span{color:var(--warn)}
+.title{font-weight:600}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-family:var(--mono);color:var(--muted)}
+.sw{width:10px;height:10px;border-radius:3px;flex:0 0 auto;display:inline-block}
+.kind{display:inline-block;font-size:.75rem;padding:1px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted);margin-left:6px}
+.kind.eve{border-color:var(--exam);color:var(--exam)}
+.tip{font-size:.85rem;color:var(--muted);margin-top:2px}
+.check{width:46px;height:46px;border-radius:50%;border:2.5px solid color-mix(in srgb,var(--sc,var(--muted)) 55%,var(--line));background:var(--surface);cursor:pointer;color:color-mix(in srgb,var(--muted) 40%,transparent);display:grid;place-items:center;transition:transform .15s}
+.check svg{width:24px;height:24px}
+.check:hover{transform:scale(1.06)}
+.check[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 25%,transparent)}
+.rate{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.rate button{font-size:.8rem;padding:3px 10px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.rate button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.recall{display:flex;flex-direction:column;gap:6px}
+.recall label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.recall input{margin-top:5px;accent-color:var(--accent)}
+.section{display:flex;flex-direction:column;gap:10px}
+.empty{padding:16px 0;color:var(--muted)}
+.tablebox{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-weight:500;color:var(--muted);font-size:.78rem;letter-spacing:.02em;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td input,td select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:4px 6px}
+td input[type=number]{width:56px}
+.bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;min-width:70px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.ok{color:var(--accent)} .bad{color:var(--warn);font-weight:600}
+.planday{display:grid;grid-template-columns:96px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);align-items:center}
+.planday .chips{display:flex;flex-wrap:wrap;gap:6px}
+.pchip{display:inline-flex;align-items:center;gap:5px;font-size:.8rem;padding:2px 8px;border-radius:6px;background:var(--bg);border:1px solid var(--line)}
+.pchip.ex{border-color:var(--exam);color:var(--exam);background:var(--exam-soft)}
+.week{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.wcol{display:flex;flex-direction:column;gap:6px}
+.wcol h3{font-size:.95rem}
+.wc{border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--surface);font-size:.8rem}
+.settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 16px}
+.settings label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.9rem}
+.settings input{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 6px;width:112px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:.82rem}
+@media (max-width:480px){.row{grid-template-columns:70px 1fr auto;gap:8px;padding-inline:10px}.row.study .t b{font-size:.95rem;padding:2px 6px}.planday{grid-template-columns:72px 1fr}}
+.welcome{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.welcome ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
+.addsub{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:10px}
+.addsub label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted)}
+.addsub input,.addsub select,.bk textarea{font:inherit;font-size:.9rem;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:6px 8px;min-width:0;width:100%}
+.addsub .wide{grid-column:1/-1}
+.bk{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface)}
+.bk textarea{font-family:var(--mono);font-size:.75rem;height:84px;resize:vertical;word-break:break-all}
+.bk .row2{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.msg{font-size:.85rem;padding:8px 10px;border-radius:8px;background:var(--accent-soft)}
+.msg.err{background:var(--warn-soft)}
+.confirmbox{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px;border-radius:8px;background:var(--warn-soft)}
+td .shin{width:110px}
+.dash{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.tile .lab{font-size:.78rem;color:var(--muted);letter-spacing:.02em}
+.tile .big{font-family:var(--display);font-weight:700;font-size:1.6rem;line-height:1.15}
+.tile .big small{font-size:.9rem;font-weight:500;color:var(--muted)}
+.tile .sub{font-size:.85rem;color:var(--muted)}
+.tile.risk{border-color:color-mix(in srgb,var(--sc,var(--warn)) 55%,var(--line));background:color-mix(in srgb,var(--sc,var(--warn)) 8%,var(--surface))}
+.tile.risk .big{font-size:1.3rem;color:var(--fg)}
+.pbar{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:4px}
+.pbar i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.hardtag{display:inline-block;font-size:.72rem;padding:0 7px;border-radius:99px;background:var(--warn-soft);color:var(--warn);font-weight:600;margin-left:6px;vertical-align:1px}
+.tnames{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px 12px;margin-top:8px}
+.tnames label{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--muted)}
+.tnames input{flex:1;min-width:0;font:inherit;font-size:.88rem;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 6px}
+.tnames button{font-size:.72rem;padding:1px 7px;border-radius:99px;border:0;background:var(--warn-soft);color:var(--warn);cursor:pointer;white-space:nowrap}
+tr.tnrow td{padding-top:0;background:var(--bg)}
+.foot{display:flex;justify-content:center;padding-top:8px}
+.fbq{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface)}
+.fbq .opts{display:flex;flex-wrap:wrap;gap:6px}
+.fbq .opts label{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border:1px solid var(--line);border-radius:99px;cursor:pointer;font-size:.9rem;background:var(--bg)}
+.fbq .opts input{accent-color:var(--accent)}
+.fbq .opts label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.fbq textarea{font:inherit;font-size:.9rem;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px;min-height:80px;resize:vertical}
+a.btn{text-decoration:none;display:inline-block}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="wrap">
+  <header>
+    <div class="brand"><img class="logo" alt="โลโก้ Sea To University" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKgAAACoCAYAAAB0S6W0AABwhklEQVR42u39d5hk13nei/6+tXao1GF6IgYzmBmkQSISAwgxkyIlSlQkFWnLtnyP7WPLsmXZ57Et0dcSaVvXtqwjW8eWLcn38kqUfJSsRImkJEYxAySInIHJqXs6VlfV3mut7/yx1q6uQSCBwQwwlGc/T2OmBx2qdr31rS+83/sK5/FS1VxE6mf49x8ABFDg3wM709+Fi9eFcDWvxVHgHzevlYj8xnN9jc/VJecBlALY9IS8qraBEvhnwNVAD/jGixj4urz+DFgDHgb+DTASkYGq2oQlLyJ6wQJUVWXyAarqu4F/AlwH5BNf6ib+bi9Gzgs6kvqJz7OJv9fA/cC/E5EPPBsGXnKApohpABERp6q7gf8LmALeOPGlIX00Efbi9fV3+QRakz6a6+PAKvD3ROSQqmbp68ILBau8UHA+JWL+LPBjEz+3TmA0F1/bv5RXSKDNJyLuz4nIj5+riCovAJw25ZitFCn/OfC6iXcaFyPl/1KRdfL1/hTwr4GPi8iwwcqLBtAJcG4C/hh49cQDvQjKi2BtMPA54FtEZPFsQWqeJzBFVU0C5z7gQwmc/iI4L14TUbTBw6uBD6nqvoQZk2qW8wNQwIpIUNX3AY8Dr0p5iL0IzovXU0BqEzZeBTyuqu8TkfB8cZI9j0o9E5FaVX8a+Aliq8hcLIAuXl8jADbdm59Q1SAi/0JVc8A9l+LpuYLLJnC+F3hPqs6zi+C8eD1HkGYJM+9R1femydNziqTyPCLne4GfnADnxeb6xet5lTDp1M2B94nIe55LJP2aABURTcf6e9IvyC7e64vXC7gaDL03HfdyVgBN6LYpav4EUCX0X4ycF68XGklroAD+FfA+4gy/fs4Anehz7gGe5GIL6eJ17q8GU3tF5MCz9UnNM4DTxD90GvhACskXo+bF61xfkrD1gYQ1Tdj76hE0fVEGfBa4NbUILlbrF6/zcTXY+hJweyqYwrNG0CZ6Evmat6YwfBGcF6/zdZmEsVsT5p4WReVZcs8vATemf76Ye168zncuCnC3iNz61FzUTIITMKr6H4gE44vgvHi9GFeDsesS9kzC4kYEneh3XgYcuHjPLl4v4bVHRA42mDRPQfEvpJDrLt6nC7SqUAiqBNW/bE/NJez9wiQmJ4/4FjB98Vi/MC9NwDQCRgQjQlDlLxlOLTCdsBiP+GZtVFW/C/htzqTwv0g3P95lEbkAgPASv+Jp6icKiuBVEQVrYyw5uVaxOBiyqZ2zrdeOoUc9QaEQiwIqHoMBFZTz83ya1+q53q/n+No2JJJ3icj/VNVcEiFkCvgkcBPPYT/9XL+IX+vnnU/g6gUXghTF4xREMgoTgfnQUp/fvuMJ/ujuA8yv99lihG+9+Qq+55WXs3/rLKCE4AkeMA5rCuJLe2E8P2PMc3vyEXtfAV4PrDZFUgkMX+oX9dl+7ksBUBE5z+A9Mw6ISKT7hEAuIMbigbsOL/CBOx/lj+49wdGVNXIjFE4YVQNGzrFjpsM3Xb2VH7jtGl6zfzeZEYI6QjAIekGcSs8DoJNXS0RGTQT9GeDHn1IwnVOATn7Ps920r/Zzz/WNfmkjZ4xsXhwGC6p4hcwYjBhGzvOJx07y619+lI8/Os/p1SGdrKDMFecCwYHqCBNgUAUG/TV6mfC6/bv4vm+4mm++aR+zrRKAyg+xakAKMIqhJm4FX7AAbXqgPwv80yaCfhD4Fp4jne58AfSZctLzlZ++lABVFEFxxMFdYQQQFoc1H3rwJL/5lSf43KEFBkPo5gYjirqAqkd9IHgPPsR/I5AheBdYrkbYuuKW3Vv59tv28a5X7Ofy7bPjPLUOUBiNbwo2CqzzdVpM/tznAdAGg38sIt8qqtpLxdHb2NgvetFeXNWX5hh6KQHqVVHRlF8aDqwM+cN7D/KbXznEvadWQZRebhDNUK8EH4FJ8KDpc+fREFAfEFXwAXB49QzWakZuxO4tbb7r5iv5vtfdwMuvuITMWIIGQoj3XETGScYzBYWXMIIa4CPAuyTJ0/waz4OMfBGgz/FOC9ggqInRStVjRLAm3uZ75pf5Hw8c5Q/uOcShhQEiQi8PGIXgLcGA+Ai+4AMSwrMC1HsFrVCtwWdIUIbVgPXBiLnS8oYbd/Pu17+Mt914Nb1OER+fq1ARxEQhENGAiH2pAToZRf+KqOoPskGry16KF/epP+98AfbFjppeBKOKD0pmBGMMlQY+f3iJ37n3IB9+8gRH+jVdyWiJ4F1N8Ioh9jhRTaAEHwISElidi0d9CLEr5QPBO4J6JADeo8FDiOB1rmZ1OKIMjm+4aiff+fqb+Lbbr2fPXBfw1METMFgR7AQ36Knp1dncv+Z7n+dr2mDx3aKq70xH/EsG0L+Mx3qIuMFmNRkFI6988tAC/78HDvOJJ47TXwt0C4vJLOI86okAVEV9QFXj6ZL+bRKM3jnU+di4D+nrQzzexW8ANIJU0RDIRKicZ304ImjNvm1tvuu2l/H9b3w5L798e3rMAe8UY+Ig4On5//MfDLxAgL5LVPUIz1Of81wWSS/mEX9+ABpLnqbj2PyOTAwYYX444iMH5vm/HzzKV04sMwiWtoXcBLzWhKFBK9IRGwHpvUfDBEBDIKSGvQlKXdfxiE//P6T8VDWgLkbOCNAYQcUJQSp8GGGCRcVQrfUZ1IHNMz2++dZ9fP8bbuBNN11JtxWPf+f9+LUyT3m9XoQjfqxPKnoWv7F5d5/NcfxitpLOe99WEigJKAa8UNgAAof7NX966BS/9fgR7j6xhqqhZTOKLGO60yW4wNLyEn5Q470nBI2Hq1dUQ4p8HnWgoQFqjKbee7z3mAaEQdGg+BDA+RR1fYy6gLqYv3oNeO+REJAgiFWqesRgWNHODK+6aic/8JabeMftL2PnpikgUIcA6rEmaTG8OADdwISqBp7nSsdFgDYAVbzG1ZrYKoKH1mp+79FT/NGB4xwaDMmzkpY1EDx15bEitMuS1cVVXFXFAsd5vIsRNLFB0BAgAXd8/Df56HMAqCSAArGQCjFNCN4jKWVQVRCPMaB1YDAYgSj7d23h22+/lu9+3Q3cfOUuLEIINSLZixVBJ27xWUbQ8wmWr5eep2rA2oBi+fLpdX7/8AJ/cniFY2sjyjzQtRlWHJUXqCXmjiHEoqbyG/3MkKrwEIsi9UrQCFCjAkE2qvYQi6MQAng3LoTUKy4EcA4NiklFkkcxKSEOQUEUrT1BAyJCoCJ4j0nNnYChHowY1UO2TJW89ZXX8ze+5dW89WWX4jWPqchZvD4vJIJeBOhZFkGZwN2La/zXJ+b55Ik1BpWjmyl5IVSag1ekHlDVHgmG4BQ0xErbeZxzaO1BDU7jMWzrkKhLgqpn5D3VYEQ9GOK9YiVDDNR1jasHEKCUnMwKuVXEh1jxuyYdAIInpGibbkgEeFBU6wh81VhcoSCQGYv3FWtrgaINn/uPf59b9u2kdg57FmA7W4C+6DOvr9ayeK7AfC4z+/NdscfJueW99x3lT0+vsq/XZVs7B61ZV09WQ0AJJoIHAUs8rlFFrWDVpGIokPtIowsG1quKOjgKcnoWLt3eYd/0Fq7aOs2lm6dptTusrq5ybLHPkyeXeXJhmYOnVjixsk5VeXJjKDMlJ0PxeAJGDCHdnqCakroAwaQCL0bXzAg+wNp6hTeWHVu6fMdt+9i9ZZoQAtaYF4GncI4A+kwV+LPlps/lCT1b3+259uFe7PaXovzvV+1g64kWD61UnKoCGSUt78HUeJOUs1TAgBhBjaDG452gEROY4Bk5y9pgiLUVV26b4bZL5njVpXPs3zLDjpkes21LLo3aurKhxA3DuubAwjL3HFzgU48c43OPHefxg6dYqlbJi5zSZogKIRFSJARC+n4NEETIbPz7Wl0j6rhu7yzfetsr+f7X7+emfZeAsJHTvoj3+QUd8ecaoM8WZZ8NoC/kd5yjm4dYSx3ggbVVPr6wxsdPLnGgX6MIBYYsBHztIxB8SNMfUF8TasewDoyGNbNFzut2dnnHVdu48ZKtbOu0U5CLFTlGQOzXaB1G+f9Ta0PuevI4H/zSw3z0noM8eXIFI4ZOXiKq1GFyCuVxtac/HGIFbtq3jdfddDVoxV97y8u54bJtDOuKPDMY7ItdJJ37HPSZAHq+iAgvfRRVAhI1KE38/GTl+fxCn08srHLf0jrzoyESoIWJ/UmvuFCz3q+oq8BVUyXftOcSXrd3M9dv6jA+cDXQPMW1WplfG3D49IAjC2ucXl5kdm6G3Zu6bJ/psq3bZroVvzMQm/eYqO92cLHPR770KL/9ufu44/FTuFGgXRosgZEPrPQrOla57Yod/I1vejk3X76TH/3Fj/Cxr9zHb//zH+Qdr74eHxzWWkTl6xegXy26nW+mzEt5NQ362KIM5Ahk4Ak8tur5+MIynzq1xJG1PrUzOGMZ9fvsAN55xS7ecflWtrezWMCoIDYjoDxxesDdxxe499Q6D5+Y58nFZU7Nr1L3Hc7XiAjdTJnODdume1y5awsv37Odl1+2jX1behRZhsdj8AglK4OaD9/zGP/9T7/A5x84xLC2bJou+Kabr+D7X/syXnPtbrpFzsOHT/L6f/RfWeiv8cc//cO89eX7ca7G2MjQP9vrggboV/v/z7Wqf6bvv9BGrkFiAS5BwQhZelFWas/dS6t8en6Nr6wu8/Juh+/dewm7uy3QkPg7hqODAZ85fJpPPn6Ue46f4lQ/IN5i8BgNGOcQF6dF3nnUe1zlqLwDDRhRZto51+++hDdes4dvuPZSrtoym95FCiL0RwN+79P38eCJZd7+ypdx+5WbESw+eEB47Mgpvumf/hIHF07zx+/93/imV15L7eq4cvISAPRFqeLPB5AuRD6Aid0hsAYTFBcciqGXWV67dZrXbp3ldLWduSKHMCBQg+Q82O/zp4cO8dmDSxw4PcJVQ9qasbUjoA4NBq0FZ5RgFRUhA7wESmuYpYyHuyqVC3zhkYPc8cgRtn+qxSsv38nbb76Kl1+5i7aFdpbx7je/YvyYazeKj1mhzFK+qxXWZJgs1RkoqiZ1Ll7c6yXX+vxqkXAyCr+YLaQXClJSL9GmokZRXAAhMFdYvCpQcu/SMh88uMKdJxcZDobkwbNlOkNHHULtMKmBH7wnqKewgnpLEMWrYMVAitqNN0GRG2Y6bUCpXM2f3f0IH7//YW7au53vffVNvPbavYh68IKRgDUZFsEFD2SYosQXs1CuYjVDRKgl0CJG4JegED0/R/zXOp7PNjpeiEf7c+75SkRTwPCbB47xwSPzDEZKbpRWHRv3Lji0rhAf4lzex1m9uqYD4AmVI4yqyN9scuBIASBobCAhgjGCRaiNZ33kybB8081X8yPf+KoYcw1YMbFpFQKK8OP/34/w3z76AFmo+IYrNvNL/+gH2DUXI7SRMvIEXsQj/qIw2HN+J0sqic4uD5OJF+p05fjMwhKdLGdnr2Cq9JRZTTv3TGVKrzDxI4deYZjK49+7GXRz6GTQyYVOIbQLoVsIvdLQLQ29MmOqtHQLQzsXylLo5C12THfoFoFP330384uLWBsrfiEyXrIs448/dy//+Xc/QeZjzvmnX3qM//z7n8GaDD92N3x6JyO1+ceDgAvyiH+23uVXi3ovhLb3Yh75ioKJLSXR5w7RZ35ccd1jU7vNcOAQKkosvgRxdXIYiuwllVgQBQmoEYID7xXnQ+JPmTiVSm2p5q0gKfYEIyBCIBCCR0pDq92K984YbCDO5kN8nI+eWMQbR1sGBJdjTclDh48QCE0f7enQlAhywaASH8u59Du+qDf/1dpHmsBpI6EODagYSNpWZxswDErXBIpCMCqoNfgmnkl60Z0nZCGBT0ECwQbqOuBUIYuDgoY3GiaOXhEz/jmK4kUJatBgaBc5WZ6d+fglJgpvuOUatmz6HPMLq5RmhB8NecvN+zDYSGIxqUxSCKIYFTLNwHgqqVA1FGrOaSl11gB9tonRs+WXkxH2XES88xU1z4jMKFZhpYrN+F5mQQyIQYkkYk0xS557OMYCvSxGZACc4LWZiEd/VkmA8yJ4pzgctSbvVq0xROZ70Jh8GiNYEYyVpEoSARoQvBEwFnVKUWYpH0x7UkQOgPOBV1y+g1/60W/nP//BZ1heH/Ed33Atf+tbXkcIHkNAg8GIIFbSXqihX3vWRhW9IqOTGbwG7Dnca8pe6Av5XHmhT2XUn4t9l/N2pIunVqU0OV9ZXuaPlxbJVdiZd9nTLtjVsmwp23StiX1M9fhUTSMRropiJrRYx2x7iUCazg21OmwAbYKygkepJe4lIUKWKe2OpSQjE4cxGcGnkWXt6Q8d/VHN0EPlBR8UsYJIjbUFIlEAQsVQ27R2rGl5V9y4DDEi1MHzna+6jne84hqGPtDLM7zWqJrEYBIGKiwOKo71hzy4ssrhQc3pYcWe7hR//YrtFHl8DOaljqB/mS/1QmmUxwfr/MHCMgNnqCVwpFrlrj6UBjZbw+52h6vaBbu7XTZlFiTgYyYAWMQ8c7S31rAptwy0JqsNKpEOFzIhywxTxjJXGubKjF5W0i4MLQI2BAwhHcmCBofzUHlYr2uWho5jK45jywOWBxLThjyuwakK607JRIGQ6p0zg4olxCkVGT1jCMFhJafvHU8Oa55cHvL4yhonR47+SBkEjxihkJz7lvv8ydHTvHPPFjzPmwN/bgH61UQYnksRM/n5hRI5x5EcxRjD0aHjV46eZLk2TFtoaxRQqIxQBeXYyHNgtMgXVgw7ymWuaHXY3+2wq9uiawV8TUh+ZyKxUlYiR9OoZ9YEykyQEMkbnXZgW2nZ1s6ZtoFMPEarCPbgkVClkapEYrPEyXtmhDwTuoVlay/nqm1CNeqxMBSOrY44ujxgsV8RjNLKLDbLMGntWURid0JI6YpJu1RQa+DEmuOelSW+stzn2DAwcpCpxglZHpgKFufBqVBIxkeOLTFlhbftnMNrvI8v9PX9XziCKkHAhJiPuaS4YmJtTC6GN8xNc2I45NQosOQqVgI4pxQBcmvp2hKHcnJUcWIw5IvLS+wuW+yf6XBjZ4pNNgIzEAgimCB4E8nCmfFMZ0rXGubynE1FTkcChCoWPt7jiSx7AwQx474nQkoi8lSxKB4LQRDvyS3smFYu2TTDdaMpDi6NOLq0zkqtSNFJSnmKSnxsimAlArbvlQdOr3Pn4hJPrA1YqSssOaWxlHncVK28p64CQ++xNmd7q+TSXsH2suCyVoHTQLytgaCCyNkf+WfVqG94gRfidOe557TxhUEN1k6AVhmvQ1gRUE/fB06NAo+ORjy2PuDkaMha5fEIwUIHITeJCB8UozVbrGX/7Cw3zsywrYiFi1dBsfR9xeHFw2wpDZtyoaAm+JqgNUbjGgjqMerxGhBCXOEgse3HdfLk/X/6saoiMVoai5OCY33PycUh+696Oe12N7oBiyHHsFY7vrK8zJ3zp3l8MARfYK0hFwMKwyCMnEJwtKzlknbBlb0WV0yXXNZrMV3kUZJGA3VsyJFJKiqJI185C5i+IIB+fTfeFS+C1cApV/Pl5TUuabfYU+bMFNn4cFEChBEqFkOOD7DqHQdHI55c6/Po+ogTboQTS1eFwsSWkAseVcOmTHlZp8eNc5vYUpYEBeeHZINFxHjE1HGBLXgkAVS9GwM0pMrdhKaCd8+yWCnjgmccOMSgYggKkuUYk1OHgjC1j8KWCCXrPnDP8hJfOr3I4VGNOovFoCqMQmBAILOGzbZkd6fgyumCvVMlc60YVW1a9FMxiNl4DP265vBgnUdWl9nZneHW2ZkXd9SpX+/SvhKoVGgZy/seeoifu/9JdrVyLu10uXrTNDdOd7mu12PfVIftZSP420SxqKkUVBiEIYcHFQ+vVxzqDzlar6NB6GDJ85hfeufo5Rm3TW/m1s2ztLMKP1wkaMBIQNShziHqEK1BHXgXNzM1/s4IUPdVANo4o6f8VEwqpmyU3sGCFmg+jZ25kjpY7l46zRcXljg8GGKlIBPDSD0DB76GqUK4vNfmhrlpruy1mS0yREzkEkjAjmW8PCeGQx5ZrXh4eY0H11Z4uL/GkyvrHFpb5rVbt/Mbr7uNjjXPXXzhXBRJL+Vc/AWnFyqp12gpTY4xhqFm3Lc24O6VPr+D0hHl0m6P/dMdXjY3zS0zU1w91WMut3F24pW2tVw91Wb/VIcVpzy2PuSh5WWeHAxZr2ustbSKFrX3fHbxOIeGi9y2eSt72i2sW08pQYw+ooJ6ifpIJqrZSWiCQdpiSD3YDW2DJPCgikHxAkZsfG3GKx5FHDDY2IM9MlzjjpPLPLKyyjqWnuRUCuvO0bJw6VTJNVOzXDvbZVuRY6TJVGN0tCKs1YEn+gPuWDzN5+aXeHB+mWODdZYVsLEt1bYWa1vM5s26yotcJL2kEoYv8HeryFhu++WbZuiUGYLQDSat38Z89Im1Po+t9fnQkeNMlRm7Z6Z42UyP26Z73LR5mr3Z9LhN37Ujbum1uKk3xbF6xEOrSzy0sszp0YjMCC2bc3IY+MjxeV7W63Br19IqXdy81NgED5LaQsakxrhBg0/KIpreVDGqRg+MECOqsTGwI1FEQi2a1POcsWRiqLHcsVZz97FDrPsCm2dkDtZ9RcdkXDc3zY1zM+zptCkzT1BJ/ViLITBfDblraZXPzs/zpYUVHl3rszIMEMCIkpmMGRFUFFTIAhgVbtg8S24kaezL+QfohcYoOptmvwBGDYpyZadke15wfDCiTXpu6T4WIhgbyCXHqfLI8hoPLq7yB9axpdPi5ulZ3rRlG6+am2ZHqwUSuaA7y5JLy+28cnozD6ye5r6lNearmq6Jke4rS8s8OTC8Zq7FnkKoCSAGMRpbSxoQCUllJJFUJEdtESMrIYqFqYzJyIgBNahYRDJEcgJCbpR5Z/iL1ZzDVcBQ4ESo6hFzeYsrNm/juplpdrZKxPh4hGuOEWF+NOKOpRU+dWyBL56e5/HBgIETrHhKsXRthmbggh8LSDS6+C4EMgns73VeSK3wv2iRlA7JkBrXf/Uz9/DREwtMlTburZPmgKkpLgYyETIjWBv/rRalVk9pArvabW6Zm+L1m7fwqk1bYuM+KKqCWmXdKY+sLvLQ0hLHRjUtERyB3Civ2tTjxl6GdSMCcasyEBBXI65CjMbHaywqNkripDFs1KYPiFZo6j2KWIJ0MHiwOQdHOXesBE6HDDSwHjzGWG6cmuOmrZuYKloYl7xdM0sdhHtWl/n4iZN8/ORJHl4dMqoVYyx5Wp/2PvZhazyqgkmjNGnuriq1KkUm/PYbX8GNmzaRFg1emj7o+RhZfq0884X8Tm2+P0Bmc66f6fBnR0/HVfEQs63xpoQRJESAuJA0j8SSGWjbDGOEU8OaPzy6wIdPznNtWfLGnbt4y+Yt7O10AKUncPPsZvZPTXPP4jL3LM1H+Rqf88XT64zqFq+asdgQCCZGToNg8jJqQMkEAExKKtIRLxI7BqRlYlVDkKhFen9fuHtdUckpbMA52D+7mZs2b2F7mceCF4VMWXSOzxxb4INHj3Pn6hKrI0+G0KOgXUQWlQ8hCvBqujdpzx9kY7afTqA6BPa1euzs9jY4KS9Vo/58GitES9ynO1acm98Zf8Y1vSlEK6xvxwa5xka2pJZU/DIf6WnCeOuyDjFPK0Roi2C94dF+4L7HnuR3Dh3mTVu38p2XbOeq3jQ1jkLgtq3buGKqwx2nTvDk+pCcjAfXRvhgeOWsxaogzqA2x5PMECZCj4wbERGUUXnZpdUMot4Syn1rJXcPMtQGQqjYWna54ZLt7O50cUTZRmMzFtyAPz82z+8dP8XDK6cZqNKhx1RmcM7j1eMC+KZgC/F+NGolmmq25vUICjYTaue4ottiLs9Sx8K8dAA9H1dqpZOl5xV83MeR592s+NqH/bXTPWZzy8B7Wmn6I6mYknTzQxAka2jLgvcxzooqTsAQqG1ArCEXODlQfuPJg3z4+Am+8dLtfO+2nVze6+LwzJUlb915OY+uLXPXwilWa8dDfYfD8JrpgtzmeEmCSZoiaLPfscF+jkVT5kHzmLcSUBXuWau5ewgm6TvdsmUnV89uITfgqcmk4FQI/NGhg/zh8aM8vlYhJsroTAUIYUQVFO8DoZnb+/TGDZHZFIkyGtUpdGKIoELwgq88V091MaKEsxzPX5AAFYQgiiUwDIYn1iu6Bna2c+wzmFNNHvXPxKp6NiZV/Pr4lt/d6bCjVfDQak1uLCAxEijjZTEDeOejdpHNYvTyihqTpkoW46M4mAKZBIxkrNbKbz1+nM8cPMm379rOd+zew9Yyo5KK/TOzbG+3uePUIQ6srvL4qqGlhlfM9bChQk2cxgiG8ZxzHPt95Kiq4E0gBEuO58HFEQ/0LSE4Zlolt26/lEs7s1GsTAxOM37/yCF+48hhHlkekJuMjhXUQ+2jjj3qUJ+Ey3zaJ/FRCjLOSFPxFnOKdIckSlGGZkRruGamG++lnN36xgUJUJXYnlirlF8+tsjB9YKtmeP1WwKvmeuwYWt/buJnUGWqzLiy1+G+hXkoE4hDYmjGPk5iqKfpXdAY3DS2o5DknSETj0w0kSaUwmQcGY34uQcf4oOHj/M3r7qSd+zcAXimbMYbdl7JvadP8OD8CR4ZjJjpW66Z6UTevFqaX6yTmwqaRGvxWF+R2YJD/Yp711eoBK7ctJlbtuymbTyEPtZ2uWt5mV955DE+O78MYullWSwWXcAnwTJplvCSsp5AUsyTKAc5/ojPkfDU/rIyCjWbs5y9aYJ0tufdSwbQxmFCnyHSNdXoXes1n10MbCk9p73hk4uOG6YdvRxE7TM6VDxbfqpP/dqJx+FQchGu6Pao6xMUhSZycCyOHAFjIosos5EF38gZqsSqPrZ95IzFnLQkEhfadIBFmDJdnlit+Mk77+NjR0/y96+7gr3dLs57bt68jS1Fzl0njnHXwgrtssfeXieKzmKBLDbcmxN+TJ1zmKzL6cGILywuomp4xdZLuGbTDggOxLJWC///Rx/kVw8foaqFXmYYGqh9iDLiKKLxuYVIKohCZyHEKO009mqTSoVPorqKbkRViSe9kUgo2TMzxa5OO/EJzNcLQNOCVVCcUSxCpgY1DlWZeCJKZiD3gco7hgotzQgEYtv42aMvZ2weRsKHlbhXE5UNkzZdYrEbjS/0rVs34euK+RVHaUuKzGIMZMGkfNCiPraNRCSmXaKRzGEN+KQc1xx4spEe2JBFvpREplTwgd9/7BB3nTjJP77lRt5+6TZGfsjuqSk6ec4njj7Jl46eZPPlVzBlWnhDjKQTAPUGpDm2Q8adC8epvOM1O/ewpzdLqEeYvOC+xXX+7d13c8f8Iu28RWmhcnXsTmCjp2czvtZUFAbiyHV8kpwZKBsZnJC2T0U3xJe9UXyl7OnNMNsqIiPfnF0Mtf/yX/7Lf/liVuwh1o/kJiNLjCEFHCbqY435k4HpPGOp8pwe1Uwb5a2XtLl2Ko+S2BNCWo3nT3NfI2s9VtkiUdVtGGDoDQMnDByse2XNK+teWQ9RcnDvdJfpvMQ5TxkCa3VFfxiohwGtoo6nBJJnUdxLN9ZgxI7zshB8Ih2l5bE4tk71g+I1EHyMUF2bszQKfPTQQZx6bt+2A0KgbQsunZrh0GCJ5dGA3TNbEGzaNTITHkcGJ2CN4e6FY5wcDXnDpZezozNNpTV5Zvndx47xni99mSfWVujkrRT9YltKgqA+HdUh5ZchbQQEjSa1QVM7K8Ooicd85fG1J9RJGK2Oa9FRjDcKpY2GgW/bv5fX7dqcXi85K93XF7VRH8e08Th4fDBiaeDpFRn7OkJuMnwarTWzCAGcKIf6Nb3csr20UWWDKNOyQTKOL76oxmEKSt8LK3Vg0SnrPjBQgwmeQkAwcYfH6riwaiHkLcOczaidZ2G4zol+xaOn+9x1+DifO7LI46sriHF0szZWwGYWkxlslpPbDDIlpHSgWftomFNGJ+9DTBfiMS14PMOq4m17d/AvXnkTW/MCp0rtK+44+hiXbN7GlVNbcMFHsYaJtztiOd5f4XMnHuc1265ka7eHV0/A8h+//AD//YFHKQpDYQq8NBtUzUm28SjjiaCxIBNBNeCC4gPUdUCrgI48dV3H9CYJRWgIG4ZgqS0XjDCoa37p27+B79x/GbXz5NnZuby/aABVBWuFJ/ue9z9ymvvXhVpjX/HqnuWHLt/Edb085ivaFI1KbQJtMlDBMYqRRKMwq0jMmxqa12pdc2TgOTWEdecZmNgiyg3kFnIRShNZ45kI1oTxsChDsSanhcdIoLA5bSt0jRCAIyt9/vzASf7ogQN86fgCAy9MlVGgK4RAkPj8inZOq2xjrCVIcoHTM1dxVSc6CKn2tQKnBwNevm0T/+YNt3J1b4o6OEZVzVcWjnLz1t10s5wgEwWHBhzw2WNPsru3iX3dWdQG+sHw05/9Cr/9xFFmM4tBqIHcJgU82ZiSqfqJiBxzaOc91ajCD6Ouvks2OTEHjfN0TUwm1RDTTxnXhQyDo8iFP/jBN3PTJZtxPpDZCxagmqYahoNrnn/y+QUOjCo2t0u6rYwd3YKiUBgO+d+vnOXKXhnNrEwSWD0jQqZGhggYxeJQzTleeR5bHXJ4aBg5Q5nksK1E0BkCmQlkIfpiWom9VWsEkyKGtdASKFEyMYiJfT5DoMgM7SyjBawH5fMHjvPLDzzOxx4+Bk4oW5I05iP4RUCsQdpKkRdkWZaa6Br3deTM/foQPELMTVdGjivm2vyHN72C62enqNVzuj+iH2r2Tk8ngkhaTUE4vLbICM/l3a2o1iyOKv7xp+7jE8fn2VS243GOi28USQhK4rUS2xHx1HLgRoFq4HG1w3mHugRaicXSme09Mz69NMmaCJKYTo4rNnf54x9+C3OtEh9k7Hd/QUZQlRqRgvd8YZnfP7bK9o5iBGa7LS6fybhqU8ljiyO2acWPXrst3b+QTE838rnoqgGZja2ME+vCnctDnhhEokInb1NkAWuSHbUoUxZm8oyuMbRtILNRTThG01QD+MDIe4YErM1oqZCZWCUbFGsaRg8YCfSsMEL40KOH+M+fupcvzC8xk0+TR4mDZHLgsZqWyvKCvFMiuY2pairKxkVJOh9FIBdYrCounS75r994O9fPzVC5wChUtPKcPK30CnGUuOZHdLISK9AfKX/3Q5/gU8eWmev14qAjRcmJPkYkyogFDL521MOK0bAi1AFVG988JnUkUqttAya6cQo09cgEgqyF5UHNd964m1/5njeArxFjL1x1u6CQmZKH1mo+c2qZTmYYOsiNsj5ynBhBd63AGsPjfRjUnm5hcBIXyibz15gmwOnKceeC46E1xYmnMBabG2qirUtbDJtawlyRsakQOpmlJGCMjUDTgBUdc+Y1UyrNOVaNqEwAH/sEebbRyoqHWiQBr6fI8h1X7uH1l27jF+58gF/84qMMvaUrqWeYInMIgfXBCIYjsiIjL0tMblNNnGp8I+PfUavQtiUHTg/4kY98gV/+1tewr1eS2chBHVfb6Vju5S0yVQZq+Od/8WU+eaLPdKfA1S5NwuIUSlOeKAgmBKq6ZjisCCOHuhgMjGTRh1k1Os417nZjLqik1DmkydGYrJC6JXFdxrvADdtnsAIjMeQvAD/nHaCSXohDaxWnhzWtokAxBBHWazje91gdEZwymxXkNs2X1cSblUpgYwwSLHctDPjkwohVZ+jmYMmpvaDi2Nkx7OnkbM4NHWsomgRBfSLvxhfHpJ/pMLH3J4zd4kwwCEJhhLYxoJ4okxAJxaKCCvHm+5qZsuA9r72VW7ft4J98+EscW1lhU7sXJb4VUBuPZVXqdY8bDMgKiy0NNstSsz++GYPG9MWrYcaUPHZ6xD/7+D380ttupVdATSDTKPjlAIzH+sgh/ZnPfJnfeeQQW7pdnB/G3mZ6f6tRxMRlQFdFN+RqVKWiNXJGNW2LNt9jUiU/nhA1I86nbegyfrOl/T1ya7h6y6b0nS9sqHL+I2hUNqcj4EIbl3pmQSTuy6wJT1ZDKnK+dXtOYePtMRiCxPWGwlgWKs9HT6xy/3LUhc9yYeQDudTs6Vj2bSrZmhvamHRkBkZARVTNqNQhaqJcSxprhwjR2OryFT5ERbhgUs9UQF3UUmq0W23KtaKuQpb8LUd869Xb2Tf3Gn7kf36Se48N6HVaBFczpv0gUY5RwY88dV1hrKVoFVhrx8doVKHxDD1MZZZPPHaEX/hyi5949U0E73Hq+eLSAtdPbaKTG4zN+N0HHueXPncvm6Y2M6ojaSRu/6UKMEBQz6gaEUYeqeLotCHBaIp88bHKGRO2JgUJYYMk0uTAG0e/jFOHkfNsaudcsWVmIlO9kCOoxEbG5dMlu3pwZCC0TJOrK2ICq7WhlIo3bJ8G8fiQYyQeqQbDV1Ycf3J4nZV6RKtVkAs4r8wVhhtmhb29nNzkeKcse8+ah6FzDAO4YKhDXIPNTaAwse2TSVMkpWGBCB0RrCgjhcxrNMHS2IoxabddjMGOMaexm2AslYfrtkzzq9/zZv76b36Uzx9bZUvZxvuQvk6TQl6KUM4QvDKsK2xhyPI8FSGaOCHJmGs4onYuvlgKiyHwp0cXuOyqKbpaEjSwuddmrjfD6UqZ8gGTBcTH08FrwFUON3RoiJaGIkSl5jTtiiIQIeX6k8XPBvk4FqkTU7Kg44Z906IQFF8F9mwv2TVdNnLTL4jYc94BalCCC+xoG950acEH7l9jLeSM1CNiyAtheyvwY9dPc/tmoXbJDU08VnI+s7jOHx0ZMpKCTlYyqh1ZJrxsU8G1UxmdLGPVKSujIaeHgeUQ9eFzhdJYgglkYrEhRoHKRr6iF6VllAwbW052TGFGBSpncc5TWENuUx4mgm9MXdPropoTbE2hGQMfuHS2y698/5v43l/7GI+eXKddRrNYk1TmGhGHhhQdUJx31JWjKIrklZRMuEKUq7lp+2yc0EhU2VsZKY+trrNzW4d13+cNu7fx/u96Lf/1rgf54uOnOHm6jzOGQrKoBVWT3mgWcRDEEUTG92QcPVPrSs8AYeyJ6tMAOjG0kabwglHl2Lt5hul2ifOBF+rJlp3nBDRV31Gp4u9cPcs3XtLjnqWKBxbXcd5yzeYWb9vZYW/PxNaGsZgAJgh/eGyJP5uvadmSttSMVNhWWG7ZUrC702ZUeZ5YGyTVi9hrK2xce1jXwIpzOK9jEq2IYGx0uDBERY62BFrG0s2hWwgdI7StwdhmAhSofWQ1eaORUIFQZLHqFgWrBYrSEssoeC6b7vHL73o9P/D+D3F0TenmFnxcjms6IH6SFxCiV6aramxpkczgUv+WyrGyWgOBYQjMZSW3bZvhTw8fYa4suX5mClXHK7bPcfPbXs3DC6t8/uBJvnz0JI8v9nn45Aorg5phfx1rhDzPKDJLLiUu0ffEhbTeLBOOzYoGmRgXP6UzM+GZFDVGJVbroWb/1hkEQxAlV30h0vbnts2kE3S5DSZI7IOiBmMMZmIbMb1MBAQXIA820R8Dv3Os5tPHhmRZDuLJqLhqus1Nm7oEoxxaGXGkqiBYMok8xkqF1VAzqqpU8ZtGfIbMGgoDuYQ4BTJR1MCi5MbEnqkGWpkwW1rmCmjnGXmIHIGs+RoxWEmfm0AWJih/KR2oQkWRlfzJ/Qf4Gx/4NGWZRbtsb+LyW3phx3dCJvitAjbLkMxgrLCyvsZbr7+MD3zfG9B6CLaFx/E7Bw/zxflVbt06x2u2zbG7LKPIgiReHMJK5Tiy3OfR+SXuOXiCB46v8OCxJU6tRUU6L4YSpbQWNLLlgzbsAU3cCJmY0cuzkG8S30AsVT3iV//2W3j7y/ZSeR/zfeTFdfkIIUwuvaIa9U3NpBOaRsZLEqrEiMdLrBbjuy7ENVkEtZB7g0pcpfitQ30+dsIzVRqcDslF2b+pwzVTHU6v1zw+qBi5QJ5nGGCtqlkd1Xgfe5+ZFbIszvoL48iJ25ENyHITd4vypvAxsY1ijVIQyAQKLL1C40DBGjIUY+LKrZXYh7VGaTVVr0m6mFIjIWekjpbN+Yk//Cw///GH2dJq4dRtFBm6MZ926SgV0xCSFWMtJs/AKKPg+JlvfSV/4+VXUnuXdo6Uz548xR/Pn2A4MtwwPc0Nm7rsarfYXBR0TJ4qlDAuVeqgLK/3efD4MnccOcVnHz3OPYcWOXa6T9BAu0h9VhJTSyV+kNwhzpBQ3lh5VqOIKLVXNrcz/ugfv4NrdsxRaSDT+PtfAoCmmbl4cjHUapgf1Yw8FNawtRRylCFC3lSMDaybSjjpI8U3qCcX4feODvmjY4EZsYzsgF4ON063mcksj/X7LFaWrhTYHJYrx9L6iIGPRUxuoSWWwhjERM3MXCIQM2NSYRQb/VlyyrCpIW8NZAiFaIr0kBMorGFz27ClLKJ4gigFsbgyxpARtYdssx4iIEHw6jECi+uOt//HD/LwqVV6RY54xdkYjURkPBMf8/SlOV419kszqPG0gH/1LbfzV27bhyoMvaOdZayMAl9aWuSzSwscW+szZSy7pqa4tN3msnaLXWXOTF6S5fm4u9H8rhp4/NQKn3/0KB+++zBffPwEx5ZWsHlGpyix3lOpSUSXEHm4T6MxxtabNYG10Yib9m3mQ//oW+gWZdSjSq/5iw7Q5jgTG/j0vOcT8xUn6wojlm5RsKNV8/q5nBt6ndhf49mMFBTHiFxK/uLEOu9/ckhZlgStmcpybtjURkLNk9WIeqSUWcEgKKdXBqyNatTmFDaOMDMr5MZS2hgpDYIxcTpTWCEXE4GYjvisGXlKjIxZquJtGofmEjc5RZQtRcbWVvS5NJKNR6WNIK21gp2gX4jGvLtlM37tC4/w997/CWbbbVzqKHAGbWND+15EzyAmFoAr4wao8YEfuv16/sGbrmPnVAefVEYyYxjUgQdXV/nM0gJPrK4RVOhZw1xZsqWdsbfT4fL2FHNli5a1qHc4PLkRkAKP8uixRf7wy4/yf9/xCA8cXsHanE4R9T69N6mwm+x/Ns8iTt6W14f84Ouv4lf+5pupnSczG2rLZwvQs6TbQTCBIcL7H13n14/2mfeOIDbmaNbS95Z719eZsrCrzDcE+5+BG5oZ5b5V5VeeHCLG4nBszuOxvjKqONCvQS2lKZnvD3liYZm+U4xkiaLXuPUmlTaNkQ6JaUeztmsSe8gQ+40mVZ6SGtNGYtO+UREmtZeMyRj4ClTp5OXGY9cNom4IupHyNJFFwIeKq3Zs4nP3n+TA/ApZYcBvkEgajflkVUezgSYaH1NIp0xmDCa33HFgng8+eJBQDbli2xy9oqAKsW12abfNLTNzXNObomUMy86x5oXlkfLI6hr3LS/x4NIy88MhmY0aVEZyqqSHv32qwzdctYvvvuUqLt/W4+TpZQ4cW4kboU3lruPG6fjvgVhjrFcVf+W1+7n9ykuiYsoEKM/WYv3sABpqBMv7n1jh9456ekVJSxTJoMwsHROYyuM78+BazeVdy0wmcbFs4oEG4sx3rRZ+8fE1Fl2GUDFlC66fKzk9qjm0XpNbpRLLEwsrHFpYI0hGbuMxK8GnNdy4u27GfMkEQBNnGVZMAqCk6Jm+JjFxmn83CaxnAjp+/yjEo6plJNLNdIMk3ey0yTgYxqOvDkovL3BB+eCdj5EXJu2XJSvk5uekP8cVcTODGY8aY0+ztMLplSEfuvcYf/7gEcrMct0lcxSZMPA1ucBcq8XVM9Nc0m2z7obMVwNyCnwQTlYjHlkZ8OXTpzi4OsQYmCtLWjbDq2PkHVOtklv3buc7Xnklc50O9zxxkvmVEe0i9mp9OCOExjZoCIix/Mg33ciV22fiG1Z48QEa0o7NZxcd739ihVaWJb12otJZor8phtJY+kGZzgP7OjmBmOc1jzxoLD5+/cCAryx5CutpSca1MyXzdc2x1RHtvGQULI8cW+TUUh+TFYg1iQ0ff1ZsuKcCxtj4J5FQLKJkGDIjqZDTRLWLR7tJu2iTALVxzhKpKmLGmqEAztfpzWHHBBZEJkwLSMVFHE2KsVgjbJtt8wdffpyF1YqcxH5SSdxQxh/aADbEAiWIj1gIhiSKQ2kz2q2MIyt9PnLfIb585BTX7NrOrqkuoyBp0cSzpWhx7fQMM1nOseE6Ax/I89jN0GA4tj7kC6cW+MrSPMbDrk6XMsvwXnAa6JY5t199CW+5eTfHl1a49/FjWCwZgvc+Pea4zlHXNdumO/zYt97Cpm7xtAXGFwWgjeD+QC2//MSAJ9ahND6JtG60JxoycRBhFJTpHG7oFVEbPYWYoJEw8oWFml8/XJHnsdC4eqrFauU5PKgpWi2GznPfwVOsrI8oixxrNR3DEx/GpD9T+4cE2KaYoSE+BDKjkfuZChujUbO9ofSZRIyIqUEKho3fe+OZbgxlblMBYM4gWI8tFTQ19cUQgrC5U3DvkVN85rGTzJgMH8L4qBw3wpl0HdroMUqKxqTSlMTAyvOMPCt58OA8H7zrMV526Rau3NoipDw50brZ1e1wZXeK44NVTtY1mWRoUKxYvMk5ve744qkFvrIyoJvn7O6VGCNUPoCv2DE7xXfftp+ZwvLJe59g3QeKzEZVZlWMKIMqcONlM/y/3voyChPfXOcigj6/zDVF9SN9xwOna7IAVV1SB0sFVMFQBWHoPOvO0689gyowqOLmoDOazAZi1bxcC795eBA7oV7ZWQpDHzg0qCjE0B85vvz4SZaHDrIsfm9jB6PjpZ/xTHjjIzaevQYMnm4rY6rXYnqqQ7fdol3miUAbj+y8yOl0WvR6bTrtgrKICnLO6/gUjtMtJZiM1SowqKO4lk+scx+S+G1IPh0S5bpVJNrGoNy+bxumDoyCi1/ndbyiS0hOciGpd6SP4JRQK7gotNB84BWGHq1GbG4VnFyq+fHf/jRH1xyZyYhrdjG3dK5ia8vyzr372NPKIzPf2rgfRU3bQl5kPLCywM/efR//6Z6HOT2MQrXB5jiniKv50W9/Jb/8D76VzR1hvarHbiEiigvK/ks30y1sXKg7R7IFZzVJOrgWGNQBa5N4dhC0TqQKjQQRL4pqTe2EWasYrQiaEcQANZkYPnx8wKGhkmVCJ1MyyTnUr7DWsB6Ue584xaiqKVslURc2kt5i+habypEToWM9A03MpTIrmG7HPfH1tYonjx/l+PwqK6vrrK2tMVhfR31s2ue5ZdNUwfbNM+zbfQl7L93O5k1d2pkhDEZ4dfikCd8srS0Pa7QoaGcxhRBi3zcY8KqRXCGRjBwNPDJedtl2pkuDr8AYHUdeE5enUtuOiRWKRJEzhrReSlAzXkALqaU1BGan2jy2MOLP7z/AX33VtUiIp1UWK0WcKrOZ5dsv3cX7n3iSgScai3qDS8rNXc1wInzo0Dx3n1rnh2+4nG/YNkstnoDBuZrvfMWVbJ1q8UM//yccWqyZykmryEOuv3QqGnqpf2kB2q8qXIgUrkZkKzZsSepqgsXRD5YRlr3TebOskmbswtGB8ucnK6wx5BLoFgUHB5Hk69Xw4KETrA8ryjyPYzUjTxNu1SRaoEETSC3dVkk7t6zMr/DgXcd4/NBRTpxcpN+vGDk/zn+b2bIGR6grvHNYlDLPmOm02L9nC2+6bT+333QVZbvF+voIa3IyVcQolSpLoxF1MLTzgkIsNq0Buzq+4NZG2p41QqXKpVtn2DHb5clja7QKO94FCpN9m5RaNClDoGltmbGs4bhP1RxqolSDITr0zHVaQGRuTexWY1ORdWm7x7Uzs3z69AKZ2I3pn5ootuAD3SzjUH+Vf/YXX+JHrt/L9+y/nHVVMmsZ1TWv2b+L//53v5nv/be/y3KdYXNDr7Rcf9n2+LPMufNEzJ7vCS9ApXEubNSgYUJ3QyLf0nvPUA3zTvmOS5Tru8nh13gyL4gxfPDYOidGlunSMZNbVgaevq8pyxZPHDzB0vI6ZVmekWzLxGh43ENMx3rZLims4fjxUzxwz6M8cfAUa+s11ghFZrCF0CvyuFsOOFdjRn1qN4pdCfV4H/C1cGJtmSNHjvCpv7iTay7fxvd911t4ze03MRoNcd4jISOuSRlWPQxCTS5CYcFIzPwyYym84sb8zcBUYdk50+Ohw4u0iTlcaJ6f6ph2F5otyInnHoi9Z51YvYirKxbnlJNL8/zVN13HW67ZG99s5hnMs1NKdFV3is8tnkiKdBtDEwUqUbT2mEwQct77qftZHdb88E37ccERspyRG/KGG3bz83/7G/lb//kjjLTD/m2buWbX1jM0B15I7vmCImjPZPhUTnjjEW8RYxj5moEKZpQTrOctu3L+1p42pTocccXAWOXhfsVHTgzJ1ca1C7Gs1hVZmXPgxCLHFlbolAUhaCTUTnAQg0CdXtgiBMoip7Qlx44s8MiDj3D8+CJ1LZSFpdOziHeYIAzJMVojbo16fYBfH5CNqvEsOTRWMQZyDO3MoJpx34PH+Kl//d/5vu/5Jn7o3W+D4OJWaYjPPxB93KPqm1DYuEsfV49iz9WrUvvATJ6zdbpD8DVQbNjJJEL2xt5VU0tKWryL5Jn4f6KVjKCMas9iNWKqgB97+yv4qe95DaUFr9l4BP0U7g6IMlUU5Olob1RS4q5XZHmpRNW6TALtXot/88l76eQ533/dPmoXyEzG0Hu+/zXX88CxFX76A3ew5/pL2DzdotY6dRuen9HbOQXo5bOWuSJj6F3UJQpKv66Zs4YdU7C3p7xhe5vXbSnJpSZo1qinIwIfOzZiuRI2lx5Ry/KwxuYFiyt9jhw5QWay2G4RzmBjj4UBUgVsioL11XXuefB+Dh8+AZpT5G3KIgoKBKK/pDNQ1OD7AwYri8ioxoYA1m6sLss4wCTltngqdHtdHAW/9hsfZL3f5+//3XcShjWR5qmJ6BElrwPRoCMEwCrW2MjHDIEkXkMnebk0soemiTdJSmfyyYoImUT1EkxAyfBeGY2GgDLdsXzbzXv4m2+6gdddvRP1LhagIs+oYx80/r75wZD1YLFWkj9SGBd4eKgl+n3iPO0sI89LfupjX+ayXodvuGwHIw1YEXyo+UfveCW/9Ym72DoNhTHUrkaNOWfSbs8LoM2bYE8XrusZPrOk5GpRDbxzj+E7d85waRem8oBgqYLiIgsxrhcInBopnz9d084sxgbW6obX6jl05BQEk6Y4YZw2NMeeAVxdk2WWzGQcOXicJx96jLryFK3OmMMYiAathLjS4N2IenEBv7IWW0ypAarI5BrYmcmMbSZUgbwQWtt28gcfvoPde3fwzre/jrW1AXlmEI2mAho2+qHxV5v0EYum5qcHp6mQaFhNIbW0ZDzEkLQ2X3tPXQmVr0A8eVGwa7bHyy/fyu37d/PGG3Zx467Nca4efOzXjn/G01WwmzbY46t9hkEoiYIVisGFgA+K8z4NEhpygaFT5Jxa9vyrv3iA93/XDHOtAg1R4Xmm1eJn/urrWRsNAMVqxrlTHny+AE1v9MIUvGGH42OnakwuvPtqy9/ZNxVl90RxIeZPRgSTfMaDCtYoXzxdc3zk6eYCNQx9IM8Ljhw+xOraiLIoUPy46d1AJ/hAjWKzDK0djz30CPPH5mmbkna3g9eok6kmMvHVK7UVfDVicOwkrPdj9SuCT2u/pmGqjPngESwqhvXKJVU3hUrJS0/Z6fGBD/wZN117FZdcsoXKVU1zFGvSSFUTMUIF53U821cF5wNHF5ZQtRQmZ+QcLoHbhxqviYTjPWUuzPY67NxUcO3u3Vy3exs3XLaFa3dvZt+2mbTvGvCuRiXDWjPevX+qOKUkD9DMwPHRgHtOL1J4S601IUDtNQE0nhohRf2Gfoc1TLVyvnTiNP/pjsf4qdddhyOQGUsdPN/2iutxeFzwkGXJC/QlquKNRJ3ON+9s8ZETFQ8uD3jnrs1xRSGJT5nEypGGsRxiV67yjs+cqkELLDCSyNhZWFzi6PHT2CLqrxtszPGMxBaWJPcKmzEaVBx9+AkGq+uURTvmwQ2f0maI8cm3RxBXMzpymLA+PEM4QMhBQrRnSaNEExRrMlaHa0jw3Hz1Hm68cjczhXB8qc/n73uSA8dOsO6Fz9/5EN/53TuoBiMk17GjRsN/Fd/omga8BAKGyhu0MLz91l186v4DnBoNaBnolAUz3ZIt0y12zLTZt20T+7Zu4vJLZti7fZrdM22mu60zxF81BFzqAxubx8zgTBW2Mz6tRcnEU6vlNx8/zrE6UBjBOcWpUvn487woTgO1epxCCCb6PeVCHWpaGH7njkd55/7tvGzbJoLLyG2Inp7NJEPPrTz82dnQCHTE8OPXTPGhI4Fu0gnK5Ck+nGkPx2PJbODhZc8DS9HaeeRNbB155dDBo3hnsHkcoVljY1M8UdZ9CEieEVYHnHjsSdywImuVYznsRti1kW30xiGhZnj4OGEwwmQ27Y/JhBux2dj5Rikyz/LKKjfv38X/+91v5k03X810txw/l0eOzPMffuuj/OJv/DmPPnkQV1dAtNEWAO+jn3oqekgbkVai3qY1njoI//Dbb+XlV13CwdPL7JieZrbXYfNUyZaZKXq5fdrKYdAoIuvwqXiKx7hNqc+Gjv5TmMTp8qoUVhnUhl959Bh3LKxQZnHhUFWoXcD5JHPjQxKzi+JmISkqN8VpYQtOjpb51fsO8O+2bcUZH3+9MWcop7zkAI3EhZrLWsr/dsUsTngWtlLaukkR7ktLhuVa6OZC5T25sZw8scDa2oiy6MQ8zsQ8yBobpaxDJO/W/RHzTxxCK8WUZeRg2uxMXpRCpR7jhPrkPLq6TJHlcQLV7J5PWGZLosvl1rK01ucbX3k1v/ZP38322Q5BFRdcWhyruGr7HP/lH34vwTs+c2CFzChOFK8m6nQSzQVIvAAJMq6MHYJaS2k9tYfXXbv3afco4OOROjYijoPUKMnzVGoeT6MvTv6scUEkQm4tx/vr/NfHj3DP6VWmcxglcYYoEBa15yvvosR3msB6r8nHM1X5xuIk0Cmm+PBDJ/ibN6+yf1OPUXAUWM7XdZY7SbFybXK5vGmaY54hOY8qPl4tdy8NgDgiRDIGA8+xI6di3kNIjXOL2HjEBw1gDWFQsXDoGFo7TJ4RbJyOqDETtFmijqYFPb3K4MRpjM3wxowJJapgQqpYi4wMi1VPv/LcfOUOfu2f/SDbZzoMq5rcpoLDgoQyMvgNvOeHvpmf++h9DEaCqsWH2HNsqn9R0qhPsCGC2IlhMzF1UbGMfEhy3UlsUtJCmwjG6sbcXdgQd3iWCNncb0mrMxGYnsxk1Gr40+Mn+L3HD3PEKVO5ZegbrYJ42lUuUDsluCjb7YKPnFVCBGmzvuwVdUphLEeXB3z88eNc8/KryJoJnlxQACXxfeID80nDXIRnYHxGkvCxgefRxQpwjHxGYUtOnTjFen9Aq91ODfdmYT3tpgegCswfO4Gva/KyiC9iIqKMGenNDF7A1IG1E/NpIpMhE5pAQZQghrwsklmXA80J6vmpH3oL22e6DL2jlTNWbyMJNWR5/B07N8/yjjfdzsF+hcmELCiqZrzyIhpJKp5ALR5DTq6BgiS6q1Esl2c0FNCxkseZdfdXQWj6l1ogC0puMzyWLy4s80eHTnHX4jLGGKayLEZIUntMwQdP5QO1j/r7PoRor50Y/SFEbXnvA8F5gk8GCSp86cAJ3K1XxI5LOJeeAedwq7N5smNhKFXqkBhB6RgNKZo+1vecGAkmM4Sg+NGQ+RMnY/WZmtJNT9L7qANvReifmseNKmyeRXWMcUQcU40idY1oJzNaXIFBhW3laT34zFVZ22kRyhypPGIMa2s1b33FFXzzzVfgfUVusvEx+dS0xlgTm+PrdSSDhIlCMLkZGxI5xCjGCINgmLKedp5FU9fn0bD+assOk9uXkcFlGIWKv1hY4qNHV/jywimGatjca9POctbW19MmpqR7Fqido3IhAi+pJnsk0e2iw5138f760IA6RD3SU0ucWB+ws9uJkpPnydztrAGqCtYEvAiPLAeG6tjdtcxaj1O7sdmZroeWHYMA7RA5m6dPn2a4NqRslYnokQgTEveTrBgGK2usr61GHU4rG4a+hjMqcFIP0WtgMH86jmBFxqQKTeg0RUHe6+I0xE2poBhd5l03X0FhDZUzFKp4sUxm/Y1aIarUAqtaUfmMPIvHOZgzlEfcWHwhMoo2tfKo8Pw1m3hPHyyrhA3RBxV8Um3OkHg6qHBsfcRn5k/zsVPLPLDcx3plpl2ypVOgalnpD2IuPeYtBOraRYsZH5WifRMtNaTIGQun6MQcv0aSAolFOLwy4tDpdS7tdjmfnoPZWUdOoxwbKb/w4BJ3r8am+6Ut5W9d3uHmGYtP0cumnerHVwI+eHIfU4JT8wtRBykIyQE1Jec+kiWqmuHaGprbKJxlNhzf1DQUuGYwbzCZUC310dU+WkZXXhKJOKgiAcx0D2l1yKo6ynj7itnZFrdevmvMKgrJVuapOVWzKty2SrcsWegrc95GxegQhclU44p1K1W1rnbc2LNsz+3TGOZP/+ny9NVtYlSOlrdRQMKmjHtpVHH3cp+Pn1rknqV1Tg0qjFHm8pzpTW2MLRkMBqz119JUKj4+HwLOBZyLBZH3ybAjkCh+jI/3hlQdnCe45G6scY9rdeR57NSAV+/mTGLKhZODCr94/4g/OFyzvevZ3Mnoa8F/e2Kd916fszmPOY0VYc3DkTUHBNQW9FdWGS6vUmTNrpKPjmUNEybAaDSIIl551EZTk/aEGv3NtK8tKZczFvzaIG4S5nbcUoocFY8vM1rdTiTGlTkaPC5Y5mam2ba5GxcAv8ZdDhoj5CumLYcHQ0bekGVpX1zBIzF6V55uYbmp12JPx1BrSHKHz25EJkkKvSHXo5GYXRgP5Djg4PqQh1bXuHN5wD2n1zncX6fWmm7eZudUl+lODlnOWn+d1aUlauc2PNyD4p3HB4+rQ4yMqrFACs2aeGw56diwK3qEVZU7IzoJ4F3NoeUl4LI4WFFzYQC0aaecGHq+fHqdnsQneWpUswVlqTY8surYvDkm5VZgceQ5MZA0rxaWFhYxTtEsCVT5kMbQcU3DuZq6rinybEPk1UjyoWzWRaKsShRnM3gJjFbWJvbTG45l2mFvdzDtFuICEmJErX1G2S5oZ3FRbVIpmGcYgooRai/s7gnfQcmnTjtWqjjlIsk7zhaBXS3PNbMFWwpwIc7RAw6riWI3/o+OTR1E473KzQZla1DXPLRScd/yMncsr/HAcp/l0RAVoVVkbOkVzJQztNqx87GyWrG4tMz6sCI3FrEx7/U+qSSnPJMghPQRe5/pQzVF0/EuJiF4nItqgyH1ZXFKcJ5To3oj37ugIqiAC9FbB5dHgq4q8y62h9xkR1+UlTqwVlVYAqMgrCyuxgiYjhCT7KVRE/XVtSI32piWYW2WomdTSAVsSO5rGZhMcCOP9GuM2LgvlCDf7GVn7TZ5URKCiyNNI9jCEPIcaRzjOJNk8fSkXyLROMC+nmV7u+BQ37EwqqjUMJ0pu7slm8sMoz6uXBjGaxteGuWOCOg8mDjhSunLwNUcGzoeWFrjjsU1Hlha58hAWaeiEKVbZMzNdJkpS7plgTUFQ1ezsLLO8toKI+diMWcyHOn1QXFVAp4m18TgU54ZQau+sTmcbM4HRC11VeOdx4aJ3SkDBks9Su0qkQsnB43zeGF7J+eKKcs98yO294S8hhMDuGIGru614hw7QWRQB+qgZFlGf2Wd0eqAHEmM9tSmCErIJIlXhWiRInYsp63yFNZKFv8fJv7dDsJ4s9AYO35/ING+sGi3kDxW9jHRMmQ2Y4Cy5IW5tCfVBLBJz6YzuY0xEXABWkbZPyUwVaRpVjwhvCq1yNilLqhQayAXKEVSPmIYGuFYVXP/8jpfWV7liaHn+ABODSqcG5CVwqZuzt7WJsqiIM/jRujIKwurjtXqFMNRHe8tBmtyvHd4F4/paGPY8EgZR0oNke3lQ2is5yOrqVmTanRCg6ce1skwlomVmgToRgLp/HWZzrZIEjKFv3NjjyODikdPKyoZl88KP3HzFNuKHBeaF1sYanTIzbAMV9YwoxrJc3xI70xN6wfpqGimPE0Ps1mDoClkUqEU6XLgrNAtuiyKJBmWZEsj0UsIEUyRRxpYZjE2yVwHz5of8eTyKpdv6TztTn+1tokh5pw1JvZCxeHFx/5wkLRhuqHbniMMq8DhyvPIYMR9awMeWVtl0UURILGCzSybZi3bN7WxZhOZMThia2tYOxZXK9aGQ9ZHVZzxSMCSYRJoqrTr5L1njJ2QvEb9RhRNvBqCmrFhVyBaIUaAxo5JNaxwVXyNgobEKkstpRAwWZZSH/OM7KmXcNQZc5lreznvf+MOHlwaMArC/pkWm/P4/4ykSRBpbOYhWGW02o9Kc8FjfKxQNa37agBjm1xzI1puiGwlYMYd42ieRWSVb2s7jgppWjORYZjYHMcabGbH7CVJlXF/UHP3iUXefMX2WMraqMp2hlDWWGoxFi5B4oy7WZVoiL45FisZycidgQscHdU82O/zcN9x/9qAwwPHepUevyi9zDLTLSiMISj0vafvfVT+8HHLYFDVjHwkSWcqcR6vAcjHPkfe+XR0p2O6MaGNBNq0kNcs6qW/ayD45CI3XqGJf3d1wK1X49Mmuk6HZKobc5fZsnxGcsqFUcWb+M7vWuXlW3rj2Op9006ZiEY+ftRVxWhtDdGoRBHzyFTHqyBZQKwd7zqNF8rGRI9UKZvEnzTxxhVi2NaOfNEgkX2qcbQTc9GxrrUgmU3HdJQCt0zx0UN9/rZ35NYkZpRHyM4gMzfPqGpkf5KWk01uJDkZK85zaLDOQ+sV96/VPDaoOTwY0K/j12TGkIulLMASR8Mj7zm62B8DJPYiGx36ppYSskRQbSy3vY9f7xPQ1Pn4/MemYRuVumqyzPY+ATod+VEdPdk1+qSUElE9XB9hHRhvxiK3JvFYTVDUBeYK8yyzrQtkkoRGS60QwriT55MlSTYhe1JmlmCUejhi1B+k/Ca2XholXzGSyB869uoc+/dMHNmS2k1i41RJgyKFZbo7hclMXOYTmxQZYlcgSE3wSpHZ2MC3NvU6A+3S8rnDK3z24AJv3redQXBjsyxpjjIFtRGlmVgyH8kxK6Hi8HrgwX7FQ2sVTwwDx+oRyy5QqVCq0lbLVJYsE8eWg0Td+7HEdqymo1ZP6iumaOY39l3G7aAQfIx8SUe+mdY1/cwQdJwxNSNk9T455CnBTeST6fmF5EBnjMEPaxglboT6jV5G+p4gQuZrLplubYzoxF44AJ3MNwQSzS7mkUXDMNKNG1emHfThYIivq/h9oeGKZjE/tdFWUPFjXSWa+bZs7GOI3WgKS8o5nXo2T8+Q54a1QaCdFTDWqo/qcc7XkewszTEdeZptHHUm/Ld7j/G6yzZHGUY140lS481Wq9L3ysH+gAeGgfvXhjwx9Jz0wrAe4YEi0RBnkzCD1+iUFxqOqLoJXoCNRUnCpQ8NnVKT04aMHTc0Ue6Cj8CUifWXRsVEk8uwqkRuRJoMoTF/xBPttdMMXpNLR7MoqiGeXhqUan0UlZgTgBtSNj7tLSl0s5w9m2dTe+1ZGPznIC99wQrLjUemimdQK//pEwewLceP3nZ5nNGrp7RKZj2jCoJ3kZ+pDg0G4wUTPLQs2KjBaUxjPy0bHMuxiFKUVoyL8jFHdQGmupbZbouF9fV4JFsZ3yBfKHa9xiq4lkVd2vdBESybeoa/OLzO7zx6gu/fv41R7clsPm5bWHHcsVzxbw4sM+8qCixeApmBFpaeTZbW6nEarRk0gEvjrrjiHM7gTIZ0BEuq+hFJx3XUvdd0MmmQGC3HxkQxJ/epdxyLmphjSjra8eBjopystEMyfU0ufmlaFHuwCrVHyoIyK1k+eooGk2OuaYhRXSUSeEauZutUyY6ZdsrD5Rnpf+eiaDonEuBOlcIafv3OJ/nnf3IvuBGzxvK3XnMF3g+ZKQ1bSssx55K/jhkrDMdFL0+nyNMuUkLFM+1WN6IGCZxiosbnegh0Z6bZc8ksDx9bTSPLZiSbYU2OG/lIOml1CTYOlhtZcETIWxn/7ssnuWV7j/0zU4y8kpkkMIvhlm6Hv7k98P6TKyyGET2bIVqA97iGvNF0JAip6rWxhZNEHGJrV8dp+XijlDPbQI2kTNCQ9tXZUOGeaPcEYnU+dttIFbr6kPbn4xujmQypj36mGvz49BuNKlq9Lq2ixdKhkwQXkiViGE+TSL+DxDF1tWf/9ml2TLeieS7nrw/6wudTY5sVw/GVEW1qprI2Ty4OEidcmC0M29st1FfRPtqnJ+5icq+A5Flii9vxzWvk+5o5eHRCjhZ+JrmXZTbOmIde2X/5zo3xZ9PHNBZrMqxkDNcGUR3ZGLCx5RSrdqFdCKe88OOfOc6RkaPMYmSO5ZrHGuVd2zv8yjXb+OEtU2xVw7pzrCWpG5uGAiKSJG/MWCs0eqqDU4PzgvPxSPcquBBZ7ZXz1D7gAqmIkRi1ErhC8OMjO/Y1mymQx/uNjyj746P0T/A458Y2jYoZM+Occ/iqZtP2rZTdLvMHjuGGVbzX6TUSr/H10egpLy4gqep/+d6dlEaixbjhAgZoYg0pgXfetJ2tcz1Wg2EqTy9tsLQyw1zp8S4ddyGAc6hz4GqwguZxlEbacNSG2SRPnVRM0CkaG0FRTg8qXnXlToo8Ax1FWqnJaOTAEMNwaR0dhaRgmwjP1iKZxYmhVwh3LQ74+x97kAOrA8rMUTmHhAxrAwNgW2H54d1b+PdX7+BHL53i1d027eBZqkYsjBxLo8DIKc41S2chykTiMUkSRiXSEH2KmDQpQGJD2XRfU12Oqk9R1eNIO0OJ7x4aPmwaNDgX+5qkmTrImJnk0+8NVY3NM6b2XEJQy+IjR6EmDkZcXCY0Y6l2YtXulWACI690MsNtl2+b2FB4ZhqhnIMJ09k16p+SWxiJTOzrd8zxi997Mz/wXz7OyeX1eHPSjPnyTRlefZzj4sbjvygRnKzbNL54YybShBHhRmUUZ22SQKcKuSk5dLrPu265hKt2b+aRIyt0e0X0d0+rs2rAjRxrp1eYvWxLXA0xdizTIslQdcbCF0+N+Ksff5R//ep9vHZLBxccRqNRbEWNV2Vbu+T72jN891bHkUGHuwaOe9bXOTKomO87lj0M6+g+UmtGJTUeR52a4rEaj31iG6J6cUgL+dKYYyUvKYNggiTV6JpMLVZznDpcito0KYIXxEc2f7MXNV5mq33cGN06S3frZvqHTrHw+HHEZlE/NaUGY/tNP9bTJXiPURhUQ165aysv37slTd7O3/F+Tqr45k9LtAZ8+9Xb+L0feT0PH19BgybnOOWG2RYF1Vgyp6HFhCQ0IF/lHdfI33gNWExy6DDjCN7CcnB1SOi0+aZXXMH9h+5GJANfozY150UwNqO/sMLstjmKqSL2ABs5zgSWgDDbbXNwXfnhTx3mx66d469fOUM7jzldrQZMXCobJWLyZd2Svb0238kUHmW5diy7wMpIOV07Fpxn3St951jxdRyDNoDSQAiRWFPXNU5h1XvWRzWVKpUX1itPv65Yq2v6tWNQR1E2cYksI4FcNJpFkPqiEwwlratoajvdYXrHFgyWUw8dZP3E6ViQ+jDxWiZWVeqLxhOv4d4a3GCdt92wk9lWwcB7CiOx6EKfho8LpkiKzWxLHjwD73jjFdt5/eU7kpZmJHfsnbLMdQsWNNCa3HhPU6fnTKUKG5lJ82mRBU4NPUfm+7zjtqv59U/cx9ooylxvuAmDNZbgA0vHF5jr7cJZl6ask4CPBcxMnhM08HP3L/DxEwN+6KpZ3rijRze1YkYqYDxGM6qkM5FpwAhsynLmMoW2hyiePXESmGdY3dAzPg9qEnE4PpYqeIauZrkKnBp55ocjTqwNOLwWOLQ65MDqkMNrQ1YGI2oX1fRaRrBJE9X0CtpbpulOzTI43WfhkUOE5QGmiAIMTBRSDVCDb/49CaEFodKauW6Pt99yeWovTWqj6IUTQZ/pnWEiAig02hQ2BQMKtQqXdi37d/R4QAzWO1wDnCSGGpviTVsmGUzJhK5Po+VuYvEwVoRTg1jDsBpx5/FF/sEtu3jbrXv41T+/n03TW3FJzFWIPp02y1k9vU5x5DTdvbNUKMbbqH6yIaaROgQ5pRHuWRzy41+Y55ZNK7zj0javv2SK3d0cJEtRN+pF+bTd6kOUxInGtNF/qdnUFMIzpP9h/Lubzw1xlp+jdLIMipwdHWH/mQxVwHC6qjm8MuCJxQF3nlrky/MrPHB8lRXxTG3ZyszcFKEacOrBJ1g7vAQ2w+R5LFKTTQwauxoNw8n4mBc3lkMAa6vrvOP2a7nx0rlIPhc7ITt2bttL5zyCbtCY9SlHdbQ76aC8eVePP8ASfDUhdDAx4Vf9Gom1JMZNGoM2v089xuR84cSQ+ZHyQ2+8iT/73AMsVOu0iu4Z1mHRHjzj9LEFym6L9tYZHPWYR2rENIP3yC7zgdLmCMKXTzu+tLDGZY8NuW1bySu25LxspmRzt2Q20/GEf6PDH3fPPTaRpzckFs8kpqQURzlDTaUZhXj/lCg75l8qIp5NhTK3pcONW6b5jqu2U3nHo4vr3Nmv+MKy51OPHuPh+w5h1zy9soxrzj4CUdJe2QYfNB7pIWhzG+L2p6+ZLkv+9luuJxOlDsmU9zxf5+6If5Z3jaAUGje8b981xaaWYa0fbQs1LcgF72Gil/dsOSgSmTo2xF4qplEwFtpWOLC8yh2HF3nHFXO8+y038+9+7z56LRsFWgFP1FIyYrHBcPrAAjN5TmdTGwmk9WFJLUQzBrVohglJc8pYFp3ld49U/P7BETN5n0unMvZOZ+zp5uzsZGwvYUtpmC6jLXhJjDaY7Fk6hvKUP5/KX5v4vMkTEye3ErAeLA4nIwyGwgjXbelw3ZYp3h0892+1fHRzye/ee5wvPHGS4DzT7ZJMFZcWDjVETSavkdBNalkJcSlyea3ih19/DbdfsRUfHLnJJxb3zt91Tq0Qnz1xVIJYKh9417/9Qz5y7wK9rkHrGucCxfYttPdeivEhbm42Y02ZiC+y0ZDOWjm2U6RgZNK0B/qV53WXTvFTr9nL+mDIX/vZT3LvkWV6vRLFIaYFkuh2DfG6FHbsu4zu5jZO3QZBRCe4AIm8qySbGxvJInFsGH01U3ubgkA7M/SKjF4htKzQNkrbSPRvykxysotWjcYaMnHkFvIsI8fTs1CajMJCx0LbRjnIXgZTudBGadsNokrUw5fxNCuYQJ6EbtV4MmMBy8qg4iP3HeS/feZRPv3oMsYK7VwRp9TeoSGKTsSxqmIIiInSkb1c+fA/fSc3XTpL7SGzz+84f/GNvJ6l5/X0HxeJIJUXSiv88sfu5e/8l0/Q61q8Bz+qybdvpXvlHmzS1HzqMR+jpx8zbaQw5L0SYxP5Y7wwIgy14mduv5w3753mE/ed4Id//qNx7JnnYAqs2MRoAmMtzoBmhs27t7Bp26YxpQw2ABpzxzOr1OYxNh0IawxWI6NKTBa5qNJMXyyox0ogt9H1Q0WjYa2ATeSVTCRV5XFCZjQQ8mga1pJo6tXJhRkrTBeWTUVgZ2HYVWZsK4ReYdOQwkXFOo1vrsiLiKZkxloGbsTv3nWY//PPHuauAyeZyeOGa6UjDOW4SKrV0QIWV/u87wdfy0982y3UtcdkmnQRvvqsfbLb8yIbeenzyks3HBCVvdtn+ciXH+HoyT5ZbuP4rd2m2DS9UQ+mEaCkqLkhXZFWb9P+j7U5jaOIJu/MYW1ZGNW8duc01+zsMlUYPnjnIXplKxZUJu0pJeNVY6N2aX9piK+h022RlcXYI6kxj21IK1GcoXl5ZFzqiJjoJZ+W+jJjKDJDYQ2FGNpWaGWWwigtayizjHaWpQhraNn40c4zWpmNVjdZjJ5l2o7VIIzUshTgeOU5MMh4YFX54ornS2vKw/2apdoh1tCxQmE0qeeb8TaA94E8E266dDPvevluShyffvQQ66NA2xSExMZX77GirKwu8bqrdvDzf+1NZFmI8u763Cj0L7oNzdlWacnFBedrplolIxU++LmHyMssjtByS7FlLuVCG0d5Q2hIJfAYjM082toimTakKBGU3FgeW+qzo63cuHmGG/bN0V+HTz20xFQryvUYQC2IZNjYBscYy6A/YLi+TqsoabVaadNyg+VvEzAnDb6ylJJENeUGyI26chJ8SCIUkoYQxsRcuDEcC2OCtY4tvpuTJxqSpbzZxJXfTITcGorkPwqBvofjI+GhNeXOFeWRtYp1H+hmhqlcU7dPEBtBOwpKL1PedO1eXnnFDu58/AhPnh7RKSzBRdbVsB4x2+rw/r/3Vi7fPh27K8YTJOP5StRe0ACVDZYzirD/klk+dtejHJhfo1VkhDDCzs1hbBk3LqXxehM2YlXDzIngdT7EebfdWENGBQmRpHHf8VVesXOKbZ2cV127gyePrvKlw8t029MQ6iT2UG7wIglRVW8YWFtaY+RqyqJFUZaRxR/iSrFNb7axILexCYTRUdmkly5qAiSzMIkqI7aJug3Xdaw1v+HvZKUxHEvRON2FTGTslJfeUknPKv1/I5QiFNagPrBQCQ+uC/csjzg+DHRzYa6IGweNwzQKlfdcvW0T337LPh49sspXnpinl3mCRBrhf/zht/Btt+6L/dX0xjqbw/qCBugZOYmv6bZbbJ3r8rt/cT82L/HekU9vImt1z5BnmXxSjY2l6nhJKW5o5HnqoTY8y4zSGtZG8MT8Gq/fM0tZGF57/RYeOnSa+w8sMdMqY1GRdOF1Yq/G2PjncH1Ef6VPcIFW1ia3eTouN9o9EWjmaWNfER1HR9sY4qXO51iAQjYKSBnbMTY57ARRpqHC6sabXUkWj82HlQ3XvMYY1wqFgSFwcCDcs1JzYjRiJrfMZRmGmkBOIcIwKHOdnG+/ZQ+HT87zuUeOM3IV/+TbXsX/8Y6XMXJ1KrReGC3zggdo80CDevbv3saT82t8/qGjtKygWYt8epbQ0GOkUcwbdwlT0ypGKSs2RlEkumNMKCUbr2SF5fG+Y35Q8cZLZyHPePPLtvHIkVPcfXhAp4zS3SZpLjHB3Ddk5FKCQn9twOpSH1fX2AyyLMfYLKrRNTY8TTHYRH7RjWgnMe+V5lmkTdUNsCdQ04DUTIBYxqfD5GZBVFiJ/vamKdSEOKtP2qFIQGxNh5yWMVRqODQw3NcPrGngstLSMgEvkJss2qgXyjtu3cOjJ9e47fIt/IcfehMOH9OLZ4mbXwt4kwXl2YD0RWgzPcP3axSgOnx6wJvf82s8fmiBzvYdtK+8PrpiGMVqHEGOXyTTdFU3KCQh5atZryQry7QxkWbHYjBW6I8c379/hr9z22UEowyd8r5fu4PfvvMU070Ca8tIlRNFbZ704i3GxF386GMUmeU2y7AtS3emQ7fbo2wV5EVIgmYRpBbF2BhFjcTqXkycIGWiCaBKJun7TPKyT8uCkWDlIpGlUcuT2FLKxCbCcuxRWiKJOO4GRAExNRsEkUKhbXIwIVL6FGo1rDnHnp7ne7aVXNbOqdUjYvAeCiOM0hJdYSMzMhM560HmCy2UXhKANprzeZ7xh3c+wff+f34DQovpq2/AzsxSqYsLaWomiMqTCa1s+FpqwGfQ7nawWR5FGcbqehHOa1XgO6/t8rdfdSlTZFSi/KcPP8F//9NHkLKkm8UJkEiWNEENSBJVaFSZUzVf4/Am5qtFUVB2LK1WSZbnFLklt5aizCLgcp+6DTHSTo5/NTTe8nHi1ETYoBFszRFvTU2Rx8fSyiy5KFluKfLYETBpDFxrGOthxeIqYHx0Gukkf9OaqMk0CgXrXmhLzdu3Z9w+a6J1oiZB3uQYSFNQnqOj/esGoGMmfoiLbD//+5/iH/7CR9l05dW09u3Decg02f+xIZgwmY9Oiud5HCbLaHe7yX04Rq4ghkw8RmBl6Ll9zwx/77Yd7OzliBh+94sH+I//80FO9x3dqd6YzCzGxiWwtH4Sp0vJs8nGr9HG4yiL673RoMFgbIa1cSplMzuOoI2vZeMY53UjT6X5vUlW0sjG8a/Gxm0X9UmjIjb789zQLQy9Nky1lU7b0soNpSkQDfjgNo5YTTY4Jhop1EEY+qibX3nPt12S87rZSKq2Nou7ZF9z7Pw8iccXbh/0q1T2YqjV8Zpr97FOxp9/4TF622cxpkhiVOGMKf/GuG/yI2oNee/BQ54XyUepoWPEY7E0BU+eHvLFw8ts6mRsmcp52Z5ZXnX1Zo4t1Dx+rI/LLaW1iDi8WPKQJccRGfMkCWkwEFKlnWVRbocYdZu1C+8VV4NzcUXYufgRfDxKQ3PcY1JKIYhEDVSxYOzG1oAZF0CWINGsdVR7VoaBxb5jYTmwsORZXfc4rcmKQCszqJi0uGhRtdQqaT0lOrEUUuOMcH8/cHXPsCWPspVyjsjG56JIEtVmr/DFj6BClMfG19gs5//4lY/xc589wJarb8LU9Xij8AwRWm3svs3T3jQhKFlpKDtxyrRBzGAcnSon5Ax501VzfPMNW9iztYUfeD74uSd5/6dPcPy00G5DaQUTlNooIq0EpMjokLSrJEl2Z1xtG4NJ+/QxEst4LcUnOZ9GlMJaGeeZ1ja8zlQgmXgCxJ97plPbuKBKNEYRk9aT43KcCUqvKNm2ybJ9q6VdBHI1hAAOIeDBREWSSmskGN46l3H7Jos1LtkGnfvrLCOovihH/LOvn8bJRDSpCRgyfvI3P83/eccKnanNFCZaXY8LJNWJnuozL9UFPFleULbLjfyxsRk0hkwEL4ahU3ZMFbxpf4837Zti10zBsfkRv/6pQ3zojuOsVYGyVVBYCI2NYypqmmpdbFOhp3wt5a4mgTOuw5jkwRm5sSZFywjKBNCsSVnim0Bs7K+S2kkbXYIkVhFCSg90Yhyr435sSIZcLRPYNpuxa0eXslXhXQ3aIqghqGdnGXjb9pz9rQyX5Hus2gsJoIiqHgF28jwkoM4VQEOqDi0eR3SsK43wnz7xMO/98+PU0qZdxCWzxndJxKbSJ3yVLkF0BinaLUyejfO8TCIbSUXILVTeMBJl76zl9ZdN8ZqrNjHXszx0YJE//NxBPnPvkPk1T6sU2mWWVpmjTaOkZnojVCZRrQKTJ4NWY8Y91cabvclpnwpQYyf6qkbGAB13MOTMBUIZ0/UmANoMMoyiSbVBQoYqTFvhsp2WuU2G4TCQ4bltU8kbNxmmckcdchDF6nncznx+AG2weFRU9Z3AbwPuudLvztUR3+Q7TZfdCxAcuS35yGPz/KPff5iHTlRs6rXJJVBj0hF0ZlZinkJOHxNoBWyarasRjPpI85M4EbJpfDhyUYzg0umcmy9r8/K9XXZMtzh4cp2P33WSv3hgnpOn17GUlK02eRaJH6oZYrLxNIjMpqImqp8YAbFJIVrCGNSS1C5sAiuGsc5/bDVZbJZSARN5mY0OVRM1z6TmTbhsSCzoxAaKkEXtVA0M6po9mzLeuLfF6+fg6q6kSJpaYqrPwNF9yQDaYPFdoqo/CHzgpQDo08O5UBkQ7ymyjCdXKt734Uf5H185STAlm/KCQA3BnhE/jT7LQADFWyjKFnmrSIVIAkF6czQ3TiUjeEftPZ1WyZUzGbdc0eWqHW2q2nHfEyvc9fAyjxxeYnFNMSEnLxVjTVxrTlpQamOrypioWGdSBR+BFZv5JtH1jLXjtMEk2xsxBmsNNn3NWJo/5a4iz9y+mRQ4FolTJENg3XmGQdg3bfnufYa3X9amJYFKa5SS/AxXES6UCNpg8d2iqu8Gfu1cA/SsZE/EESLRjBAqiqTu8Vv3zPMfPn6IO48OmDYa5+Mk4X/iWuxTK89meqMpgpg8o2yV2Dz6WmozRWqkt62CieQRo55Ko678XMdw2eacK7Z32d4zVJXnscMrPHx4leMn+yytxereZoYsy7GZHXNaNUtAnZgEWWtTrhr94a1NeW1TQJmYk0bvz2aW35BM5GlFU5OXNsVbs2Y8cgFvlOum4a27Ct56acZMaagB4+M8rrKC1XDGG1zkuclPvkgA/Suiqr10xL8tnZ32pYqgmvSSYroWoiiAF/LMcnLo+NUvHuX9nz/Jg/ND8kzo2JIcxYsnENXyhHhUmXGD3SaVkSjxnZUlrbJMGk8T3NNkmxPzSrCZopIjXqlDbAsVEtgy22K2Z2hlAmLpr1acOtVndWnE2sglDmaKjrJRKJlmopR0BEwuKc+0kWFkEzHGkvJTwWaSplwy7qVKOsKR+DW5KmTR/mdE3Macy0uum/O8aVfOq7caZrI8uso1xVxSs46VWThvNoZnCVCfaAsfAd4l6Z3yQeBbnmsUPV8AfSaaHilSWhNzxiMrQ373viX+55ePc8eRAcNaaRVCx0raJ7ITu01nkp992tPPsoy8LDBFnr5nQqQs5XnWZjGHNLE91URs75sc19MuoCzb5HlO8DV1JdS1ZTQc4lxNqFxU+5jgjFprk61O/HsEXdjIQW0Ss7WCyWTMnrLWYjKTHq9PPAWhSrrxpbXsngq8drvltdsLrpwuyIziCbhgEpPqmU6tCw6gDQb/WES+VTTau/0M8ONN8/5CA2gzdw8EytSTGdSev3hsid99aIHPP7HGgVN9+kGwWDp5EQm/JpIymlcmiBm3/EOSVCzynLzIx7qkzdfLhASjpM+bWflYxDZo9OQUg0nFkElf29gTolDXNVVVjw0L4oZWBKkg0Skk9VZJ2qfWpqmS8VGWUixD9Xhx5Aq5NWzuFOzqOW7eknHj5pyrpy1TucFRR73VYDfIJs+aVp17gD5Tevc8IyjAzwL/tImgJZGZ9aI26p8XQIXknOzRYJMjRizVT65W3HOsz6cPrPLlIwMeObnOqbWKgTO4NFXKTI61Oi6SlCgUa4yQ2ZyszLF5RmYb4Vo7lny0DftekgKYWEISKMvSRqjBjBX4NnaZdKPhnhSPXVr1DUn544yuioa0WxR9p8QoeSn0SkPXwrZOxq6ecuUUXL2lZM+M4ZJOTiEB8HiNCnlIGhZITVD7dA6nnNn2uMAiaHO1RGTURNAp4JPATc+lH/piAfTMxljTWklbjQo+Cl2T242HWwfl+MqAA0uBR+YHHFkYMj/wLA0qjq9UrI9A1eEDODbm3krsnWaZwWQ5khexUJHGzEEmOJqNLLnG9lEzU0+spnFasXG2R6KgbkygwsSs2wSH0XiMt3NhU9sykxtmW7ClB5fNtNjaDmxvWWZLuzFZC4rTDYmg2CseD5JTKiJPIcrp867an33f7JwDtMHeV4DXA6uiqrmI1Kr6XalYis5R53kWf5bT+2dpzKciSCEzIR3PT7VgVdaqgHNR0NUnMdbxqrls9FDPVHZ+hscgnNGDnHxLmzM2p+WM3z9eJSUqII8BmvavjLHkaYvz2YND43G/wSGVs3i7v9gAfY6z+DqlmO8Skf+pqnlzxGcpMf0Q8Ibn03K6EK+N9XodY+d8i1ydv+cwsTUv/GW+Gsx9AvhmwImIyyYQPlTVlYkk9ev22ogqcmbM0LONIS80xj//H3J2kfHr/vLASsJiNr4dqioioqp6GXCAi9fF66W79ojIwQaTJkVPVVULHAN+Dhj9ZYikF6+vq8g5Stg7pqpW0shMnlL8WBHxqvol4Mbn2he9eF28XiA4Ae4WkVsbDI6r/6cX6CrAT14E5sXrRbws8JMJe/pV83qNuxYZ8FngVsb+thevi9c5vxpsfQm4PVXuZzTZzVcp+d8EfJoNE+aL18XrXIMzJIy9KWHu2ZoaT4uiTS66B3gy5QkXj/yL17nOPS2wV0QOPDX3/KoRNIEzB04A/yr9oIoXg9l68frLfmnCkk3YOpGmmf45R9CJSNr0R38aeA9f5xOmi9cFcTUYeq+I/IsGY8/2xV+z+Eno/hfA+9IPri9G0ovXWUbOOmHofQmc+df6puc0TVPVTEScqr6X2IKq+RqEkovXxespV4OZ94nIexpMfa1veq7tI58i6XuA96Zf5C5W9xev51itu4SZ9yZw5jzHSeXz4iNMRNL3AT8x8QAu9kkvXs8GzgYb/0pEfvK5Rs6zBWhanpSgqvuA/wG8auLdcLEVdfHiKXj4AvD9IvJEGgLpVyuKXhBAJ4Da9Ek3AX8MvHrigV0E6UVwNhj4HPAtIrL4bH3Oc5WDnonqCE4rIovEKcDbgU9NPDDPRTbU/2qgnIyan0qYeNMLAedZR9DJI38yXKvqzwI/NvFzGwr/xRz1L2+OObkipMDPiciPPxtGXlSATuSlJuWmTlV3A/8XcRHvjU95Mo2o0sU04Os3UiZ7uzOCzseBVeDvicihxIaPaqrywnZGz+lWwTNE1HcD/wS4jjP7ppNVnOV/ye2Gr4tLn5KqTU4Ra+B+4N+JyAfOVcQ8rwCdiKg2VWteVdtACfwz4GqgB3zjxdf+6/L6M2ANeBj4N8BIRAZpG0MAfy7BeV4A+hSw5iJSP8O//wAbS+7/nuepT3rxelEipwBHgX/cvFYi8hvP9TU+V9f/A4ASceLNzSQMAAAAAElFTkSuQmCC"><div>
+      <div class="muted small" id="subtitle">วางแผนอ่านหนังสือ ม.ต้น · ม.ปลาย</div>
+      <h1>Sea To University</h1>
+      <p class="tagline">เส้นทางจากทะเล สู่มหาวิทยาลัย<svg class="leaf" viewBox="0 0 64 16" fill="none" aria-hidden="true"><path d="M2 10c6-5 10 5 16 0s10 5 16 0 10 5 16 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="58" cy="9" r="3" fill="currentColor"/></svg></p>
+    </div></div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><button class="btn primary" id="installBtn" hidden>ติดตั้งแอป</button><div class="count" id="count"></div></div>
+  </header>
+  <nav role="tablist" id="tabs">
+    <button role="tab" data-tab="day" aria-selected="true">แผนรายวัน</button>
+    <button role="tab" data-tab="plan" aria-selected="false">ภาพรวม</button>
+    <button role="tab" data-tab="subj" aria-selected="false">สอบในโรงเรียน</button>
+    <button role="tab" data-tab="goal" aria-selected="false" id="goaltab">เป้าหมาย</button>
+    <button role="tab" data-tab="sched" aria-selected="false">ตารางเรียนและตั้งค่า</button>
+  </nav>
+  <div id="banner"></div>
+  <main id="view"></main>
+  <div class="foot"><button class="btn" data-tab="fb">💬 ส่งความเห็นเกี่ยวกับแอป</button></div>
+</div>
+
+<script>
+const CLASSES=[],SUBJ=[];
+const LEVELS={
+  lower:{name:'ม.ต้น',goalTab:'สอบเข้า ม.4',goalTitle:'เตรียมสอบเข้า ม.4',goalHint:'สอบเข้า ม.4 ของโรงเรียนที่อยากเข้า',
+    school:['คณิตศาสตร์','วิทยาศาสตร์','ภาษาไทย','ภาษาอังกฤษ','สังคมศึกษา','ประวัติศาสตร์','สุขศึกษาและพลศึกษา','ศิลปะ','การงานอาชีพ','วิทยาการคำนวณ'],
+    goal:['คณิตศาสตร์','วิทยาศาสตร์','ภาษาอังกฤษ','ภาษาไทย','สังคมศึกษา','ความถนัด/เชาวน์'],
+    dates:['วันเปิดรับสมัคร','วันปิดรับสมัคร','วันสอบ','วันประกาศผล','วันรายงานตัว'],
+    check:['เลือกโรงเรียนและแผนการเรียนที่อยากเข้า','อ่านประกาศรับสมัครและเกณฑ์ของโรงเรียน','เตรียมเอกสาร (ปพ. รูปถ่าย บัตรประชาชน)','สมัครภายในวันที่กำหนด','ทำข้อสอบเก่าของโรงเรียนเป้าหมาย','ไปดูสนามสอบก่อนวันจริง'],
+    settings:{wdStart:'16:30',wdEnd:'21:00',weStart:'09:00',weEnd:'20:30',capDays:[4,2,2,2,2,2,4],slot:40,brk:10},weeklyHrs:3},
+  upper:{name:'ม.ปลาย',goalTab:'เตรียม TCAS',goalTitle:'เตรียมสอบเข้ามหาวิทยาลัย (TCAS)',goalHint:'เช่น TCAS70 · วิศวะ หรือ แพทย์',
+    school:['คณิตศาสตร์','คณิตศาสตร์เพิ่มเติม','ฟิสิกส์','เคมี','ชีววิทยา','โลกและอวกาศ','ภาษาไทย','ภาษาอังกฤษ','สังคมศึกษา','ประวัติศาสตร์','ภาษาต่างประเทศที่ 2','สุขศึกษาและพลศึกษา'],
+    goal:['TGAT1 การสื่อสารภาษาอังกฤษ','TGAT2 การคิดอย่างมีเหตุผล','TGAT3 สมรรถนะการทำงาน','TPAT1 กสพท (แพทย์)','TPAT2 ศิลปกรรมศาสตร์','TPAT3 วิทยาศาสตร์ เทคโนโลยี วิศวกรรม','TPAT4 สถาปัตยกรรมศาสตร์','TPAT5 ครุศาสตร์-ศึกษาศาสตร์','A-Level คณิตศาสตร์ประยุกต์ 1','A-Level คณิตศาสตร์ประยุกต์ 2','A-Level ฟิสิกส์','A-Level เคมี','A-Level ชีววิทยา','A-Level ภาษาไทย','A-Level สังคมศึกษา','A-Level ภาษาอังกฤษ','A-Level ภาษาต่างประเทศ'],
+    dates:['รอบ 1 Portfolio','รอบ 2 Quota','รอบ 3 Admission','รอบ 4 Direct Admission','สอบ TGAT/TPAT','สอบ A-Level'],
+    check:['เลือกคณะและมหาวิทยาลัยเป้าหมาย','ดูเกณฑ์และสัดส่วนคะแนนของคณะใน mytcas.com','สมัครสอบในระบบ myTCAS','รวบรวมเกียรติบัตรและผลงาน','เขียนเรียงความแนะนำตัว','ทำพอร์ตฟอลิโอตามจำนวนหน้าที่กำหนด','ขอเอกสาร ปพ.1 จากโรงเรียน','ซ้อมสัมภาษณ์'],
+    settings:{wdStart:'17:00',wdEnd:'22:00',weStart:'08:30',weEnd:'21:30',capDays:[6,3,3,3,3,3,6],slot:50,brk:10},weeklyHrs:8}
+};
+const LV=()=>LEVELS[S.level]||LEVELS.upper;
+const DW=['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'];
+const DWL=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+const MON=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const KEY='sea2uni-v1';
+
+const pad=n=>String(n).padStart(2,'0');
+const toMin=s=>{const[h,m]=s.split(':').map(Number);return h*60+m};
+const hm=m=>pad(Math.floor(m/60))+':'+pad(m%60);
+const ds=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const pd=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const addD=(s,n)=>{const d=pd(s);d.setDate(d.getDate()+n);return ds(d)};
+const dIdx=s=>{const[y,m,d]=s.split('-').map(Number);return Math.round(Date.UTC(y,m-1,d)/864e5)};
+const thDate=s=>{const d=pd(s);return `${DW[d.getDay()]} ${d.getDate()} ${MON[d.getMonth()]}`};
+const nowInfo=()=>{const n=new Date();return {date:ds(n),min:n.getHours()*60+n.getMinutes()}};
+const isG=c=>typeof c==='string'&&c.startsWith('G:');
+const gSub=c=>(S.goal?.subjects||[]).find(x=>'G:'+x.c===c);
+const M=c=>{if(isG(c)){const g=gSub(c);return g?{c,th:g.name,sh:g.sh||g.name,cr:3,ci:g.ci||0,goal:true}:{c,th:c,sh:c,cr:3,ci:0}}return S.subjList.find(x=>x.c===c)||{c,th:c,sh:c,cr:3,ci:0}};
+const col=c=>`var(--c${M(c).ci%12})`;
+const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+
+const sampleSubj=()=>SUBJ.map((s,i)=>({c:s.c,th:s.th,sh:s.sh,cr:s.cr,ci:i}));
+function blank(){
+  return {
+    subjList:[],subjects:{},
+    settings:{wdStart:'07:30',wdEnd:'22:30',weStart:'09:00',weEnd:'22:00',capDays:[6,4,4,4,4,4,6],slot:50,brk:10,classEnd:''},
+    plan:[],recall:{},classes:[],exceptions:[],dayCap:{},since:ds(new Date())
+  };
+}
+function sample(){
+  const b=blank();
+  b.subjList=sampleSubj();
+  b.subjects=Object.fromEntries(SUBJ.map(s=>[s.c,{exam:s.exam,et:s.et,ee:s.ee,real:s.real,topics:s.topics,conf:s.conf,on:true}]));
+  b.classes=CLASSES.map((k,i)=>({...k,id:'k'+i}));b.settings.classEnd='2026-10-23';b.presetCheck=true;
+  return b;
+}
+function normalize(x){
+  if(!x||typeof x!=='object'||!x.subjects)return null;
+  // ข้อมูลจากเวอร์ชันก่อน: ยังไม่มีรายชื่อวิชา ให้สร้างจากวิชาเดิม เก็บความคืบหน้าไว้ครบ
+  if(!Array.isArray(x.subjList))x.subjList=sampleSubj().filter(s=>x.subjects[s.c]);
+  if(!x.classes)x.classes=CLASSES.map((k,i)=>({...k,id:'k'+i}));
+  if(!x.exceptions)x.exceptions=[];
+  if(!x.plan)x.plan=[];
+  if(!x.recall)x.recall={};
+  if(!x.settings)x.settings=blank().settings;
+  if(!x.settings.capDays)x.settings.capDays=[x.settings.weCap??6,...Array(5).fill(x.settings.wdCap??4),x.settings.weCap??6];
+  if(!x.dayCap)x.dayCap={};
+  if(!x.since)x.since=ds(new Date());
+  if(x.level&&!x.goal)x.goal=newGoal(x.level);
+  if(x.setupDone==null)x.setupDone=!!(x.subjList&&x.subjList.length);
+  return x;
+}
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
+S=normalize(S)||blank();
+if(!S.since){S.since=ds(new Date());try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+// ใส่ลิงก์ Google Form ตรงนี้ถ้ามี เช่น 'https://forms.gle/xxxx' ถ้าว่างไว้ ผู้ใช้จะส่งความเห็นผ่าน LINE แทน
+const FEEDBACK_FORM='';
+if(!S.classes)S.classes=[];
+const capFor=d=>S.dayCap[d]??S.settings.capDays[pd(d).getDay()];
+function nextKind(code,exceptId){
+  if(isG(code))return {kind:'goal',phase:goalOn()?goalPhase(nowInfo().date):'base',topic:null,focus:null};
+  const r=required(code),c={learn:0,practice:0,mock:0},{date:today}=nowInfo();
+  S.plan.forEach(x=>{if(x.code===code&&x.id!==exceptId&&(x.done||x.date>=today))c[x.kind]++});
+  const kind=c.learn<r.learn?'learn':c.practice<r.practice?'practice':'mock';
+  return {kind,topic:kind==='learn'?c.learn+1:null,focus:kind==='practice'?focusFor(code,c.practice+1):null};
+}
+const uid=()=>'x'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const hasS=c=>S.subjList.some(x=>x.c===c);
+const clsName=k=>k.c&&hasS(k.c)?M(k.c).sh:(k.label||'นัด/กิจกรรม');
+const clsCol=k=>k.c&&hasS(k.c)?col(k.c):'var(--muted)';
+const subjOpts=v=>S.subjList.map(s=>`<option value="${esc(s.c)}" ${v===s.c?'selected':''}>${esc(s.sh)}</option>`).join('')+`<option value="" ${!v?'selected':''}>อื่น ๆ / นัดพิเศษ</option>`;
+function classesOn(date,all){
+  const wd=pd(date).getDay(),out=[];
+  if(!S.settings.classEnd||date<=S.settings.classEnd)S.classes.filter(k=>k.d===wd).forEach(k=>{
+    const cx=S.exceptions.some(x=>x.type==='cancel'&&x.ref===k.id&&x.date===date);
+    if(!cx||all)out.push({...k,cancelled:cx});
+  });
+  S.exceptions.filter(x=>x.type==='extra'&&x.date===date).forEach(x=>out.push({...x,extra:true}));
+  return out;
+}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+
+const active=()=>S.subjList.filter(s=>S.subjects[s.c]?.on);
+const examAbs=c=>{const x=S.subjects[c];return dIdx(x.exam)*1440+toMin(x.et)};
+const hardTopics=c=>Object.entries(S.subjects[c]?.topicRate||{}).filter(([n,v])=>v==='hard'&&+n<=+S.subjects[c].topics).map(([n])=>+n).sort((a,b)=>a-b);
+const tName=(c,n)=>(S.subjects[c]?.topicNames||[])[n-1]||'';
+const focusFor=(c,k)=>{const h=hardTopics(c);return h.length&&k<=h.length?h[k-1]:null};
+function required(c){
+  const x=S.subjects[c],m=M(c);
+  const learn=+x.topics, practice=Math.ceil(learn*(5-x.conf)/4)+1+hardTopics(c).length, mock=m.cr>=3?2:1;
+  return {learn,practice,mock,total:learn+practice+mock};
+}
+function freeSlots(date,fromMin){
+  if(goalOn()&&S.goal.examDate===date)return [];
+  const st=S.settings,wd=pd(date).getDay(),we=wd===0||wd===6;
+  const ws=toMin(we?st.weStart:st.wdStart),wE=toMin(we?st.weEnd:st.wdEnd);
+  const b=[[12*60,13*60],[18*60,19*60]];
+  classesOn(date).forEach(k=>b.push([toMin(k.s)-15,toMin(k.e)+15]));
+  active().forEach(s=>{const x=S.subjects[s.c];if(x.exam===date)b.push([toMin(x.et)-30,toMin(x.ee)+30])});
+  if(fromMin!=null)b.push([0,Math.ceil(fromMin/5)*5]);
+  b.sort((p,q)=>p[0]-q[0]);
+  const out=[];let t=ws;
+  const fill=(a,z)=>{let u=a;while(u+st.slot<=z){out.push([u,u+st.slot]);u+=st.slot+st.brk}};
+  for(const[a,z]of b){if(a>t)fill(t,Math.min(a,wE));t=Math.max(t,z)}
+  if(t<wE)fill(t,wE);
+  return out;
+}
+const lastExam=()=>active().reduce((m,s)=>S.subjects[s.c].exam>m?S.subjects[s.c].exam:m,'0');
+
+const goalOn=()=>!!(S.goal&&S.goal.on&&S.goal.examDate&&S.goal.subjects&&S.goal.subjects.length);
+const activeGoal=()=>goalOn()?S.goal.subjects.filter(x=>(+x.weight||0)>0):[];
+const isOn=c=>isG(c)?(goalOn()&&!!gSub(c)):!!S.subjects[c]?.on;
+const planSubj=()=>[...active(),...activeGoal().map(g=>M('G:'+g.c))];
+const latestPct=g=>{const sc=(S.goal.scores||[]).filter(x=>x.c===g.c).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);return sc.length?sc[sc.length-1].pct:null};
+const gapF=g=>{const l=latestPct(g),t=+g.target||0;let f=l==null?1.2:1+(t-l)/25;f*=1+(g.adj||0);return Math.max(.6,Math.min(2.5,f))};
+function goalQuota(){
+  const subs=activeGoal();if(!subs.length)return {};
+  const total=Math.max(0,Math.round((+S.goal.weeklyHrs||0)*60/S.settings.slot));
+  const w=subs.map(g=>(+g.weight||0)*gapF(g)),sum=w.reduce((a,b)=>a+b,0)||1;
+  const q={};subs.forEach((g,i)=>q['G:'+g.c]=total?Math.max(1,Math.round(total*w[i]/sum)):0);return q;
+}
+const weekKey=d=>{const x=pd(d),wd=(x.getDay()+6)%7;return addD(d,-wd)};
+const goalPhase=d=>{const w=(dIdx(S.goal.examDate)-dIdx(d))/7;return w>16?'base':w>6?'prac':'mock'};
+const PHASE={base:'ทบทวนเนื้อหา',prac:'ทำโจทย์แนวข้อสอบ',mock:'ข้อสอบเก่าจับเวลา'};
+const PTIP={base:'ทบทวนเนื้อหาทีละหัวข้อ สรุปสูตรหรือคำสำคัญลงสมุด',prac:'ทำโจทย์แนวข้อสอบ จดข้อที่ผิดไว้ทบทวน',mock:'ทำข้อสอบเก่าแบบจับเวลาจริง แล้วบันทึกคะแนนในแท็บเป้าหมาย'};
+const schoolSoon=d=>active().some(s=>{const e=S.subjects[s.c].exam;return e>=d&&e<=addD(d,7)});
+const planEnd=()=>[lastExam(),...S.plan.map(x=>x.date)].sort().pop();
+function newGoal(lv){const L=LEVELS[lv];return {on:true,title:'',examDate:'',weeklyHrs:L.weeklyHrs,subjects:[],scores:[],
+  deadlines:L.dates.map(t=>({id:uid(),title:t,date:'',done:false})),checklist:L.check.map(t=>({id:uid(),title:t,done:false}))}}
+function freeCi(){const used=new Set([...S.subjList.map(x=>x.ci),...(S.goal?.subjects||[]).map(x=>x.ci)]);for(let i=0;i<12;i++)if(!used.has(i))return i;return (S.subjList.length+(S.goal?.subjects||[]).length)%12}
+const shortName=n=>{let t=n.replace(/^(TGAT\d|TPAT\d)\s.*$/,'$1').replace('คณิตศาสตร์ประยุกต์','คณิต');return t.length>18?t.slice(0,18)+'…':t};
+function generate(){
+  const {date:today,min:nowMin}=nowInfo();
+  const keep=S.plan.filter(x=>x.date<today||(x.date===today&&(x.done||x.s<nowMin))||(x.pinned&&isOn(x.code)));
+  const live=x=>x.done||(x.pinned&&(x.date>today||(x.date===today&&x.e>=nowMin)));
+  const used={};active().forEach(s=>used[s.c]={learn:0,practice:0,mock:0});
+  keep.forEach(x=>{if(live(x)&&used[x.code])used[x.code][x.kind]++});
+  const reviewLoad={};
+  const addReviews=(x)=>[1,3,7].forEach(k=>{const d=addD(x.date,k);if(S.subjects[x.code]&&d<=S.subjects[x.code].exam)reviewLoad[d]=(reviewLoad[d]||0)+1});
+  keep.forEach(x=>{if(x.kind==='learn'&&live(x))addReviews(x)});
+  const fresh=[];let end=lastExam();
+  if(goalOn()){const ge=[addD(S.goal.examDate,-1),addD(today,42)].sort()[0];if(ge>end)end=ge}
+  const quota=goalQuota(),gUsed={};
+  keep.forEach(x=>{if(isG(x.code)&&live(x)){const wk=weekKey(x.date);(gUsed[wk]||(gUsed[wk]={}))[x.code]=((gUsed[wk]||{})[x.code]||0)+1}});
+  for(let d=today;d<=end;d=addD(d,1)){
+    const wd=pd(d).getDay(),we=wd===0||wd===6;
+    const keptToday=keep.filter(x=>x.date===d);
+    let slots=freeSlots(d,d===today?nowMin:null).filter(([a,z])=>!keptToday.some(k=>a<k.e&&z>k.s));
+    const cap=Math.max(0,capFor(d)-keptToday.length);
+    slots=slots.slice(0,cap);
+    let prev=null;
+    for(const[a,z]of slots){
+      const at=dIdx(d)*1440+a;let best=null,bs=0;
+      for(const s of active()){
+        const x=S.subjects[s.c],ex=examAbs(s.c);
+        if(at+S.settings.slot+60>ex)continue;
+        const r=required(s.c),u=used[s.c],rem=r.total-u.learn-u.practice-u.mock;
+        if(rem<=0)continue;
+        const left=Math.max(.3,(ex-at)/1440);
+        let sc=(s.cr+1)*(6-x.conf)*rem/left;
+        if(left<=1.3)sc*=5;
+        if(prev===s.c)sc*=.35;
+        if(sc>bs){bs=sc;best=s.c}
+      }
+      const wk=weekKey(d),soon=schoolSoon(d);
+      for(const g of activeGoal()){
+        const c='G:'+g.c;if(d>=S.goal.examDate)continue;
+        const u=(gUsed[wk]||{})[c]||0,qt=soon?Math.ceil((quota[c]||0)/2):(quota[c]||0);if(u>=qt)continue;
+        const dl=7-((pd(d).getDay()+6)%7);
+        let sc=8*(qt-u)/dl*gapF(g);
+        if(soon)sc*=.35;if(prev===c)sc*=.35;
+        if(sc>bs){bs=sc;best=c}
+      }
+      if(!best)continue;
+      if(isG(best)){(gUsed[wk]||(gUsed[wk]={}))[best]=((gUsed[wk]||{})[best]||0)+1;
+        fresh.push({id:d+'-'+a,date:d,s:a,e:z,code:best,kind:'goal',phase:goalPhase(d),done:false});prev=best;continue}
+      const r=required(best),u=used[best],left=(examAbs(best)-at)/1440,eve=left<=1.3;
+      let kind;
+      if(eve)kind=u.mock<r.mock?'mock':u.practice<r.practice?'practice':'learn';
+      else kind=u.learn<r.learn?'learn':u.practice<r.practice?'practice':'mock';
+      u[kind]++;
+      const x={id:d+'-'+a,date:d,s:a,e:z,code:best,kind,eve,topic:kind==='learn'?u.learn:null,focus:kind==='practice'?focusFor(best,u.practice):null,done:false};
+      if(kind==='learn')addReviews(x);
+      fresh.push(x);prev=best;
+    }
+  }
+  S.plan=[...keep,...fresh].sort((p,q)=>p.date<q.date?-1:p.date>q.date?1:p.s-q.s);
+  save();
+}
+function recallFor(date){
+  const {date:today}=nowInfo(),out=[];
+  S.plan.forEach(x=>{
+    if(x.kind!=='learn'||!isOn(x.code))return;
+    if(!x.done&&x.date<today)return;
+    [1,3,7].forEach(k=>{const d=addD(x.date,k);if(d===date&&d<=S.subjects[x.code].exam)out.push({id:`${x.code}-${x.topic}-${d}`,code:x.code,topic:x.topic,k})});
+  });
+  return out;
+}
+const KIND={learn:'อ่านเนื้อหา',practice:'ทำโจทย์',mock:'ข้อสอบเก่า'};
+const TIP={learn:'อ่าน 40 นาที แล้วปิดชีท เขียนสรุปจากความจำ 10 นาที',practice:'เริ่มจากโจทย์แนวที่เคยผิด จดข้อผิดลงสมุดรวมจุดพลาด',mock:'จับเวลาเหมือนสอบจริง ตรวจคำตอบ แล้วทบทวนเฉพาะข้อที่ผิด'};
+const slotTitle=x=>{
+  if(x.kind==='goal')return PHASE[x.phase]||'อ่านเตรียมสอบ';
+  if(x.kind==='learn'){const n=tName(x.code,x.topic);return `บทที่ ${x.topic}${n?' · '+esc(n):''}`}
+  if(x.kind==='practice'){if(x.focus){const n=tName(x.code,x.focus);return `โจทย์บทที่ ${x.focus}${n?' · '+esc(n):''}<span class="hardtag">บทที่เคยกดยาก</span>`}return 'แบบฝึกหัด / โจทย์'}
+  return 'ข้อสอบเก่าเต็มชุด';
+};
+
+let openTN=null,tab='day',sel=nowInfo().date,confirmReset=false,confirmDel=null,pendingImport=null,bkMsg=null,bkCode='',showAdd=false;
+const $=id=>document.getElementById(id);
+
+function header(){
+  const {date:today}=nowInfo();
+  $('subtitle').innerHTML=S.level?`<span class="lvbadge">${LV().name}</span>${S.subjList.length?S.subjList.length+' วิชาในโรงเรียน':''}${goalOn()?' · '+esc(LV().goalTab):''}`:'วางแผนอ่านหนังสือ ม.ต้น · ม.ปลาย';
+  let up=active().map(s=>({s,d:S.subjects[s.c].exam})).filter(o=>o.d>=today).sort((a,b)=>a.d<b.d?-1:1)[0];
+  const gUp=goalOn()&&S.goal.examDate>=today;
+  $('count').innerHTML=!S.level?'':up?`<b class="mono">${dIdx(up.d)-dIdx(today)}</b><span class="muted small">วันถึงสอบในโรงเรียน<br>${esc(up.s.sh)} · ${thDate(up.d)}</span>`:gUp?`<b class="mono">${dIdx(S.goal.examDate)-dIdx(today)}</b><span class="muted small">วันถึง${esc(LV().goalTab)}<br>${thDate(S.goal.examDate)}</span>`:'';
+  const {min}=nowInfo();
+  const missed=S.plan.filter(x=>!x.done&&!x.moved&&(x.date<today||(x.date===today&&x.e<min))&&x.date>=addD(today,-3)).length;
+  let h='';
+  const ex=active().filter(s=>!S.subjects[s.c].real);
+  if(ex.length)h+=`<div class="banner info"><span class="small">ยังไม่มีวันสอบจริงของ <b>${ex.map(s=>esc(s.sh)).join(', ')}</b> ตอนนี้ใช้วันตัวอย่างไปก่อน ใส่วันจริงได้ที่แท็บ “สอบในโรงเรียน”</span><button class="btn" data-go="subj">ใส่วันสอบ</button></div>`;
+  if(S.presetCheck)h+=`<div class="banner info"><span class="small">ใส่ตารางเภสัชฯ ปี 1 เทอมนี้ให้แล้ว (8 วิชา) ลองตรวจ<b>ตารางเรียน</b>ว่าตรงกับกลุ่มเรียนของคุณ โดยเฉพาะคาบแล็บ แล้วตั้งความมั่นใจของแต่ละวิชาให้ตรงกับตัวเอง</span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-go="sched">ตรวจตารางเรียน</button><button class="btn" data-act="presetok">ตรวจแล้ว</button></span></div>`;
+  if(S.sample)h+=`<div class="banner info"><span class="small">ตอนนี้เป็น<b>ข้อมูลตัวอย่าง</b> พร้อมใช้จริงเมื่อไรให้ลบตัวอย่างแล้วเริ่มกรอกของตัวเอง</span><button class="btn" data-act="clearsample">ลบตัวอย่าง เริ่มของฉัน</button></div>`;
+  if(missed)h+=`<div class="banner"><span class="small">มี ${missed} ช่วงอ่านที่ผ่านไปแล้วแต่ยังไม่ได้ติ๊ก งานที่ค้างจะถูกยกไปวันถัดไป</span><button class="btn primary" data-act="replan">จัดแผนใหม่</button></div>`;
+  $('banner').innerHTML=h;$('banner').style.display=h?'flex':'none';$('banner').style.flexDirection='column';$('banner').style.gap='8px';
+}
+
+function picker(){
+  return `<div class="section"><h2>เริ่มใช้ Sea To University</h2><p class="small muted" style="margin:0">เลือกระดับชั้นของคุณ แอปจะจัดหน้าและวิชาให้เหมาะ เปลี่ยนทีหลังได้ในหน้าตั้งค่า</p>
+  <div class="picker">
+   <button class="pick" data-level="lower" style="--pc:var(--teal)"><b>ม.ต้น</b><span>ม.1 – ม.3</span><ul><li>จัดตารางอ่านสอบกลางภาค / ปลายภาค</li><li>เตรียมสอบเข้า ม.4</li><li>บันทึกคะแนนสอบซ้อม</li></ul></button>
+   <button class="pick" data-level="upper" style="--pc:var(--accent)"><b>ม.ปลาย</b><span>ม.4 – ม.6</span><ul><li>จัดตารางอ่านสอบในโรงเรียน</li><li>เตรียม TCAS: TGAT · TPAT · A-Level</li><li>คะแนนเป้าหมาย พอร์ตฟอลิโอ และวันสำคัญ</li></ul></button>
+  </div><div><button class="btn" data-go="sched">มีรหัสสำรอง? นำเข้าข้อมูล</button></div></div>`;
+}
+function quickChips(list,act){const have=new Set(act==='gadd'?(S.goal?.subjects||[]).map(x=>x.name):S.subjList.map(x=>x.th));
+  return `<div class="chips">${list.map(n=>`<button class="chipbtn" data-${act}="${esc(n)}" ${have.has(n)?'disabled':''}>${have.has(n)?'✓ ':'+ '}${esc(n)}</button>`).join('')}</div>`}
+function welcome(){
+  const L=LV(),ok=S.subjList.length||goalOn();
+  return `<div class="welcome"><div><h2>เริ่มวางแผน ${L.name}</h2><p class="muted small" style="margin:4px 0 0">ทำ 3 ขั้นนี้ แล้วแอปจะจัดเวลาอ่านหนังสือให้ทุกวัน</p></div>
+  <div class="section"><b>1. แตะวิชาที่จะสอบในโรงเรียน ${S.subjList.length?`<span class="small ok">เพิ่มแล้ว ${S.subjList.length} วิชา</span>`:''}</b><span class="small muted">แอปตั้งวันสอบตัวอย่างไว้ก่อน แก้เป็นวันจริงได้ที่แท็บ “สอบในโรงเรียน”</span>${quickChips(L.school,'qadd')}</div>
+  <div class="section"><b>2. ตารางเรียน ${S.classes.length?`<span class="small ok">ใส่แล้ว ${S.classes.length} คาบ</span>`:''}</b><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="schoolweek">ใส่เวลาโรงเรียน จ.–ศ. 08:00–16:00</button><button class="btn" data-go="sched">ปรับเอง / เพิ่มเรียนพิเศษ</button></div></div>
+  <div class="section"><b>3. ${esc(L.goalTitle)} ${goalOn()?`<span class="small ok">ตั้งแล้ว ${S.goal.subjects.length} วิชา</span>`:'<span class="small muted">ไม่บังคับ ทำทีหลังได้</span>'}</b><div><button class="btn" data-go="goal">ตั้งเป้าหมาย</button></div></div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn primary" data-act="setupdone" ${ok?'':'disabled'}>ดูแผนของฉัน</button>${ok?'':'<span class="small muted">เพิ่มวิชาอย่างน้อย 1 วิชา หรือตั้งเป้าหมายก่อน</span>'}</div></div>`;
+}
+function riskList(){
+  const {date:today,min}=nowInfo();
+  return active().filter(s=>S.subjects[s.c].exam>=today).map(s=>{
+    const x=S.subjects[s.c],r=required(s.c),done=S.plan.filter(p=>p.code===s.c&&p.done).length;
+    const fut=S.plan.filter(p=>p.code===s.c&&!p.done&&(p.date>today||(p.date===today&&p.e>=min))).length;
+    const rem=Math.max(0,r.total-done),gap=rem-fut,days=Math.max(1,dIdx(x.exam)-dIdx(today)),hard=hardTopics(s.c).length;
+    const score=(gap>0?1000+gap*10:0)+rem*(6-x.conf)/days+hard;
+    let why=gap>0?`แผนยังขาด ${gap} ช่วง ควรเพิ่มเวลาอ่าน`:`เหลือ ${rem} ช่วง · สอบอีก ${days} วัน · มั่นใจ ${Math.round(x.conf)}/5`;
+    if(hard)why+=` · บทที่ยาก ${hard} บท`;
+    return {s,score,why,gap};
+  }).sort((a,b)=>b.score-a.score);
+}
+function goalTile(){
+  const {date:today}=nowInfo(),wk=weekKey(today),q=goalQuota(),tot=Object.values(q).reduce((a,b)=>a+b,0);
+  const wkSlots=S.plan.filter(x=>isG(x.code)&&weekKey(x.date)===wk),done=wkSlots.filter(x=>x.done).length;
+  const days=dIdx(S.goal.examDate)-dIdx(today);
+  return `<div class="tile"><span class="lab">${esc(LV().goalTab)}${S.goal.title?' · '+esc(S.goal.title):''}</span><span class="big">${days>=0?days:'–'} <small>วัน · ช่วง${PHASE[goalPhase(today)]}</small></span>
+  <div class="pbar"><i style="width:${tot?Math.min(100,Math.round(done/tot*100)):0}%"></i></div><span class="sub">สัปดาห์นี้อ่านแล้ว ${done}/${tot} ช่วง${schoolSoon(today)?' · ใกล้สอบในโรงเรียน ลดเวลาลงชั่วคราว':''}</span></div>`;
+}
+function summary(){
+  const {date:today,min}=nowInfo();
+  const td=S.plan.filter(x=>x.date===today&&isOn(x.code));
+  const tdDone=td.filter(x=>x.done).length,left=td.filter(x=>!x.done&&x.e>=min);
+  const next=left[0];
+  const due=S.plan.filter(x=>isOn(x.code)&&(x.done||x.date<today||(x.date===today&&x.e<min)));
+  const pct=due.length?Math.round(due.filter(x=>x.done).length/due.length*100):null;
+  const totalReq=active().reduce((a,s)=>a+required(s.c).total,0),allDone=S.plan.filter(x=>x.done&&!isG(x.code)&&isOn(x.code)).length;
+  const cov=totalReq?Math.min(100,Math.round(allDone/totalReq*100)):0;
+  const risk=riskList()[0];
+  const hrs=(td.length*S.settings.slot/60);
+  return `<div class="dash">
+  <div class="tile"><span class="lab">วันนี้ต้องอ่าน</span><span class="big">${+hrs.toFixed(1)} <small>ชม. · ${td.length} ช่วง</small></span>
+    <span class="sub">${td.length?(left.length?`เสร็จ ${tdDone} เหลือ ${left.length} · ถัดไป ${hm(next.s)} ${esc(M(next.code).sh)}`:`ครบแล้ว ${tdDone}/${td.length} ช่วง เยี่ยมมาก`):'วันนี้ไม่มีช่วงอ่าน'}</span></div>
+  ${risk?`<div class="tile risk" style="--sc:${risk.gap>0?'var(--warn)':col(risk.s.c)}"><span class="lab">วิชาที่เสี่ยงที่สุด</span><span class="big">${esc(risk.s.sh)}</span><span class="sub">${risk.why}</span></div>`:''}
+  ${goalOn()?goalTile():''}
+  <div class="tile"><span class="lab">ทำตามแผน</span><span class="big">${pct==null?'–':pct+'%'} <small>${pct==null?'ยังไม่ถึงเวลาอ่าน':'ของช่วงที่ถึงเวลาแล้ว'}</small></span>
+    <div class="pbar" title="ความคืบหน้ารวม"><i style="width:${cov}%"></i></div><span class="sub">อ่านไปแล้ว ${cov}% ของทั้งหมดก่อนสอบ</span></div>
+  </div>`;
+}
+function viewDay(){
+  if(!S.setupDone)return welcome();
+  const {date:today,min}=nowInfo(),end=planEnd();
+  const start=S.plan.length&&S.plan[0].date<today?(S.plan[0].date>addD(today,-3)?S.plan[0].date:addD(today,-3)):today;
+  let strip='';
+  for(let d=start;d<=end;d=addD(d,1)){
+    const dt=pd(d),n=S.plan.filter(x=>x.date===d).length,ex=active().some(s=>S.subjects[s.c].exam===d)||(goalOn()&&S.goal.examDate===d)||(S.goal?.deadlines||[]).some(x=>x.date===d);
+    strip+=`<button class="day${ex?' exam':''}" data-day="${d}" aria-pressed="${d===sel}"><div class="dw">${DW[dt.getDay()]}</div><div class="dn">${dt.getDate()}</div><div class="dots">${'<i></i>'.repeat(Math.min(n,6))}</div></button>`;
+  }
+  const dt=pd(sel),wd=dt.getDay(),items=[];
+  classesOn(sel,true).forEach(k=>items.push({t:'cls',s:toMin(k.s),e:toMin(k.e),k}));
+  active().forEach(s=>{const x=S.subjects[s.c];if(x.exam===sel)items.push({t:'exam',s:toMin(x.et),e:toMin(x.ee),c:s.c,real:x.real})});
+  if(goalOn()&&S.goal.examDate===sel)items.push({t:'gexam',s:8*60,e:16*60});
+  (S.goal?.deadlines||[]).filter(x=>x.date===sel).forEach(x=>items.push({t:'dl',s:-1,e:-1,x}));
+  S.plan.filter(x=>x.date===sel&&isOn(x.code)).forEach(x=>items.push({t:'study',s:x.s,e:x.e,x}));
+  items.sort((a,b)=>a.s-b.s);
+  const studyN=items.filter(i=>i.t==='study').length,doneN=items.filter(i=>i.t==='study'&&i.x.done).length;
+  const rows=items.map(i=>{
+    const tm=`<div class="t">${hm(i.s)}–${hm(i.e)}</div>`;
+    if(i.t==='cls'){const k=i.k;return `<div class="row cls${k.cancelled?' off':''}">${tm}<div class="main"><div class="chip"><span class="sw" style="background:${clsCol(k)}"></span>${k.c&&hasS(k.c)?'':''}${k.extra?'<span class="kind">เฉพาะวันนี้</span>':''}</div><div class="title">${k.cancelled?'งดคาบ':k.c?'คาบเรียน':''} ${clsName(k)}</div></div><div>${k.extra?`<button class="btn sm" data-delex="${k.id}">ลบ</button>`:k.cancelled?`<button class="btn sm" data-uncancel="${k.id}">เรียนตามปกติ</button>`:`<button class="btn sm" data-cancel="${k.id}">งดคาบนี้</button>`}</div></div>`}
+    if(i.t==='gexam')return `<div class="row examrow"><div class="t">ทั้งวัน</div><div class="main"><div class="title">${esc(S.goal.title||LV().goalTitle)}</div><div class="tip">วันสอบเป้าหมาย นอนให้พอ เตรียมบัตรและอุปกรณ์ตั้งแต่คืนก่อน</div></div><div></div></div>`;
+    if(i.t==='dl')return `<div class="row examrow" style="border-width:1px"><div class="t">วันสำคัญ</div><div class="main"><div class="title">📌 ${esc(i.x.title)}</div></div><div></div></div>`;
+    if(i.t==='exam')return `<div class="row examrow">${tm}<div class="main"><div class="chip"><span class="sw" style="background:${col(i.c)}"></span>${i.c}</div><div class="title">สอบ ${esc(M(i.c).th)}${i.real?'':' <span class="kind">วันตัวอย่าง</span>'}</div><div class="tip">นอนให้พอ เตรียมบัตรนักศึกษาและอุปกรณ์ตั้งแต่คืนก่อน</div></div><div></div></div>`;
+    const x=i.x,past=!x.done&&(x.date<today||(x.date===today&&x.e<min)),moved=past&&x.moved,missed=past&&!x.moved;
+    const rate=x.done?`<div class="rate"><span class="small muted">รอบนี้รู้สึกว่า</span>${[['easy','ง่าย'],['ok','พอได้'],['hard','ยาก']].map(([k,l])=>`<button data-rate="${k}" data-id="${x.id}" aria-pressed="${x.rating===k}">${l}</button>`).join('')}</div>`:'';
+    return `<div class="row study${x.done?' done':''}${missed?' missed':''}${moved?' moved':''}" style="--sc:${col(x.code)}"><div class="t"><b>${hm(x.s)}</b><span>ถึง ${hm(x.e)}</span></div><div class="main"><div class="chip"><span class="sw" style="background:${col(x.code)}"></span>${esc(M(x.code).sh)}<span class="kind ${x.kind}${x.eve?' eve':''}">${x.eve?'ก่อนสอบ · ':''}${x.kind==='goal'?esc(LV().goalTab):KIND[x.kind]}</span></div><div class="title">${slotTitle(x)}</div>${moved?'<div class="tip">ยกไปวันถัดไปแล้ว ถ้าทำไปแล้วกดติ๊กได้</div>':missed?'<div class="tip" style="color:var(--warn)">ยังไม่ได้ทำ</div>':`<div class="tip">${x.kind==='goal'?PTIP[x.phase]:TIP[x.kind]}${x.pinned?' · <span style="color:var(--accent)">ตั้งเอง</span>':''}</div>`}${x.done?'<div class="donebadge">✓ อ่านเสร็จแล้ว</div>':''}${rate}${x.done?'':`<details class="edit"><summary>แก้ช่วงนี้</summary><div class="form"><input type="time" data-stime="${x.id}" value="${hm(x.s)}" aria-label="เวลาเริ่ม"><select data-ssubj="${x.id}" aria-label="วิชา">${planSubj().map(s=>`<option value="${esc(s.c)}" ${s.c===x.code?'selected':''}>${esc(s.sh)}</option>`).join('')}</select><button class="btn sm" data-delslot="${x.id}">ลบช่วงนี้</button></div></details>`}</div><button class="check" data-tick="${x.id}" aria-pressed="${x.done}" aria-label="${x.done?'ยกเลิกติ๊ก':'ติ๊กว่าอ่านเสร็จ'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>`;
+  }).join('');
+  const rc=recallFor(sel);
+  const recall=rc.length?`<div class="section"><h2>ทบทวนความจำ <span class="muted small">${rc.length} ข้อ · ข้อละ 10 นาที</span></h2><p class="small muted" style="margin:0">ปิดชีท แล้วเขียนหรือพูดสรุปบทนั้นจากความจำ จากนั้นเปิดชีทตรวจว่าลืมอะไร</p><div class="recall">${rc.map(r=>`<label><input type="checkbox" data-recall="${r.id}" ${S.recall[r.id]?'checked':''}><span><span class="sw" style="background:${col(r.code)}"></span> ${esc(M(r.code).sh)} บทที่ ${r.topic}${tName(r.code,r.topic)?' · '+esc(tName(r.code,r.topic)):''}${hardTopics(r.code).includes(r.topic)?'<span class="hardtag">ยาก</span>':''} <span class="muted small">(อ่านไปเมื่อ ${r.k} วันก่อน)</span></span></label>`).join('')}</div></div>`:'';
+  return `${summary()}<div class="section"><div class="strip" id="strip">${strip}</div></div>
+  <div class="section"><div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px"><h2>วัน${DWL[wd]}ที่ ${dt.getDate()} ${MON[dt.getMonth()]}${sel===today?' · วันนี้':''}</h2><span class="muted small mono">${doneN}/${studyN} ช่วงอ่าน · ${+(studyN*S.settings.slot/60).toFixed(1)} ชม.</span></div>
+  <div class="daytools"><div class="step"><span>อ่านวันนี้</span><button data-cap="-1" aria-label="ลดหนึ่งช่วง">−</button><b>${capFor(sel)}</b><button data-cap="1" aria-label="เพิ่มหนึ่งช่วง">+</button><span>ช่วง</span>${S.dayCap[sel]!=null?'<button class="btn sm" data-act="capreset" style="width:auto;height:auto">ใช้ค่าปกติ</button>':''}</div>
+  <span class="small muted">${studyN<capFor(sel)&&sel>=today?`วันนี้มีเวลาว่างพอแค่ ${studyN} ช่วง`:`ค่าปกติวัน${DWL[wd]} ${S.settings.capDays[wd]} ช่วง`}</span></div>
+  <div class="timeline">${rows||'<div class="empty">ไม่มีช่วงอ่านในวันนี้</div>'}</div>
+  <details class="addbox"><summary>เพิ่มช่วงอ่านเองตามเวลาที่ต้องการ</summary><div class="form">
+  <select id="o-c" aria-label="วิชา">${planSubj().map(s=>`<option value="${esc(s.c)}">${esc(s.sh)}</option>`).join('')}</select>
+  <input type="time" id="o-s" value="20:00" aria-label="เวลาเริ่ม"><span class="small muted">ยาว ${S.settings.slot} นาที</span>
+  <button class="btn primary" data-act="addown">เพิ่มช่วงอ่าน</button></div></details>
+  <details class="addbox"><summary>เพิ่มคาบชดเชยหรือนัดพิเศษเฉพาะวันนี้</summary><div class="form">
+  <select id="x-c" aria-label="วิชา">${subjOpts(S.subjList[0]?.c)}</select><input id="x-label" placeholder="ชื่อ (ถ้าเลือกอื่น ๆ)" aria-label="ชื่อ">
+  <input type="time" id="x-s" value="13:00" aria-label="เริ่ม"><span>–</span><input type="time" id="x-e" value="15:00" aria-label="จบ">
+  <button class="btn primary" data-act="addextra">เพิ่ม</button></div></details></div>${recall}`;
+}
+
+function viewPlan(){
+  if(!S.setupDone)return welcome();
+  const {date:today}=nowInfo();
+  const cov=active().map(s=>{
+    const r=required(s.c),pl=S.plan.filter(x=>x.code===s.c&&(x.done||x.date>=today)).length,dn=S.plan.filter(x=>x.code===s.c&&x.done).length;
+    const gap=r.total-pl;
+    return `<tr><td><span class="sw" style="background:${col(s.c)}"></span> ${esc(s.sh)}</td><td class="mono">${thDate(S.subjects[s.c].exam)}</td><td class="mono">${r.total}</td><td class="mono">${pl}</td><td class="mono">${dn}</td><td>${gap>0?`<span class="bad">ขาด ${gap} ช่วง</span>`:'<span class="ok">ครบ</span>'}</td></tr>`;
+  }).join('');
+  let days='';
+  for(let d=today;d<=planEnd();d=addD(d,1)){
+    const sl=S.plan.filter(x=>x.date===d&&isOn(x.code)),cnt={};
+    sl.forEach(x=>cnt[x.code]=(cnt[x.code]||0)+1);
+    const ex=active().filter(s=>S.subjects[s.c].exam===d).map(s=>`<span class="pchip ex">สอบ ${esc(s.sh)}</span>`).join('');
+    days+=`<div class="planday"><div class="small mono">${thDate(d)}</div><div class="chips">${ex}${Object.entries(cnt).map(([c,n])=>`<span class="pchip"><span class="sw" style="background:${col(c)}"></span>${esc(M(c).sh)} ×${n}</span>`).join('')||(ex?'':'<span class="muted small">พัก</span>')}</div></div>`;
+  }
+  const total=S.plan.filter(x=>x.date>=today).length;
+  return `<div class="section"><h2>ความครอบคลุมแต่ละวิชา</h2><p class="small muted" style="margin:0">จำนวนช่วง (ช่วงละ ${S.settings.slot} นาที) ที่ควรใช้ คำนวณจากจำนวนบท ความมั่นใจ และหน่วยกิต ถ้าขาด ให้เพิ่มชั่วโมงอ่านต่อวันในแท็บตั้งค่า</p>
+  <div class="tablebox"><table><thead><tr><th>วิชา</th><th>วันสอบ</th><th>ควรใช้</th><th>จัดไว้</th><th>ทำแล้ว</th><th>สถานะ</th></tr></thead><tbody>${cov}</tbody></table></div></div>
+  <div class="section"><h2>รายวัน <span class="muted small">รวม ${total} ช่วง · ${Math.round(total*S.settings.slot/60)} ชม.</span></h2><div>${days}</div></div>
+  <div class="section small muted"><b style="color:var(--fg)">วิธีจัด:</b> ทุกช่วงว่าง ระบบเลือกวิชาที่ได้คะแนนสูงสุดจาก (หน่วยกิต+1) × (6 − ความมั่นใจ) × งานที่เหลือ ÷ วันที่เหลือก่อนสอบ วิชาที่สอบใกล้ ไม่มั่นใจ และเหลือเยอะจะขึ้นก่อน ไม่ให้วิชาเดียวกันติดกันถ้าเลี่ยงได้ และวันก่อนสอบจะเน้นข้อสอบเก่าของวิชานั้น</div>`;
+}
+
+function viewSubj(){
+  const rows=S.subjList.map(s=>{
+    const x=S.subjects[s.c],r=required(s.c),dn=S.plan.filter(p=>p.code===s.c&&p.done).length,pct=Math.min(100,Math.round(dn/r.total*100)),id=esc(s.c);
+    const del=confirmDel===s.c?`<div class="confirmbox"><span class="small">ลบ ${esc(s.sh)} และความคืบหน้า ${dn} ช่วง?</span><button class="btn sm" data-delsubj="${id}">ลบวิชา</button><button class="btn sm" data-act="delno">ยกเลิก</button></div>`:`<button class="btn sm" data-askdel="${id}">ลบ</button>`;
+    return `<tr><td><input type="checkbox" id="on-${id}" data-f="on" data-c="${id}" ${x.on?'checked':''} aria-label="รวมในแผน"></td>
+    <td><div class="chip"><span class="sw" style="background:${col(s.c)}"></span>${s.auto?'':esc(s.c)+' · '}${s.cr} หน่วยกิต</div><div>${esc(s.th)}</div><input class="shin" id="sh-${id}" data-m="sh" data-c="${id}" value="${esc(s.sh)}" aria-label="ชื่อย่อ" title="ชื่อย่อที่แสดงในแผน"></td>
+    <td><input type="date" id="ex-${id}" data-f="exam" data-c="${id}" value="${x.exam}">${x.real?'':`<div class="small" style="color:var(--warn)">วันตัวอย่าง <button class="btn small" data-confirm="${id}" style="padding:1px 8px">วันนี้ถูกแล้ว</button></div>`}</td>
+    <td><input type="time" id="et-${id}" data-f="et" data-c="${id}" value="${x.et}"> – <input type="time" id="ee-${id}" data-f="ee" data-c="${id}" value="${x.ee}"></td>
+    <td><input type="number" id="tp-${id}" min="1" max="30" data-f="topics" data-c="${id}" value="${x.topics}"></td>
+    <td><select id="cf-${id}" data-f="conf" data-c="${id}">${[1,2,3,4,5].map(v=>`<option value="${v}" ${Math.round(x.conf)===v?'selected':''}>${v}${v===1?' ไม่รู้เรื่อง':v===5?' มั่นใจมาก':''}</option>`).join('')}</select></td>
+    <td><div class="bar"><i style="width:${pct}%"></i></div><div class="small mono muted">${dn}/${r.total}</div></td>
+    <td>${del}</td></tr>
+    <tr class="tnrow"><td></td><td colspan="7"><details${openTN===s.c?' open':''} data-tnbox="${id}"><summary class="small" style="cursor:pointer;color:var(--accent)">ตั้งชื่อบท (${x.topics} บท)${hardTopics(s.c).length?` · <span style="color:var(--warn)">ยาก ${hardTopics(s.c).length} บท</span>`:''}</summary><div class="tnames">${Array.from({length:+x.topics},(_,i)=>`<label for="tn-${id}-${i}">${i+1}.<input id="tn-${id}-${i}" data-tn="${id}" data-ti="${i}" value="${esc((x.topicNames||[])[i]||'')}" placeholder="ชื่อบท">${(x.topicRate||{})[i+1]==='hard'?`<button data-unhard="${id}" data-tno="${i+1}" title="กดเมื่อบทนี้ไม่ยากแล้ว">ยาก ✕</button>`:''}</label>`).join('')}</div></details></td></tr>`;
+  }).join('');
+  const d0=addD(nowInfo().date,21);
+  const form=`<details class="addbox" id="addsubbox" ${showAdd||!S.subjList.length?'open':''}><summary>เพิ่มวิชา</summary><div class="addsub">
+    <label class="wide">ชื่อวิชา *<input id="n-th" placeholder="เช่น ชีววิทยาทั่วไป"></label>
+    <label>ชื่อย่อ<input id="n-sh" placeholder="เช่น ชีวะ"></label>
+    <label>รหัสวิชา<input id="n-c" placeholder="เช่น 512101"></label>
+    <label>หน่วยกิต<select id="n-cr">${[1,2,3,4,5,6].map(v=>`<option ${v===3?'selected':''}>${v}</option>`).join('')}</select></label>
+    <label>วันสอบ *<input type="date" id="n-exam" value="${d0}"></label>
+    <label>เริ่มสอบ<input type="time" id="n-et" value="09:00"></label>
+    <label>สอบเสร็จ<input type="time" id="n-ee" value="12:00"></label>
+    <label>จำนวนบทที่ออกสอบ<input type="number" id="n-tp" min="1" max="30" value="6"></label>
+    <label>ความมั่นใจตอนนี้<select id="n-cf">${[1,2,3,4,5].map(v=>`<option value="${v}" ${v===3?'selected':''}>${v}${v===1?' ไม่รู้เรื่อง':v===5?' มั่นใจมาก':''}</option>`).join('')}</select></label>
+    <div class="wide" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn primary" data-act="addsubj">เพิ่มวิชานี้</button><span class="small" id="n-msg" style="color:var(--warn)"></span></div>
+  </div></details>`;
+  return `<div class="section"><h2>สอบในโรงเรียน</h2><p class="small muted" style="margin:0">ใส่วันและเวลาสอบ จำนวนบทหรือหัวข้อที่ออกสอบ และความมั่นใจ (1–5) ค่าความมั่นใจจะปรับเองเมื่อกด “ง่าย” หรือ “ยาก” หลังอ่านแต่ละช่วง เอาเครื่องหมายช่อง “ใช้” ออก ถ้าไม่ต้องการให้วิชานั้นอยู่ในแผนชั่วคราว</p>
+  <span class="small muted">แตะเพื่อเพิ่มวิชาที่ใช้บ่อย</span>${quickChips(LV().school,'qadd')}
+  ${S.subjList.length?`<div class="tablebox"><table><thead><tr><th>ใช้</th><th>วิชา / ชื่อย่อ</th><th>วันสอบ</th><th>เวลาสอบ</th><th>บท</th><th>ความมั่นใจ</th><th>ความคืบหน้า</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`:'<div class="empty">ยังไม่มีวิชา เริ่มเพิ่มวิชาแรกได้เลย</div>'}
+  ${form}</div>`;
+}
+
+function viewSched(){
+  const {date:today}=nowInfo();
+  const order=[1,2,3,4,5,6,0];
+  const krow=k=>`<div class="krow"><select data-k="${k.id}" data-kf="d" aria-label="วัน">${order.map(d=>`<option value="${d}" ${k.d===d?'selected':''}>${DWL[d]}</option>`).join('')}</select>
+    <input type="time" data-k="${k.id}" data-kf="s" value="${k.s}" aria-label="เริ่ม"><span>–</span><input type="time" data-k="${k.id}" data-kf="e" value="${k.e}" aria-label="จบ">
+    <select class="grow" data-k="${k.id}" data-kf="c" aria-label="วิชา">${subjOpts(k.c)}</select>${k.c?'':`<input class="grow" data-k="${k.id}" data-kf="label" value="${k.label||''}" placeholder="ชื่อคาบ/กิจกรรม">`}
+    <button class="btn sm" data-delk="${k.id}">ลบ</button></div>`;
+  const week=order.map(d=>{const ks=S.classes.filter(k=>k.d===d).sort((p,q)=>toMin(p.s)-toMin(q.s));return ks.length?`<div class="dayhead">${DWL[d]}</div>${ks.map(krow).join('')}`:''}).join('');
+  const exs=S.exceptions.filter(x=>x.date>=today).sort((p,q)=>p.date<q.date?-1:1).map(x=>{
+    const ref=x.type==='cancel'?S.classes.find(k=>k.id===x.ref):null;
+    return `<div class="krow"><span class="mono small" style="min-width:96px">${thDate(x.date)}</span><span class="grow">${x.type==='cancel'?`งดคาบ ${ref?clsName(ref)+' '+ref.s:''}`:`เพิ่ม ${clsName(x)} ${x.s}–${x.e}`}</span><button class="btn sm" data-delex="${x.id}">ยกเลิก</button></div>`}).join('');
+  const st=S.settings,f=(k,l,t,extra='')=>`<label for="st-${k}">${l}<input id="st-${k}" type="${t}" data-s="${k}" value="${st[k]}" ${extra}></label>`;
+  return `<div class="section"><h2>ตารางเรียนประจำสัปดาห์</h2><p class="small muted" style="margin:0">แก้วัน เวลา หรือวิชาได้เลย แผนอ่านจะจัดใหม่ทันที ระบบเว้นเวลาก่อนและหลังคาบ 15 นาทีไว้เดินทาง ถ้าเปลี่ยนแค่บางวัน (งดคาบ/เรียนชดเชย) ให้ทำที่แท็บแผนรายวันของวันนั้น</p>
+  <div class="klist">${week||'<div class="empty">ยังไม่มีคาบเรียน</div>'}</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="addk">เพิ่มคาบเรียน</button><button class="btn" data-act="schoolweek">ใส่เวลาโรงเรียน จ.–ศ. 08:00–16:00</button></div></div>
+  ${exs?`<div class="section"><h2>เปลี่ยนเฉพาะวัน</h2><div class="klist">${exs}</div></div>`:''}
+  <div class="section"><h2>เวลาอ่านหนังสือ</h2><div class="settings">
+  ${f('wdStart','วันเรียน เริ่มได้','time')}${f('wdEnd','วันเรียน หยุดอ่าน','time')}
+  ${f('weStart','เสาร์-อาทิตย์ เริ่มได้','time')}${f('weEnd','เสาร์-อาทิตย์ หยุดอ่าน','time')}
+  ${f('slot','ความยาว 1 ช่วง (นาที)','number','min="25" max="90" step="5"')}${f('brk','พักระหว่างช่วง (นาที)','number','min="5" max="30" step="5"')}
+  ${f('classEnd','มีคาบเรียนถึงวันที่ (ว่างไว้ = ทุกสัปดาห์)','date')}
+  </div>
+  <h3 style="margin-top:6px">จำนวนช่วงอ่านต่อวัน</h3><div class="capgrid">${[1,2,3,4,5,6,0].map(d=>`<label for="cap-${d}">${DWL[d]}<input id="cap-${d}" type="number" min="0" max="14" data-capday="${d}" value="${st.capDays[d]}"></label>`).join('')}</div>
+  <p class="small muted" style="margin:0">ช่วงละ ${st.slot} นาที ถ้าอยากเปลี่ยนเฉพาะวันไหน ให้กด − / + ที่หน้าแผนรายวันของวันนั้น เว้นพักกลางวัน 12:00–13:00 และมื้อเย็น 18:00–19:00 ให้เสมอ</p></div>
+  <div class="section"><h2>ระดับชั้น</h2><div class="row2" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span>ตอนนี้: <b>${S.level?LV().name:'ยังไม่ได้เลือก'}</b></span>${['lower','upper'].filter(l=>l!==S.level).map(l=>`<button class="btn" data-level="${l}">เปลี่ยนเป็น ${LEVELS[l].name}</button>`).join('')}</div><p class="small muted" style="margin:0">เปลี่ยนระดับชั้นแล้ววิชาในโรงเรียนและตารางเรียนยังอยู่ ส่วนเป้าหมายจะเริ่มชุดใหม่ของระดับนั้น</p></div>
+  ${backupView()}`;
+}
+function stats(x){return {subj:(x.subjList||[]).length,done:(x.plan||[]).filter(p=>p.done).length}}
+function backupView(){
+  const st=stats(S);let prev=null;try{prev=localStorage.getItem(KEY+'-before-import')}catch(e){}
+  const msg=bkMsg?`<div class="msg${bkMsg.err?' err':''}">${esc(bkMsg.t)}</div>`:'';
+  const imp=pendingImport?`<div class="confirmbox"><span class="small">ข้อมูลสำรองมี ${pendingImport.st.subj} วิชา ติ๊กแล้ว ${pendingImport.st.done} ช่วง จะแทนที่ข้อมูลในเครื่องนี้ (${st.subj} วิชา ติ๊กแล้ว ${st.done} ช่วง)</span><button class="btn sm primary" data-act="impyes">แทนที่ด้วยข้อมูลสำรอง</button><button class="btn sm" data-act="impno">ยกเลิก</button></div>`:'';
+  return `<div class="section"><h2>สำรองและย้ายข้อมูล</h2>
+  <p class="small muted" style="margin:0">ข้อมูลทั้งหมดเก็บอยู่ในเบราว์เซอร์ของเครื่องนี้เท่านั้น ควรสำรองไว้เป็นระยะ ใช้ย้ายไปเครื่องใหม่ หรือส่งให้ผู้ปกครองดูความคืบหน้าก็ได้</p>
+  <div class="bk"><b>1. สำรองจากเครื่องนี้</b><span class="small muted">ตอนนี้มี ${st.subj} วิชา ติ๊กแล้ว ${st.done} ช่วง</span>
+  <div class="row2"><button class="btn primary" data-act="bkcopy">คัดลอกรหัสสำรอง</button><button class="btn" data-act="bkfile">บันทึกเป็นไฟล์</button></div>
+  ${bkCode?`<textarea id="bk-out" readonly aria-label="รหัสสำรอง">${esc(bkCode)}</textarea><span class="small muted">ส่งรหัสนี้ทาง LINE หรือเก็บไว้ในโน้ต รหัสยาว ให้คัดลอกให้ครบทั้งหมด</span>`:''}</div>
+  <div class="bk"><b>2. นำเข้าในเครื่องอื่น</b><textarea id="bk-in" placeholder="วางรหัสสำรองที่นี่" aria-label="วางรหัสสำรอง"></textarea>
+  <div class="row2"><button class="btn primary" data-act="bkcheck">นำเข้ารหัส</button><label class="btn" for="bk-file" style="cursor:pointer">เลือกไฟล์สำรอง</label><input type="file" id="bk-file" accept=".json,application/json,text/plain" hidden></div>
+  ${imp}${prev?'<div class="row2"><span class="small muted">นำเข้าผิด? ย้อนกลับเป็นข้อมูลก่อนนำเข้าได้</span><button class="btn sm" data-act="impundo">ย้อนกลับ</button></div>':''}</div>
+  ${msg}
+  <div class="row2" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${confirmReset?'<span class="small">ลบข้อมูลทั้งหมดในเครื่องนี้และเริ่มจากหน้าว่าง?</span><button class="btn" data-act="reset-yes">ลบทั้งหมด</button><button class="btn" data-act="reset-no">ยกเลิก</button>':'<button class="btn" data-act="reset">ลบข้อมูลทั้งหมด เริ่มใหม่</button>'}</div></div>`;
+}
+const encodeBk=()=>'S2U1:'+btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+function decodeBk(txt){
+  txt=(txt||'').trim();if(!txt)throw new Error('ยังไม่ได้วางรหัส');
+  let obj;
+  if(txt.startsWith('{'))obj=JSON.parse(txt);
+  else{const m=txt.replace(/\s+/g,'').match(/S2U1:([A-Za-z0-9+/=]+)/);if(!m)throw new Error('รหัสไม่ถูกต้อง ต้องขึ้นต้นด้วย S2U1:');
+    obj=JSON.parse(decodeURIComponent(escape(atob(m[1]))));}
+  const n=normalize(obj);if(!n)throw new Error('ไม่ใช่ข้อมูลของ Sea To University');
+  return n;
+}
+function stageImport(txt){
+  try{const n=decodeBk(txt);pendingImport={data:n,st:stats(n)};bkMsg=null}
+  catch(e){pendingImport=null;bkMsg={t:'นำเข้าไม่ได้: '+(e.message||'รหัสไม่สมบูรณ์ ลองคัดลอกใหม่ให้ครบ'),err:true}}
+  render();
+}
+
+function spark(g){
+  const sc=(S.goal.scores||[]).filter(x=>x.c===g.c).sort((a,b)=>a.date<b.date?-1:1).slice(-8);
+  const W=120,H=34,t=+g.target||0,y=v=>H-3-(Math.max(0,Math.min(100,v))/100)*(H-6);
+  const pts=sc.map((x,i)=>[sc.length>1?4+i*(W-8)/(sc.length-1):W/2,y(x.pct)]);
+  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-label="กราฟคะแนน"><line x1="0" x2="${W}" y1="${y(t)}" y2="${y(t)}" stroke="var(--muted)" stroke-dasharray="3 3" stroke-width="1"/>${pts.length>1?`<polyline fill="none" stroke="${col('G:'+g.c)}" stroke-width="2" points="${pts.map(p=>p.join(',')).join(' ')}"/>`:''}${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="${i===pts.length-1?3.5:2}" fill="${col('G:'+g.c)}"/>`).join('')}</svg>`;
+}
+function viewGoal(){
+  const L=LV(),g=S.goal,q=goalQuota(),{date:today}=nowInfo();
+  const sum=g.subjects.reduce((a,x)=>a+(+x.weight||0),0);
+  const rows=g.subjects.map(x=>{const id=esc(x.c),l=latestPct(x),gap=l==null?null:(+x.target||0)-l;
+    return `<tr><td><div class="chip"><span class="sw" style="background:${col('G:'+x.c)}"></span>${esc(x.name)}</div><input class="shin" data-gs="${id}" data-gk="sh" value="${esc(x.sh)}" aria-label="ชื่อย่อ"></td>
+    <td><input type="number" min="0" max="100" data-gs="${id}" data-gk="weight" value="${x.weight}" aria-label="สัดส่วน"> %</td>
+    <td><input type="number" min="0" max="100" data-gs="${id}" data-gk="target" value="${x.target}" aria-label="เป้าหมาย"> %</td>
+    <td class="mono">${l==null?'–':l+'%'}${gap==null?'':gap>0?`<div class="small bad">ขาด ${+gap.toFixed(1)}</div>`:'<div class="small ok">ถึงเป้า</div>'}</td>
+    <td>${spark(x)}</td>
+    <td class="mono">${q['G:'+x.c]?+(q['G:'+x.c]*S.settings.slot/60).toFixed(1):0} ชม.</td>
+    <td><button class="btn sm" data-gdel="${id}">ลบ</button></td></tr>`}).join('');
+  const sc=(g.scores||[]).slice().sort((a,b)=>a.date<b.date?1:-1).slice(0,10).map(x=>{const gs=g.subjects.find(y=>y.c===x.c);return `<div class="krow"><span class="mono small" style="min-width:96px">${thDate(x.date)}</span><span class="grow">${esc(gs?gs.sh:'?')} · ${esc(x.raw||'')} = <b>${x.pct}%</b></span><button class="btn sm" data-scdel="${x.id}">ลบ</button></div>`}).join('');
+  const dls=(g.deadlines||[]).slice().sort((a,b)=>(a.date||'9')<(b.date||'9')?-1:1).map(x=>{const left=x.date?dIdx(x.date)-dIdx(today):null;
+    return `<div class="krow"><input type="checkbox" data-dldone="${x.id}" ${x.done?'checked':''} aria-label="เสร็จแล้ว"><input class="grow" data-dl="${x.id}" data-dlk="title" value="${esc(x.title)}" aria-label="ชื่อ"><input type="date" data-dl="${x.id}" data-dlk="date" value="${x.date}" aria-label="วันที่"><span class="small ${left!=null&&left>=0&&left<=7&&!x.done?'bad':'muted'}" style="min-width:70px">${x.date?(left>0?`อีก ${left} วัน`:left===0?'วันนี้':'ผ่านแล้ว'):'ยังไม่ใส่วัน'}</span><button class="btn sm" data-dldel="${x.id}">ลบ</button></div>`}).join('');
+  const ck=(g.checklist||[]).map(x=>`<label class="krow" style="cursor:pointer"><input type="checkbox" data-ck="${x.id}" ${x.done?'checked':''}><span class="grow" style="${x.done?'text-decoration:line-through;color:var(--muted)':''}">${esc(x.title)}</span><button class="btn sm" data-ckdel="${x.id}">ลบ</button></label>`).join('');
+  const ckDone=(g.checklist||[]).filter(x=>x.done).length;
+  return `<div class="section"><h2>${esc(L.goalTitle)}</h2>
+  <div class="settings">
+    <label for="g-title">ชื่อเป้าหมาย<input id="g-title" data-gf="title" value="${esc(g.title)}" placeholder="${esc(L.goalHint)}" style="width:180px"></label>
+    <label for="g-exam">วันสอบหลัก<input type="date" id="g-exam" data-gf="examDate" value="${g.examDate}"></label>
+    <label for="g-hrs">อ่านเตรียมสอบ (ชม./สัปดาห์)<input type="number" id="g-hrs" min="0" max="40" data-gf="weeklyHrs" value="${g.weeklyHrs}"></label>
+    <label for="g-on">รวมในแผนรายวัน<input type="checkbox" id="g-on" data-gf="on" ${g.on?'checked':''} style="width:auto"></label>
+  </div>
+  ${!g.examDate?'<div class="msg err">ใส่วันสอบหลักก่อน แอปจะเริ่มจัดเวลาอ่านเตรียมสอบให้</div>':''}
+  ${S.level==='upper'?'<p class="small muted" style="margin:0">รายวิชาและสัดส่วนคะแนนต่างกันในแต่ละคณะและเปลี่ยนทุกปี ตรวจจากประกาศของคณะใน mytcas.com แล้วกรอกให้ตรง</p>':''}
+  <p class="small muted" style="margin:0">แอปแบ่งชั่วโมงต่อสัปดาห์ตามสัดส่วนคะแนน และให้เวลาเพิ่มกับวิชาที่คะแนนซ้อมยังห่างจากเป้า ช่วงที่ใกล้สอบในโรงเรียน (7 วัน) จะลดเวลาเตรียมสอบลงชั่วคราว</p></div>
+  <div class="section"><h2>วิชาที่ต้องสอบ ${g.subjects.length?`<span class="small muted">สัดส่วนรวม ${sum}%</span>`:''}</h2>
+  ${g.subjects.length?`<div class="tablebox"><table><thead><tr><th>วิชา</th><th>สัดส่วน</th><th>เป้าหมาย</th><th>ล่าสุด</th><th>แนวโน้ม</th><th>ต่อสัปดาห์</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`:''}
+  <span class="small muted">แตะเพื่อเพิ่มวิชา</span>${quickChips(L.goal,'gadd')}
+  <div class="form"><input id="g-new" placeholder="วิชาอื่น ๆ" aria-label="ชื่อวิชาอื่น"><button class="btn" data-act="gaddcustom">เพิ่ม</button></div></div>
+  <div class="section"><h2>บันทึกคะแนนสอบซ้อม</h2><p class="small muted" style="margin:0">ทำข้อสอบเก่าหรือสนามสอบจำลองแล้วบันทึกที่นี่ เส้นประในกราฟคือคะแนนเป้าหมาย</p>
+  ${g.subjects.length?`<div class="form"><select id="sc-c" aria-label="วิชา">${g.subjects.map(x=>`<option value="${esc(x.c)}">${esc(x.sh)}</option>`).join('')}</select><input type="date" id="sc-d" value="${today}" aria-label="วันที่"><input type="number" id="sc-v" placeholder="ได้" min="0" style="width:80px" aria-label="คะแนนที่ได้"><span>/</span><input type="number" id="sc-m" value="100" min="1" style="width:80px" aria-label="คะแนนเต็ม"><button class="btn primary" data-act="addscore">บันทึก</button><span class="small" id="sc-msg" style="color:var(--warn)"></span></div>`:'<div class="empty">เพิ่มวิชาก่อน แล้วค่อยบันทึกคะแนน</div>'}
+  ${sc?`<div class="klist">${sc}</div>`:''}</div>
+  <div class="section"><h2>วันสำคัญ</h2>${S.level==='upper'?'<p class="small muted" style="margin:0">ใส่วันจากปฏิทิน TCAS ของปีนั้นใน mytcas.com วันที่ใกล้ถึงภายใน 7 วันจะเป็นสีส้ม และขึ้นในแผนรายวัน</p>':'<p class="small muted" style="margin:0">ใส่วันจากประกาศรับสมัครของโรงเรียนที่อยากเข้า</p>'}
+  <div class="klist">${dls||'<div class="empty">ยังไม่มีวันสำคัญ</div>'}</div><div class="form"><input id="dl-new" placeholder="เพิ่มวันสำคัญ" aria-label="ชื่อวันสำคัญ"><input type="date" id="dl-date" aria-label="วันที่"><button class="btn" data-act="adddl">เพิ่ม</button></div></div>
+  <div class="section"><h2>${S.level==='upper'?'เช็กลิสต์ TCAS และพอร์ตฟอลิโอ':'เช็กลิสต์สมัครสอบเข้า ม.4'} <span class="small muted">${ckDone}/${(g.checklist||[]).length}</span></h2>
+  <div class="klist">${ck}</div><div class="form"><input id="ck-new" placeholder="เพิ่มรายการ" aria-label="รายการใหม่"><button class="btn" data-act="addck">เพิ่ม</button></div></div>`;
+}
+function fbText(){
+  const g=n=>{const e=document.querySelector(`input[name="${n}"]:checked`);return e?e.value:'-'};
+  const t=($('fb-t')||{}).value||'';
+  const {date:today}=nowInfo(),days=dIdx(today)-dIdx(S.since||today)+1;
+  const done=S.plan.filter(x=>x.done).length,hard=active().reduce((a,s)=>a+hardTopics(s.c).length,0);
+  return `[Sea To University ความเห็น]\nช่วยให้อ่านตามแผนได้ (1-5): ${g('fb1')}\nเทอมหน้าจะใช้อีก: ${g('fb2')}\nยอมจ่ายต่อเทอม: ${g('fb3')}\nอยากให้ปรับ: ${t.trim()||'-'}\n---\n${LV().name} · ใช้มาแล้ว ${days} วัน · ${S.subjList.length} วิชา${goalOn()?' · เป้าหมาย '+S.goal.subjects.length+' วิชา':''} · ติ๊กแล้ว ${done} ช่วง · บทยาก ${hard} บท`;
+}
+function fbUpdate(){const a=$('fb-line');if(a)a.href='https://line.me/R/share?text='+encodeURIComponent(fbText())}
+function viewFb(){
+  const q=(name,label,opts)=>`<div class="fbq"><b>${label}</b><div class="opts">${opts.map((o,i)=>`<label><input type="radio" name="${name}" id="${name}-${i}" value="${o}">${o}</label>`).join('')}</div></div>`;
+  return `<div class="section"><h2>ส่งความเห็นเกี่ยวกับแอป</h2><p class="small muted" style="margin:0">ใช้เวลาไม่ถึง 1 นาที ความเห็นของคุณช่วยตัดสินว่าจะพัฒนาอะไรต่อ ข้อความจะแนบสถิติการใช้งานคร่าว ๆ ไปด้วย (จำนวนวัน วิชา และช่วงที่ติ๊ก) ไม่มีชื่อหรือข้อมูลส่วนตัว</p>
+  ${FEEDBACK_FORM?`<div class="fbq"><b>ตอบแบบสอบถามออนไลน์</b><a class="btn primary" href="${esc(FEEDBACK_FORM)}" target="_blank" rel="noopener">เปิดแบบสอบถาม</a></div>`:''}
+  ${q('fb1','1. แอปช่วยให้อ่านตามแผนได้แค่ไหน',['1 ไม่ช่วยเลย','2','3','4','5 ช่วยมาก'])}
+  ${q('fb2','2. เทอมหน้าจะใช้อีกไหม',['ใช้แน่นอน','อาจจะ','ไม่ใช้'])}
+  ${q('fb3','3. ถ้ามีเวอร์ชันพิเศษ (สำรองบนคลาวด์ ใช้หลายเครื่อง สถิติ) ยอมจ่ายต่อเทอมเท่าไร',['ไม่จ่าย ใช้ฟรีพอ','29 บาท','49 บาท','99 บาท'])}
+  <div class="fbq"><b>4. อยากให้ปรับหรือเพิ่มอะไร</b><textarea id="fb-t" placeholder="เช่น อยากให้แจ้งเตือนก่อนถึงเวลาอ่าน"></textarea></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><a class="btn primary" id="fb-line" href="#" target="_blank" rel="noopener">ส่งทาง LINE</a><button class="btn" data-act="fbcopy">คัดลอกข้อความ</button><span class="small" id="fb-msg" style="color:var(--accent)"></span></div>
+  <p class="small muted" style="margin:0">กด “ส่งทาง LINE” แล้วเลือกแชตที่จะส่ง เช่น กลุ่มเพื่อนที่ทดลองใช้ หรือคนที่ชวนคุณมาใช้แอปนี้</p></div>`;
+}
+function render(){
+  header();
+  document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
+  $('wrap').dataset.level=S.level||'';$('tabs').hidden=!S.level;$('goaltab').textContent=S.level?LV().goalTab:'เป้าหมาย';
+  if(!S.level&&tab!=='sched'&&tab!=='fb'){$('banner').style.display='none';$('view').innerHTML=picker();return}
+  if(tab==='goal'&&!S.goal)S.goal=newGoal(S.level);
+  $('view').innerHTML=tab==='day'?viewDay():tab==='plan'?viewPlan():tab==='subj'?viewSubj():tab==='fb'?viewFb():tab==='goal'?viewGoal():viewSched();
+  if(tab==='fb')fbUpdate();
+  const a=document.querySelector('.day[aria-pressed="true"]');if(a)a.scrollIntoView({block:'nearest',inline:'center'});
+}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.tab){tab=t.dataset.tab;render();return}
+  if(t.dataset.level){const lv=t.dataset.level,first=!S.level;S.level=lv;S.goal=newGoal(lv);
+    if(first&&!S.subjList.length){S.settings={...S.settings,...LEVELS[lv].settings,capDays:[...LEVELS[lv].settings.capDays]}}
+    if(first)tab='day';generate();render();window.scrollTo(0,0);return}
+  if(t.dataset.qadd){const th=t.dataset.qadd;if(S.subjList.some(x=>x.th===th))return;const c='S'+uid().slice(1),today=nowInfo().date;
+    S.subjList.push({c,th,sh:shortName(th),cr:3,ci:freeCi(),auto:true});
+    S.subjects[c]={exam:addD(today,28),et:'09:00',ee:'10:30',real:false,topics:5,conf:3,on:true};generate();render();return}
+  if(t.dataset.gadd){const name=t.dataset.gadd;if(S.goal.subjects.some(x=>x.name===name))return;
+    S.goal.subjects.push({c:uid().slice(1),name,sh:shortName(name),weight:20,target:70,ci:freeCi(),adj:0});generate();render();return}
+  if(t.dataset.gdel){S.goal.subjects=S.goal.subjects.filter(x=>x.c!==t.dataset.gdel);S.goal.scores=S.goal.scores.filter(x=>x.c!==t.dataset.gdel);S.plan=S.plan.filter(x=>x.code!=='G:'+t.dataset.gdel);generate();render();return}
+  if(t.dataset.scdel){S.goal.scores=S.goal.scores.filter(x=>x.id!==t.dataset.scdel);generate();render();return}
+  if(t.dataset.dldel){S.goal.deadlines=S.goal.deadlines.filter(x=>x.id!==t.dataset.dldel);save();render();return}
+  if(t.dataset.ckdel){e.preventDefault();S.goal.checklist=S.goal.checklist.filter(x=>x.id!==t.dataset.ckdel);save();render();return}
+  if(t.dataset.go){tab=t.dataset.go;render();return}
+  if(t.dataset.day){sel=t.dataset.day;render();return}
+  if(t.dataset.tick){const x=S.plan.find(p=>p.id===t.dataset.tick),{date:today,min}=nowInfo();x.done=!x.done;if(!x.done)x.rating=null;
+    // ติ๊กย้อนหลัง: จัดแผนข้างหน้าใหม่ เพื่อไม่ให้มีงานซ้ำที่ทำไปแล้ว
+    if(x.date<today||(x.date===today&&x.e<min))generate();else save();render();return}
+  if(t.dataset.rate){
+    const x=S.plan.find(p=>p.id===t.dataset.id),sub=S.subjects[x.code],old=x.rating;
+    if(isG(x.code)){const g=gSub(x.code),dl={easy:-.1,ok:0,hard:.15};if(g){if(old)g.adj=(g.adj||0)-dl[old];x.rating=old===t.dataset.rate?null:t.dataset.rate;if(x.rating)g.adj=(g.adj||0)+dl[x.rating];g.adj=Math.max(-.4,Math.min(.8,g.adj))}generate();render();return}
+    const delta={easy:.25,ok:0,hard:-.5};
+    if(old)sub.conf-=delta[old];
+    x.rating=old===t.dataset.rate?null:t.dataset.rate;
+    if(x.rating)sub.conf+=delta[x.rating];
+    sub.conf=Math.max(1,Math.min(5,sub.conf));
+    sub.topicRate=sub.topicRate||{};
+    if(x.kind==='learn'&&x.topic){if(x.rating)sub.topicRate[x.topic]=x.rating;else delete sub.topicRate[x.topic]}
+    if(x.kind==='practice'&&x.focus&&x.rating==='easy')sub.topicRate[x.focus]='ok';
+    generate();render();return}
+  if(t.dataset.cancel){S.exceptions.push({id:uid(),type:'cancel',ref:t.dataset.cancel,date:sel});generate();render();return}
+  if(t.dataset.uncancel){S.exceptions=S.exceptions.filter(x=>!(x.type==='cancel'&&x.ref===t.dataset.uncancel&&x.date===sel));generate();render();return}
+  if(t.dataset.delex){S.exceptions=S.exceptions.filter(x=>x.id!==t.dataset.delex);generate();render();return}
+  if(t.dataset.delk){S.classes=S.classes.filter(k=>k.id!==t.dataset.delk);S.exceptions=S.exceptions.filter(x=>x.ref!==t.dataset.delk);generate();render();return}
+  if(t.dataset.cap){S.dayCap[sel]=Math.max(0,Math.min(14,capFor(sel)+ +t.dataset.cap));generate();render();return}
+  if(t.dataset.delslot){const n=S.plan.filter(x=>x.date===sel).length;S.plan=S.plan.filter(x=>x.id!==t.dataset.delslot);S.dayCap[sel]=Math.max(0,Math.min(capFor(sel),n-1));generate();render();return}
+  if(t.dataset.unhard){const sub=S.subjects[t.dataset.unhard];if(sub&&sub.topicRate)sub.topicRate[t.dataset.tno]='ok';openTN=t.dataset.unhard;generate();render();return}
+  const act=t.dataset.act;
+  if(act==='setupdone'){S.setupDone=true;generate();render();window.scrollTo(0,0);return}
+  if(act==='schoolweek'){[1,2,3,4,5].forEach(d=>{if(!S.classes.some(k=>k.d===d&&k.label==='โรงเรียน'))S.classes.push({id:uid(),d,s:'08:00',e:'16:00',c:'',label:'โรงเรียน'})});generate();render();return}
+  if(act==='gaddcustom'){const n=$('g-new').value.trim();if(!n||S.goal.subjects.some(x=>x.name===n))return;S.goal.subjects.push({c:uid().slice(1),name:n,sh:shortName(n),weight:20,target:70,ci:freeCi(),adj:0});generate();render();return}
+  if(act==='addscore'){const c=$('sc-c').value,d=$('sc-d').value,v=parseFloat($('sc-v').value),m=parseFloat($('sc-m').value)||100;
+    if(!d||isNaN(v)||v<0||v>m){$('sc-msg').textContent='ใส่คะแนนที่ได้ ไม่เกินคะแนนเต็ม';return}
+    S.goal.scores.push({id:uid(),c,date:d,pct:Math.round(v/m*1000)/10,raw:`${v}/${m}`});generate();render();return}
+  if(act==='adddl'){const n=$('dl-new').value.trim();if(!n)return;S.goal.deadlines.push({id:uid(),title:n,date:$('dl-date').value||'',done:false});save();render();return}
+  if(act==='addck'){const n=$('ck-new').value.trim();if(!n)return;S.goal.checklist.push({id:uid(),title:n,done:false});save();render();return}
+  if(act==='fbcopy'){const txt=fbText(),m=$('fb-msg');const ok=()=>{if(m)m.textContent='คัดลอกแล้ว นำไปวางในแชตได้เลย'};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(ok,()=>{if(m)m.textContent='คัดลอกอัตโนมัติไม่ได้ ลองกดส่งทาง LINE แทน'});return}
+  if(act==='capreset'){delete S.dayCap[sel];generate();render();return}
+  if(act==='addown'){const c=$('o-c').value,st=$('o-s').value;if(!c||!st)return;const a=toMin(st),{kind,topic}=nextKind(c);
+    const n=S.plan.filter(x=>x.date===sel).length;
+    S.plan.push({id:uid(),date:sel,s:a,e:a+S.settings.slot,code:c,kind,topic,eve:false,done:false,pinned:true});
+    S.dayCap[sel]=Math.max(capFor(sel),n+1);generate();render();return}
+  if(act==='addk'){S.classes.push({id:uid(),d:1,s:'08:00',e:'09:00',c:S.subjList[0]?.c||''});save();render();return}
+  if(act==='startadd'){tab='subj';showAdd=true;render();setTimeout(()=>{const i=$('n-th');if(i)i.focus()},0);return}
+  if(act==='presetok'){S.presetCheck=false;save();render();return}
+  if(act==='loadsample'){S=sample();sel=nowInfo().date;generate();render();return}
+  if(act==='clearsample'){S=blank();save();tab='subj';showAdd=true;render();return}
+  if(act==='delno'){confirmDel=null;render();return}
+  if(act==='addsubj'){
+    const th=$('n-th').value.trim(),sh=$('n-sh').value.trim(),exam=$('n-exam').value,et=$('n-et').value||'09:00',ee=$('n-ee').value||'12:00';
+    let c=$('n-c').value.trim();
+    if(!th){$('n-msg').textContent='ใส่ชื่อวิชาก่อน';return}
+    if(!exam){$('n-msg').textContent='ใส่วันสอบก่อน';return}
+    if(ee<=et){$('n-msg').textContent='เวลาสอบเสร็จต้องหลังเวลาเริ่ม';return}
+    if(!c)c='S'+uid().slice(1);
+    if(hasS(c)){$('n-msg').textContent='มีวิชารหัสนี้แล้ว';return}
+    const used=new Set(S.subjList.map(x=>x.ci));let ci=0;while(used.has(ci)&&ci<11)ci++;if(used.has(ci))ci=S.subjList.length%12;
+    S.subjList.push({c,th,sh:sh||(th.length>14?th.slice(0,14)+'…':th),cr:+$('n-cr').value||3,ci,auto:!$('n-c').value.trim()});
+    S.subjects[c]={exam,et,ee,real:true,topics:Math.max(1,+$('n-tp').value||1),conf:+$('n-cf').value||3,on:true};
+    S.sample=false;S.presetCheck=false;showAdd=true;generate();render();
+    const m=$('n-msg');if(m){m.style.color='var(--accent)';m.textContent=`เพิ่ม ${th} แล้ว เพิ่มวิชาต่อไปได้เลย`}
+    return}
+  if(act==='bkcopy'){bkCode=encodeBk();const done=()=>{bkMsg={t:'คัดลอกรหัสสำรองแล้ว นำไปวางใน LINE หรือโน้ตได้เลย'};render()};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(bkCode).then(done,()=>{bkMsg={t:'คัดลอกอัตโนมัติไม่ได้ กดค้างที่ช่องรหัสแล้วเลือกคัดลอก'};render();const o=$('bk-out');if(o){o.focus();o.select()}});
+    else{bkMsg={t:'กดค้างที่ช่องรหัสแล้วเลือกคัดลอก'};render();const o=$('bk-out');if(o){o.focus();o.select()}}
+    return}
+  if(act==='bkfile'){try{const b=new Blob([JSON.stringify(S)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');
+    a.href=u;a.download=`sea2uni-${nowInfo().date}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);
+    bkMsg={t:'บันทึกไฟล์แล้ว ดูได้ในโฟลเดอร์ดาวน์โหลด ถ้าไม่มีไฟล์ ให้ใช้ปุ่มคัดลอกรหัสสำรองแทน'}}catch(e){bkMsg={t:'บันทึกไฟล์ไม่ได้ ใช้ปุ่มคัดลอกรหัสสำรองแทน',err:true}}render();return}
+  if(act==='bkcheck'){stageImport($('bk-in').value);return}
+  if(act==='impno'){pendingImport=null;render();return}
+  if(act==='impyes'){try{localStorage.setItem(KEY+'-before-import',JSON.stringify(S))}catch(e){}
+    S=pendingImport.data;pendingImport=null;sel=nowInfo().date;generate();bkMsg={t:'นำเข้าข้อมูลแล้ว'};render();return}
+  if(act==='impundo'){let p=null;try{p=normalize(JSON.parse(localStorage.getItem(KEY+'-before-import')));localStorage.removeItem(KEY+'-before-import')}catch(e){}
+    if(p){S=p;generate();bkMsg={t:'ย้อนกลับเป็นข้อมูลเดิมแล้ว'}}render();return}
+  if(act==='addextra'){const c=$('x-c').value,st=$('x-s').value,en=$('x-e').value;if(!st||!en||en<=st)return;
+    S.exceptions.push({id:uid(),type:'extra',date:sel,s:st,e:en,c,label:c?'':($('x-label').value.trim()||'นัดพิเศษ')});generate();render();return}
+  if(act==='replan'){const {date:today,min}=nowInfo();S.plan.forEach(x=>{if(!x.done&&(x.date<today||(x.date===today&&x.e<min)))x.moved=true});generate();render()}
+  if(t.dataset.askdel){confirmDel=t.dataset.askdel;render();return}
+  if(t.dataset.delsubj){const c=t.dataset.delsubj;S.subjList=S.subjList.filter(x=>x.c!==c);delete S.subjects[c];S.plan=S.plan.filter(x=>x.code!==c);S.classes.forEach(k=>{if(k.c===c)k.c=''});confirmDel=null;generate();render();return}
+  if(t.dataset.confirm){S.subjects[t.dataset.confirm].real=true;save();render();return}
+  if(act==='reset'){confirmReset=true;render()}
+  if(act==='reset-no'){confirmReset=false;render()}
+  if(act==='reset-yes'){confirmReset=false;S=blank();save();sel=nowInfo().date;tab='day';render()}
+});
+document.addEventListener('input',e=>{if(tab==='fb')fbUpdate()});
+document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.tnbox){if(d.open)openTN=d.dataset.tnbox;else if(openTN===d.dataset.tnbox)openTN=null}},true);
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset.stime||t.dataset.ssubj){const x=S.plan.find(p=>p.id===(t.dataset.stime||t.dataset.ssubj));if(!x||!t.value)return;
+    if(t.dataset.stime){const a=toMin(t.value);x.s=a;x.e=a+S.settings.slot}
+    else{x.code=t.value;Object.assign(x,nextKind(x.code,x.id));x.eve=false}
+    x.id=uid();x.pinned=true;S.dayCap[x.date]=Math.max(capFor(x.date),S.plan.filter(p=>p.date===x.date).length);generate();render();return}
+  if(t.dataset.capday){S.settings.capDays[+t.dataset.capday]=Math.max(0,Math.min(14,+t.value||0));generate();render();return}
+  if(t.dataset.k){const k=S.classes.find(x=>x.id===t.dataset.k),f=t.dataset.kf;
+    if(f==='d')k.d=+t.value;else if(f==='label')k.label=t.value;else if(f==='c')k.c=t.value;else if(t.value)k[f]=t.value;
+    generate();render();return}
+  if(t.id==='bk-file'&&t.files&&t.files[0]){const r=new FileReader();r.onload=()=>stageImport(String(r.result));r.readAsText(t.files[0]);t.value='';return}
+  if(t.dataset.m==='sh'){const m=S.subjList.find(x=>x.c===t.dataset.c);if(m&&t.value.trim())m.sh=t.value.trim();save();render();return}
+  if(t.dataset.gf){const f=t.dataset.gf;S.goal[f]=f==='on'?t.checked:f==='weeklyHrs'?Math.max(0,Math.min(40,+t.value||0)):t.value;generate();render();return}
+  if(t.dataset.gs){const g=S.goal.subjects.find(x=>x.c===t.dataset.gs),k=t.dataset.gk;if(!g)return;g[k]=k==='sh'?(t.value.trim()||g.sh):Math.max(0,Math.min(100,+t.value||0));generate();render();return}
+  if(t.dataset.dl){const x=S.goal.deadlines.find(y=>y.id===t.dataset.dl);if(x){x[t.dataset.dlk]=t.dataset.dlk==='title'?(t.value.trim()||x.title):t.value}save();render();return}
+  if(t.dataset.dldone){const x=S.goal.deadlines.find(y=>y.id===t.dataset.dldone);if(x)x.done=t.checked;save();render();return}
+  if(t.dataset.ck){const x=S.goal.checklist.find(y=>y.id===t.dataset.ck);if(x)x.done=t.checked;save();render();return}
+  if(t.dataset.tn){const sub=S.subjects[t.dataset.tn];sub.topicNames=sub.topicNames||[];sub.topicNames[+t.dataset.ti]=t.value.trim();openTN=t.dataset.tn;save();return}
+  if(t.name&&t.name.startsWith('fb')){fbUpdate();return}
+  if(t.dataset.recall){S.recall[t.dataset.recall]=t.checked;save();return}
+  if(t.dataset.f){
+    const x=S.subjects[t.dataset.c],f=t.dataset.f;
+    if(f==='on')x.on=t.checked;else if(f==='topics')x.topics=Math.max(1,+t.value||1);else if(f==='conf')x.conf=+t.value;else if(t.value)x[f]=t.value;
+    if(f==='exam')x.real=true;
+    generate();render();return}
+  if(t.dataset.s){
+    const k=t.dataset.s;if(!t.value&&k!=='classEnd')return;
+    S.settings[k]=t.type==='number'?Math.max(0,+t.value):t.value;
+    generate();render()}
+});
+
+if(S.subjList.length&&!S.plan.length)generate();
+render();
+</script>
+
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+let deferredPrompt=null;const ib=document.getElementById('installBtn');
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;ib.hidden=false});
+ib.addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;ib.hidden=true});
+window.addEventListener('appinstalled',()=>{ib.hidden=true});
+</script>
+</body>
+</html>
