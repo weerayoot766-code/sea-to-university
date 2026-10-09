@@ -209,6 +209,60 @@ tr.tnrow td{padding-top:0;background:var(--bg)}
 .site-addr{font-size:.85rem;color:var(--muted);max-width:34em;text-wrap:balance}
 .site-addr span{white-space:nowrap}
 .site-copy{font-size:.78rem;color:var(--muted);margin-top:6px}
+.tbadge{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:99px;background:var(--exam);color:var(--surface);font-size:.7rem;line-height:18px;text-align:center;font-weight:600}
+.btn.danger{background:var(--exam);border-color:var(--exam);color:var(--surface)}
+.btn.lg{min-height:44px;padding:8px 14px;font-weight:600}
+.thd{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.tstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tstat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;min-width:0}
+.tstat span{font-size:.78rem;color:var(--muted)}
+.tstat b{font-family:var(--display);font-size:1.6rem;line-height:1.15}
+.tstat.od{background:var(--exam-soft);border-color:color-mix(in srgb,var(--exam) 35%,var(--line))}.tstat.od b{color:var(--exam)}
+.tstat.soon{background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 35%,var(--line))}.tstat.soon b{color:var(--warn)}
+.tgroup{display:flex;flex-direction:column;gap:8px}
+.tgroup h3{font-family:var(--display);font-size:1.02rem;font-weight:600;margin:4px 0 0}
+.tgroup.od h3{color:var(--exam)}
+.tcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:5px}
+.tcard.od{border:2px solid var(--exam);background:color-mix(in srgb,var(--exam) 5%,var(--surface))}
+.tcard .top{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:.78rem;color:var(--muted)}
+.spill{padding:1px 8px;border-radius:6px;color:var(--surface);font-weight:600;font-size:.78rem}
+.tcard .due{margin-left:auto;font-weight:600}
+.tcard .due.hot{color:var(--warn)}.tcard.od .due{color:var(--exam)}
+.tcard .nm{font-weight:600;font-size:1.02rem}
+.tcard .meta{font-size:.85rem;color:var(--muted)}
+.tcard .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.tcard .acts .btn{min-height:40px}
+.readytag{align-self:flex-start;font-size:.8rem;font-weight:600;padding:2px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent)}
+.tform{display:flex;flex-direction:column;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.tform h2{margin:2px 0}
+.fl{display:flex;flex-direction:column;gap:6px}
+.fl>b{font-size:.92rem}
+.tform input[type=text],.tform input[type=date]{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;min-height:44px;padding:0 12px;box-sizing:border-box;width:100%}
+.dateopt{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.dateopt input[type=date]{width:auto;min-height:40px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opts.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.opt{font:inherit;font-size:.88rem;min-height:40px;padding:4px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;line-height:1.3;display:inline-flex;flex-direction:column;align-items:center;justify-content:center}
+.opts:not(.g3) .opt{flex-direction:row;gap:4px}
+.opt small{display:block;font-size:.72rem;color:var(--muted)}
+.opts:not(.g3) .opt small{margin-left:2px}
+.opt[aria-pressed="true"]{border:2px solid var(--accent);background:var(--accent-soft);font-weight:600}
+.opt[aria-pressed="true"] small{color:var(--accent)}
+.ckline{display:flex;align-items:center;gap:8px;min-height:40px;font-size:.92rem}.ckline input{width:20px;height:20px;accent-color:var(--accent)}
+.tprev{background:var(--accent-soft);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;font-size:.88rem}
+.mopt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;min-height:56px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.mopt.main{border:2px solid var(--accent);background:var(--accent-soft)}
+.mopt span{display:flex;flex-direction:column}.mopt small{color:var(--muted);font-size:.8rem}
+.mopt .ic{font-size:1.2rem;color:var(--accent);font-weight:700}
+.mbox{display:flex;flex-direction:column;gap:6px;padding:10px 14px;border-radius:12px;border:1px solid var(--line)}
+.hist{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.hlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.hrow{display:flex;align-items:center;gap:10px;padding:10px 12px;border:0;border-bottom:1px solid var(--line);background:none;color:var(--fg);font:inherit;font-size:.9rem;text-align:left;cursor:pointer;min-height:44px}
+.hrow:last-child{border-bottom:0}.hrow .hn{flex:1 1 auto;min-width:0}
+.row.study.task{border:2px solid color-mix(in srgb,var(--warn) 60%,var(--line))}
+.kind.tk{border-color:var(--warn);color:var(--warn);font-weight:600}
+.row.tduerow{border:2px dashed var(--warn);background:var(--warn-soft)}
+.row.tduerow .title{color:var(--warn);font-weight:600}
+.day.due{border-color:var(--warn)}.day.due .dn{color:var(--warn)}
 .btn.line{background:#06C755;border-color:#06C755;color:#fff}
 .fbq{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface)}
 .fbq .opts{display:flex;flex-wrap:wrap;gap:6px}
@@ -233,6 +287,7 @@ a.btn{text-decoration:none;display:inline-block}
   </header>
   <nav role="tablist" id="tabs">
     <button role="tab" data-tab="day" aria-selected="true">แผนรายวัน</button>
+    <button role="tab" data-tab="task" aria-selected="false">งานที่ต้องส่ง<span class="tbadge" id="tbadge" hidden></span></button>
     <button role="tab" data-tab="plan" aria-selected="false">ภาพรวม</button>
     <button role="tab" data-tab="subj" aria-selected="false">สอบในโรงเรียน</button>
     <button role="tab" data-tab="goal" aria-selected="false" id="goaltab">เป้าหมาย</button>
@@ -282,7 +337,8 @@ const thDate=s=>{const d=pd(s);return `${DW[d.getDay()]} ${d.getDate()} ${MON[d.
 const nowInfo=()=>{const n=new Date();return {date:ds(n),min:n.getHours()*60+n.getMinutes()}};
 const isG=c=>typeof c==='string'&&c.startsWith('G:');
 const gSub=c=>(S.goal?.subjects||[]).find(x=>'G:'+x.c===c);
-const M=c=>{if(isG(c)){const g=gSub(c);return g?{c,th:g.name,sh:g.sh||g.name,cr:3,ci:g.ci||0,goal:true}:{c,th:c,sh:c,cr:3,ci:0}}return S.subjList.find(x=>x.c===c)||{c,th:c,sh:c,cr:3,ci:0}};
+const isT=c=>typeof c==='string'&&c.startsWith('T:');
+const M=c=>{if(isT(c)){const t=(S.tasks||[]).find(x=>'T:'+x.id===c),s=t&&t.c&&S.subjList.find(x=>x.c===t.c);return {c,th:t?t.name:'งาน',sh:'งาน'+(s?s.sh:''),cr:3,ci:s?s.ci:11,task:true}}if(isG(c)){const g=gSub(c);return g?{c,th:g.name,sh:g.sh||g.name,cr:3,ci:g.ci||0,goal:true}:{c,th:c,sh:c,cr:3,ci:0}}return S.subjList.find(x=>x.c===c)||{c,th:c,sh:c,cr:3,ci:0}};
 const col=c=>`var(--c${M(c).ci%12})`;
 const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
@@ -291,7 +347,7 @@ function blank(){
   return {
     subjList:[],subjects:{},
     settings:{wdStart:'07:30',wdEnd:'22:30',weStart:'09:00',weEnd:'22:00',capDays:[6,4,4,4,4,4,6],slot:50,brk:10,classEnd:''},
-    plan:[],recall:{},classes:[],exceptions:[],dayCap:{},since:ds(new Date())
+    plan:[],recall:{},classes:[],exceptions:[],dayCap:{},tasks:[],teachers:{},since:ds(new Date())
   };
 }
 function normalize(x){
@@ -305,6 +361,8 @@ function normalize(x){
   if(!x.settings)x.settings=blank().settings;
   if(!x.settings.capDays)x.settings.capDays=[x.settings.weCap??6,...Array(5).fill(x.settings.wdCap??4),x.settings.weCap??6];
   if(!x.dayCap)x.dayCap={};
+  if(!Array.isArray(x.tasks))x.tasks=[];
+  if(!x.teachers)x.teachers={};
   if(!x.since)x.since=ds(new Date());
   if(x.level&&!x.goal)x.goal=newGoal(x.level);
   if(x.setupDone==null)x.setupDone=!!(x.subjList&&x.subjList.length);
@@ -373,7 +431,7 @@ const lastExam=()=>active().reduce((m,s)=>S.subjects[s.c].exam>m?S.subjects[s.c]
 
 const goalOn=()=>!!(S.goal&&S.goal.on&&S.goal.examDate&&S.goal.subjects&&S.goal.subjects.length);
 const activeGoal=()=>goalOn()?S.goal.subjects.filter(x=>(+x.weight||0)>0):[];
-const isOn=c=>isG(c)?(goalOn()&&!!gSub(c)):!!S.subjects[c]?.on;
+const isOn=c=>isT(c)?(S.tasks||[]).some(t=>'T:'+t.id===c):isG(c)?(goalOn()&&!!gSub(c)):!!S.subjects[c]?.on;
 const planSubj=()=>[...active(),...activeGoal().map(g=>M('G:'+g.c))];
 const latestPct=g=>{const sc=(S.goal.scores||[]).filter(x=>x.c===g.c).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);return sc.length?sc[sc.length-1].pct:null};
 const gapF=g=>{const l=latestPct(g),t=+g.target||0;let f=l==null?1.2:1+(t-l)/25;f*=1+(g.adj||0);return Math.max(.6,Math.min(2.5,f))};
@@ -393,9 +451,9 @@ function newGoal(lv){const L=LEVELS[lv];return {on:true,title:'',examDate:'',wee
   deadlines:L.dates.map(t=>({id:uid(),title:t,date:'',done:false})),checklist:L.check.map(t=>({id:uid(),title:t,done:false}))}}
 function freeCi(){const used=new Set([...S.subjList.map(x=>x.ci),...(S.goal?.subjects||[]).map(x=>x.ci)]);for(let i=0;i<12;i++)if(!used.has(i))return i;return (S.subjList.length+(S.goal?.subjects||[]).length)%12}
 const shortName=n=>{let t=n.replace(/^(TGAT\d|TPAT\d)\s.*$/,'$1').replace('คณิตศาสตร์ประยุกต์','คณิต');return t.length>18?t.slice(0,18)+'…':t};
-function generate(){
+function generate(dry){
   const {date:today,min:nowMin}=nowInfo();
-  const keep=S.plan.filter(x=>x.date<today||(x.date===today&&(x.done||x.s<nowMin))||(x.pinned&&isOn(x.code)));
+  const keep=S.plan.filter(x=>x.date<today||(x.date===today&&(x.done||x.s<nowMin))||(x.pinned&&isOn(x.code)&&(x.kind!=='task'||tLive(x.task))));
   const live=x=>x.done||(x.pinned&&(x.date>today||(x.date===today&&x.e>=nowMin)));
   const used={};active().forEach(s=>used[s.c]={learn:0,practice:0,mock:0});
   keep.forEach(x=>{if(live(x)&&used[x.code])used[x.code][x.kind]++});
@@ -405,6 +463,10 @@ function generate(){
   const fresh=[];let end=lastExam();
   if(goalOn()){const ge=[addD(S.goal.examDate,-1),addD(today,42)].sort()[0];if(ge>end)end=ge}
   const quota=goalQuota(),gUsed={};
+  // งานที่ต้องส่ง: นับช่วงที่ทำแล้วหรือจัดไว้เอง แล้วจัดที่เหลือให้เสร็จก่อนวันส่ง 1 วัน
+  const tOpen=(S.tasks||[]).filter(t=>t.status==='open'&&!t.ready&&t.due),tUsed={};
+  keep.forEach(x=>{if(x.kind==='task'&&(x.done||live(x)))tUsed[x.task]=(tUsed[x.task]||0)+1});
+  tOpen.forEach(t=>{const l=tLast(t,today);if(l>end)end=l});
   keep.forEach(x=>{if(isG(x.code)&&live(x)){const wk=weekKey(x.date);(gUsed[wk]||(gUsed[wk]={}))[x.code]=((gUsed[wk]||{})[x.code]||0)+1}});
   for(let d=today;d<=end;d=addD(d,1)){
     const wd=pd(d).getDay(),we=wd===0||wd===6;
@@ -415,6 +477,18 @@ function generate(){
     let prev=null;
     for(const[a,z]of slots){
       const at=dIdx(d)*1440+a;let best=null,bs=0;
+      for(const t of tOpen){
+        const need=(t.size||1)-(tUsed[t.id]||0);if(need<=0)continue;
+        const ld=tLast(t,today);if(d>ld)continue;
+        const dl=dIdx(ld)-dIdx(d);if(dl>need*2+1)continue;
+        const onDay=fresh.filter(x=>x.date===d&&x.task===t.id).length+keep.filter(x=>x.date===d&&x.task===t.id).length;
+        if(onDay>=2&&dl>0&&need<=dl*2)continue;
+        let sc=1000*need/(dl+1);
+        if(t.due<today)sc*=3; // งานที่เลยกำหนดได้ก่อน
+        if(dl>0&&examSoon(d))sc*=.001;
+        if(prev==='T:'+t.id&&dl>0)sc*=.5;
+        if(sc>bs){bs=sc;best='T:'+t.id}
+      }
       for(const s of active()){
         const x=S.subjects[s.c],ex=examAbs(s.c);
         if(at+S.settings.slot+60>ex)continue;
@@ -436,6 +510,8 @@ function generate(){
         if(sc>bs){bs=sc;best=c}
       }
       if(!best)continue;
+      if(isT(best)){const id=best.slice(2);tUsed[id]=(tUsed[id]||0)+1;
+        fresh.push({id:d+'-'+a,date:d,s:a,e:z,code:best,kind:'task',task:id,part:tUsed[id],done:false});prev=best;continue}
       if(isG(best)){(gUsed[wk]||(gUsed[wk]={}))[best]=((gUsed[wk]||{})[best]||0)+1;
         fresh.push({id:d+'-'+a,date:d,s:a,e:z,code:best,kind:'goal',phase:goalPhase(d),done:false});prev=best;continue}
       const r=required(best),u=used[best],left=(examAbs(best)-at)/1440,eve=left<=1.3;
@@ -448,8 +524,9 @@ function generate(){
       fresh.push(x);prev=best;
     }
   }
-  S.plan=[...keep,...fresh].sort((p,q)=>p.date<q.date?-1:p.date>q.date?1:p.s-q.s);
-  save();
+  const out=[...keep,...fresh].sort((p,q)=>p.date<q.date?-1:p.date>q.date?1:p.s-q.s);
+  if(dry)return out;
+  S.plan=out;save();
 }
 function recallFor(date){
   const {date:today}=nowInfo(),out=[];
@@ -469,6 +546,142 @@ const slotTitle=x=>{
   return 'ข้อสอบเก่าเต็มชุด';
 };
 
+// ===== งานที่ต้องส่งครู =====
+// งานเก็บใน S.tasks (อยู่ในข้อมูล sea2uni-v1 เดิม) ช่วงเวลาทำงานอยู่ใน S.plan แบบ kind:'task' code:'T:<id>'
+const TTYPE={hw:'การบ้าน/ใบงาน',report:'รายงาน',project:'ชิ้นงาน/โปรเจกต์',quiz:'สอบเก็บคะแนน'};
+const TSIZE={1:'เล็ก',2:'กลาง',4:'ใหญ่'};
+const TDEF={hw:1,report:2,project:4,quiz:2};
+const tById=id=>(S.tasks||[]).find(t=>t.id===id);
+const tLive=id=>{const t=tById(id);return !!t&&t.status==='open'&&!t.ready};
+const tCol=t=>t.c&&hasS(t.c)?col(t.c):'var(--muted)';
+const tSubName=t=>t.c&&hasS(t.c)?M(t.c).sh:'อื่น ๆ';
+const tLast=(t,today)=>{const l=addD(t.due,-1);return l<today?today:l};
+const tDays=t=>dIdx(t.due)-dIdx(nowInfo().date);
+const dueLabel=t=>{const n=tDays(t);return n<0?`เลยมา ${-n} วัน`:n===0?'ส่งวันนี้':n===1?'ส่งพรุ่งนี้':`อีก ${n} วัน`};
+const dueText=t=>`${thDate(t.due)}${t.dueT?' · '+t.dueT:''}`;
+const tSlots=id=>S.plan.filter(x=>x.kind==='task'&&x.task===id).sort((p,q)=>p.date<q.date?-1:p.date>q.date?1:p.s-q.s);
+const tOverdue=()=>{const today=nowInfo().date;return (S.tasks||[]).filter(t=>t.status==='open'&&t.due<today).sort((a,b)=>a.due<b.due?-1:1)};
+const examSoon=d=>active().some(s=>{const e=S.subjects[s.c].exam;return e>=d&&dIdx(e)-dIdx(d)<=2});
+// คาบเรียนถัดไปของวิชานี้จากตารางเรียน (ไม่นับวันนี้)
+function nextClasses(c,n){
+  const out=[],today=nowInfo().date;if(!c)return out;
+  for(let i=1;i<=70&&out.length<n;i++){const d=addD(today,i);const k=classesOn(d).filter(k=>k.c===c).sort((a,b)=>toMin(a.s)-toMin(b.s))[0];if(k)out.push({date:d,t:k.s})}
+  return out;
+}
+let tv=null,draft=null,tMsg='',confirmTDel=null;
+const newDraft=()=>({id:null,c:null,name:'',teacher:'',due:'',dueT:'',type:'hw',size:1,group:false,tt:false,st:false});
+function previewSlots(){
+  if(!draft||!draft.due)return [];
+  const real=S.tasks,id=draft.id||'__new',{date:today,min}=nowInfo();
+  S.tasks=real.filter(t=>t.id!==id).concat([{...draft,id,status:'open',ready:false}]);
+  let p=[];try{p=generate(true)}finally{S.tasks=real}
+  return p.filter(x=>x.task===id&&!x.done&&(x.date>today||(x.date===today&&x.e>=min)));
+}
+function taskCard(t){
+  const {date:today,min}=nowInfo(),n=tDays(t),od=n<0,size=t.size||1,sl=tSlots(t.id),dn=sl.filter(x=>x.done).length;
+  const fut=sl.filter(x=>!x.done&&(x.date>today||(x.date===today&&x.e>=min)));
+  const short=Math.max(0,size-dn-fut.length),start=addD(tLast(t,today),-(size*2+1));
+  let prog;
+  if(t.ready)prog='<span class="readytag">✓ ทำเสร็จแล้ว รอส่ง</span>';
+  else{
+    prog=`<div class="pbar"><i style="width:${Math.min(100,Math.round(dn/size*100))}%"></i></div><span class="small muted">${dn?`ทำแล้ว ${dn}/${size} ช่วง`:'ยังไม่เริ่ม'}${fut.length?` · ถัดไป ${thDate(fut[0].date)} ${hm(fut[0].s)}`:''}</span>`;
+    if(short&&start>today)prog+=`<span class="small muted">แอปจะเริ่มจัดเวลาทำให้ราว ${thDate(start)}</span>`;
+    else if(short)prog+=`<span class="small bad">ยังหาเวลาทำได้ไม่พอ ขาด ${short} ช่วง ลองเพิ่มจำนวนช่วงต่อวันในแผนรายวัน</span>`;
+  }
+  return `<div class="tcard${od?' od':''}"><div class="top"><span class="spill" style="background:${tCol(t)}">${esc(tSubName(t))}</span><span>${TTYPE[t.type]||''} · งาน${TSIZE[size]||size+' ช่วง'}${t.group?' · งานกลุ่ม':''}</span><span class="due${n<=2?' hot':''}">${dueLabel(t)}</span></div>
+  <div class="nm">${esc(t.name)}</div><div class="meta">${t.teacher?esc(t.teacher)+' · ':''}ส่ง ${dueText(t)}</div>${prog}
+  <div class="acts"><button class="btn ${od?'danger':n<=0?'primary':''}" data-tsent="${t.id}">ส่งแล้ว</button><button class="btn" data-tman="${t.id}">${od?'ครูให้เลื่อนส่ง / อื่น ๆ':'จัดการงาน'}</button></div></div>`;
+}
+function viewTask(){
+  if(tv&&(tv.mode==='add'||tv.mode==='edit')&&draft)return taskForm();
+  if(tv&&tv.mode==='manage'){const t=tById(tv.id);if(t)return taskManage(t);tv=null}
+  const today=nowInfo().date,all=S.tasks||[];
+  const open=all.filter(t=>t.status==='open').sort((a,b)=>a.due<b.due?-1:a.due>b.due?1:(a.dueT||'')<(b.dueT||'')?-1:1);
+  const od=open.filter(t=>t.due<today),soon=open.filter(t=>t.due>=today&&t.due<=addD(today,7)),later=open.filter(t=>t.due>addD(today,7));
+  const sent=all.filter(t=>t.status==='sent'),hist=all.filter(t=>t.status!=='open').sort((a,b)=>(a.sentDate||'')<(b.sentDate||'')?1:-1);
+  const onTime=sent.filter(t=>(t.sentDate||'')<=t.due).length;
+  const grp=(cls,title,list)=>list.length?`<div class="tgroup ${cls}"><h3>${title}</h3>${list.map(taskCard).join('')}</div>`:'';
+  const hrows=hist.map(t=>{const late=t.status==='sent'?dIdx(t.sentDate||t.due)-dIdx(t.due):0;
+    return `<button class="hrow" data-tman="${t.id}"><span class="sw" style="background:${tCol(t)}"></span><span class="hn">${esc(t.name)}</span>${t.status==='cancel'?'<span class="small muted">ยกเลิก</span>':late>0?`<span class="small" style="color:var(--exam);font-weight:600">ช้า ${late} วัน</span>`:'<span class="small ok" style="font-weight:600">ตรงเวลา</span>'}</button>`}).join('');
+  return `<div class="section"><div class="thd"><div><h2>งานที่ต้องส่งครู</h2><p class="small muted" style="margin:0">ใส่งานแล้วแอปจะจัดเวลาทำให้ก่อนวันส่งอัตโนมัติ</p></div><button class="btn primary lg" data-act="tnew">+ เพิ่มงาน</button></div>
+  ${all.length?`<div class="tstats"><div class="tstat od"><span>ค้างส่ง</span><b>${od.length}</b></div><div class="tstat soon"><span>ส่งภายใน 7 วัน</span><b>${soon.length}</b></div><div class="tstat"><span>ส่งแล้ว</span><b>${sent.length}</b></div></div>`:''}
+  ${open.length?'':`<div class="empty">${all.length?'ไม่มีงานค้าง เยี่ยมมาก!':'ยังไม่มีงาน ครูสั่งงานเมื่อไร กด “+ เพิ่มงาน” แล้วแอปจะหาเวลาทำให้ก่อนวันส่ง'}</div>`}
+  ${grp('od','เลยกำหนดส่ง',od)}${grp('','ใกล้ส่ง (7 วัน)',soon)}${grp('','ถัดไป',later)}
+  ${hist.length?`<details class="addbox"><summary>ประวัติการส่งงาน (${hist.length})</summary><div class="hist">${sent.length?`<div class="small">ส่งตรงเวลา <b>${onTime}/${sent.length}</b> ชิ้น</div><div class="pbar"><i style="width:${Math.round(onTime/sent.length*100)}%"></i></div>`:''}<div class="hlist">${hrows}</div></div></details>`:''}</div>`;
+}
+function taskForm(){
+  const d=draft,today=nowInfo().date,edit=tv.mode==='edit';
+  const subj=S.subjList.map(s=>`<button class="opt" data-tsub="${esc(s.c)}" aria-pressed="${d.c===s.c}"><span class="sw" style="background:${col(s.c)}"></span> ${esc(s.sh)}</button>`).join('')+`<button class="opt" data-tsub="" aria-pressed="${d.c===''}">อื่น ๆ</button>`;
+  const nc=d.c?nextClasses(d.c,2):[];
+  const opts=nc.length?nc.map((x,i)=>({lab:i?'อีก 2 คาบ':'คาบหน้า',date:x.date,t:x.t})):[{lab:'พรุ่งนี้',date:addD(today,1),t:''},{lab:'มะรืน',date:addD(today,2),t:''},{lab:'สัปดาห์หน้า',date:addD(today,7),t:''}];
+  const dueChips=opts.map(o=>`<button class="opt" data-tdue="${o.date}|${o.t}" aria-pressed="${d.due===o.date&&(d.dueT||'')===o.t}">${o.lab}<small>${thDate(o.date)}${o.t?' · '+o.t:''}</small></button>`).join('');
+  const hint=nc.length?'“คาบหน้า” คำนวณจากตารางเรียนของวิชานี้':d.c?'ใส่คาบเรียนของวิชานี้ในแท็บตารางเรียน แล้วแอปจะคำนวณ “คาบหน้า” ให้':'';
+  let pv='';
+  if(d.due){
+    const p=previewSlots(),t={...d},start=addD(tLast(t,today),-(d.size*2+1));
+    pv=`<div class="tprev"><b>แอปจะจัดเวลาทำให้แบบนี้</b>${p.map(x=>`<span class="mono">${thDate(x.date)} · ${hm(x.s)}–${hm(x.e)}</span>`).join('')}
+    ${p.length>=d.size?`<span class="small muted">${d.due>today?'เสร็จก่อนวันส่ง 1 วัน เผื่อพิมพ์และแก้':'ทำให้เสร็จเร็วที่สุด'}</span>`:start>today&&!p.length?`<span class="small muted">ยังไม่ต้องรีบ แอปจะเริ่มจัดเวลาทำให้ราว ${thDate(start)}</span>`:`<span class="small bad">หาเวลาว่างได้ ${p.length}/${d.size} ช่วง ลองเพิ่มจำนวนช่วงต่อวันในแผนรายวัน</span>`}</div>`;
+  }
+  return `<div class="tform"><div class="thd"><h2>${edit?'แก้ไขงาน':'เพิ่มงานที่ต้องส่ง'}</h2><button class="btn" data-act="tback">ยกเลิก</button></div>
+  <div class="fl"><b>วิชา</b><div class="opts">${subj}</div>${S.subjList.length?'':'<span class="small muted">ยังไม่มีวิชา เพิ่มวิชาในแท็บสอบในโรงเรียน หรือเลือก “อื่น ๆ”</span>'}</div>
+  <label class="fl"><b>ชื่องาน</b><input type="text" data-td="name" value="${esc(d.name)}" placeholder="เช่น ใบงานที่ 3 หรือ รายงานเรื่องเซลล์"></label>
+  <label class="fl"><b>ครูผู้สั่ง <span class="muted" style="font-weight:400">(ไม่ใส่ก็ได้)</span></b><input type="text" data-td="teacher" value="${esc(d.teacher)}" placeholder="เช่น ครูสมศรี"><span class="small muted">แอปจำชื่อครูของแต่ละวิชาไว้ ครั้งหน้าไม่ต้องพิมพ์ซ้ำ</span></label>
+  <div class="fl"><b>ส่งเมื่อไร</b><div class="opts">${dueChips}</div><label class="small muted dateopt">หรือเลือกวันที่ <input type="date" data-td="due" value="${d.due}"></label>${hint?`<span class="small muted">${hint}</span>`:''}</div>
+  <div class="fl"><b>ประเภท</b><div class="opts">${Object.entries(TTYPE).map(([k,l])=>`<button class="opt" data-ttype="${k}" aria-pressed="${d.type===k}">${l}</button>`).join('')}</div>
+  <label class="ckline"><input type="checkbox" data-td="group" ${d.group?'checked':''}> งานกลุ่ม</label></div>
+  <div class="fl"><b>งานนี้ใช้เวลาประมาณเท่าไร</b><div class="opts g3">${[1,2,4].map(n=>`<button class="opt" data-tsize="${n}" aria-pressed="${d.size===n}"><b>${TSIZE[n]}</b><small>${n===4?'4 ช่วง แบ่งหลายวัน':n+' ช่วง'}</small></button>`).join('')}</div><span class="small muted">1 ช่วง = ${S.settings.slot} นาที ตามที่ตั้งไว้ในหน้าตั้งค่า</span></div>
+  ${pv}
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button class="btn primary lg" data-act="tsave">${edit?'บันทึกการแก้ไข':'บันทึกงาน'}</button><span class="small bad">${esc(tMsg)}</span></div></div>`;
+}
+function taskManage(t){
+  const {date:today,min}=nowInfo(),n=tDays(t),open=t.status==='open',od=open&&n<0;
+  const fut=tSlots(t.id).filter(x=>!x.done&&(x.date>today||(x.date===today&&x.e>=min)));
+  const nc=nextClasses(t.c,2);
+  const del=confirmTDel===t.id?`<div class="confirmbox"><span class="small">ลบงานนี้ทิ้ง? (ใช้เมื่อใส่ผิด)</span><button class="btn sm" data-tdel="${t.id}">ลบงาน</button><button class="btn sm" data-act="tdelno">ไม่ลบ</button></div>`:`<button class="btn sm" data-taskdel="${t.id}">ลบงานนี้ (ใส่ผิด)</button>`;
+  const head=`<div class="thd"><button class="btn" data-act="tback">← กลับ</button></div>
+  <div><span class="small" style="font-weight:600;color:${od?'var(--exam)':'var(--muted)'}">${open?(od?'เลยกำหนดส่งมา '+(-n)+' วัน':dueLabel(t)):t.status==='sent'?'ส่งแล้วเมื่อ '+thDate(t.sentDate||t.due):'ครูยกเลิกงานนี้แล้ว'}</span>
+  <h2>${esc(t.name)}</h2><div class="small muted">${esc(tSubName(t))}${t.teacher?' · '+esc(t.teacher):''} · กำหนดส่ง ${dueText(t)}</div></div>`;
+  if(!open)return `<div class="tform">${head}<button class="mopt" data-treopen="${t.id}"><span><b>ยังไม่ได้ส่ง เปิดงานนี้อีกครั้ง</b><small>กลับไปอยู่ในรายการงานที่ต้องส่ง</small></span></button><div>${del}</div></div>`;
+  return `<div class="tform">${head}<b>งานนี้เป็นยังไงแล้ว</b>
+  <button class="mopt main" data-tsent="${t.id}"><span class="ic">✓</span><span><b>ส่งแล้ว</b><small>${od?`บันทึกว่าส่งช้า ${-n} วัน`:'ย้ายไปประวัติการส่งงาน'}</small></span></button>
+  <button class="mopt" data-tready="${t.id}"><span><b>${t.ready?'ยังไม่เสร็จ ต้องทำต่อ':'ทำเสร็จแล้ว รอส่ง'}</b><small>${t.ready?'แอปจะจัดเวลาทำให้อีกครั้ง':'แอปจะหยุดจัดเวลาทำงานนี้'}</small></span></button>
+  <div class="mbox"><b>ครูให้เลื่อนส่ง</b><span class="small muted">เลือกวันส่งใหม่ แอปจะจัดเวลาทำให้ใหม่</span><div class="opts">${nc.map((x,i)=>`<button class="opt" data-tmove="${t.id}|${x.date}|${x.t}">${i?'อีก 2 คาบ':'คาบหน้า'}<small>${thDate(x.date)} · ${x.t}</small></button>`).join('')}<label class="small muted dateopt">เลือกวันที่ <input type="date" data-tmovedate="${t.id}" value="${t.due}"></label></div></div>
+  <div class="mbox"><b>เวลาที่แอปจัดให้ทำ</b>${t.ready?'<span class="small muted">หยุดจัดเวลาแล้ว เพราะทำเสร็จแล้ว</span>':fut.length?fut.map(x=>`<span class="mono small">${thDate(x.date)} · ${hm(x.s)}–${hm(x.e)}</span>`).join(''):'<span class="small muted">ยังไม่มีช่วงที่จัดไว้</span>'}</div>
+  <button class="mopt" data-tedit="${t.id}"><span><b>แก้ไขรายละเอียดงาน</b><small>ชื่องาน ครู ประเภท ขนาดงาน</small></span></button>
+  <button class="mopt" data-tcancelt="${t.id}"><span><b>ครูยกเลิกงานนี้ / ไม่ต้องส่งแล้ว</b><small>เก็บไว้ในประวัติ</small></span></button>
+  <div>${del}</div></div>`;
+}
+// คลิกที่เกี่ยวกับงาน คืนค่า true ถ้าจัดการแล้ว
+function taskClick(t){
+  const D=t.dataset,{date:today}=nowInfo(),top=()=>window.scrollTo(0,0);
+  if('tsub' in D){draft.c=D.tsub;if(!draft.tt)draft.teacher=S.teachers[D.tsub]||'';render();return true}
+  if(D.tdue){const[a,b]=D.tdue.split('|');draft.due=a;draft.dueT=b||'';render();return true}
+  if(D.ttype){draft.type=D.ttype;if(!draft.st)draft.size=TDEF[D.ttype]||1;render();return true}
+  if(D.tsize){draft.size=+D.tsize;draft.st=true;render();return true}
+  if(D.tsent){const x=tById(D.tsent);if(x){x.status='sent';x.sentDate=today}if(tv&&tv.mode==='manage')tv=null;generate();render();return true}
+  if(D.tready){const x=tById(D.tready);if(x)x.ready=!x.ready;generate();render();return true}
+  if(D.tman){tv={mode:'manage',id:D.tman};confirmTDel=null;tab='task';render();top();return true}
+  if(D.tmove){const[id,dt,tm]=D.tmove.split('|'),x=tById(id);if(x){x.due=dt;x.dueT=tm||'';x.status='open'}generate();render();return true}
+  if(D.tedit){const x=tById(D.tedit);if(x){draft={...newDraft(),...x,tt:true,st:true};tv={mode:'edit',id:x.id};tMsg=''}render();top();return true}
+  if(D.tcancelt){const x=tById(D.tcancelt);if(x){x.status='cancel';x.sentDate=today}tv=null;generate();render();return true}
+  if(D.treopen){const x=tById(D.treopen);if(x){x.status='open';delete x.sentDate}generate();render();return true}
+  if(D.taskdel){confirmTDel=D.taskdel;render();return true}
+  if(D.tdel){S.tasks=S.tasks.filter(x=>x.id!==D.tdel);S.plan=S.plan.filter(x=>x.task!==D.tdel);confirmTDel=null;tv=null;generate();render();return true}
+  const act=D.act;
+  if(act==='tnew'){draft=newDraft();tv={mode:'add'};tMsg='';tab='task';render();top();return true}
+  if(act==='tback'){tv=null;draft=null;confirmTDel=null;tMsg='';render();return true}
+  if(act==='tdelno'){confirmTDel=null;render();return true}
+  if(act==='tsave'){
+    tMsg=draft.c==null?'เลือกวิชาก่อน':!draft.name.trim()?'ใส่ชื่องานก่อน':!draft.due?'เลือกวันส่งก่อน':'';
+    if(tMsg){render();return true}
+    const o={c:draft.c,name:draft.name.trim(),teacher:draft.teacher.trim(),due:draft.due,dueT:draft.dueT||'',type:draft.type,size:draft.size,group:!!draft.group};
+    if(draft.c&&o.teacher)S.teachers[draft.c]=o.teacher;
+    const x=draft.id&&tById(draft.id);
+    if(x)Object.assign(x,o);else S.tasks.push({id:uid(),...o,status:'open',ready:false,created:today});
+    tv=null;draft=null;generate();render();top();return true}
+  return false;
+}
+
 let openTN=null,tab='day',sel=nowInfo().date,confirmReset=false,confirmDel=null,pendingImport=null,bkMsg=null,bkCode='',showAdd=false;
 const $=id=>document.getElementById(id);
 
@@ -485,6 +698,8 @@ function header(){
   if(ex.length)h+=`<div class="banner info"><span class="small">ยังไม่มีวันสอบจริงของ <b>${ex.map(s=>esc(s.sh)).join(', ')}</b> ตอนนี้ใช้วันตัวอย่างไปก่อน ใส่วันจริงได้ที่แท็บ “สอบในโรงเรียน”</span><button class="btn" data-go="subj">ใส่วันสอบ</button></div>`;
   if(LINE_OA&&!S.lineAsk&&S.plan.filter(x=>x.done).length>=3)h+=`<div class="banner info"><span class="small">ใช้มาหลายวันแล้ว เก่งมาก! ติดตาม <b>Sea To University</b> ทาง LINE เพื่อรับข่าวฟีเจอร์ใหม่ ทิปส์อ่านหนังสือ และวันสำคัญของการสอบ</span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn line" data-act="lineoa">ติดตาม LINE</button><button class="btn" data-act="linelater">ไว้ทีหลัง</button></span></div>`;
   if(S.sample)h+=`<div class="banner info"><span class="small">ตอนนี้เป็น<b>ข้อมูลตัวอย่าง</b> พร้อมใช้จริงเมื่อไรให้ลบตัวอย่างแล้วเริ่มกรอกของตัวเอง</span><button class="btn" data-act="clearsample">ลบตัวอย่าง เริ่มของฉัน</button></div>`;
+  const odT=tOverdue();
+  if(odT.length&&tab!=='task'){const o=odT[0];h+=`<div class="banner" style="background:var(--exam-soft)"><span class="small"><b style="color:var(--exam)">ค้างส่ง ${odT.length} ชิ้น:</b> ${esc(o.name)} (${esc(tSubName(o))}) ${dueLabel(o)}${odT.length>1?` และอีก ${odT.length-1} ชิ้น`:''}</span><span style="display:flex;gap:6px;flex-wrap:wrap">${odT.length===1?`<button class="btn danger" data-tsent="${o.id}">ส่งแล้ว</button><button class="btn" data-tman="${o.id}">จัดการ</button>`:'<button class="btn danger" data-go="task">ดูงานค้าง</button>'}</span></div>`}
   if(missed)h+=`<div class="banner"><span class="small">มี ${missed} ช่วงอ่านที่ผ่านไปแล้วแต่ยังไม่ได้ติ๊ก งานที่ค้างจะถูกยกไปวันถัดไป</span><button class="btn primary" data-act="replan">จัดแผนใหม่</button></div>`;
   $('banner').innerHTML=h;$('banner').style.display=h?'flex':'none';$('banner').style.flexDirection='column';$('banner').style.gap='8px';
 }
@@ -532,14 +747,16 @@ function summary(){
   const next=left[0];
   const due=S.plan.filter(x=>isOn(x.code)&&(x.done||x.date<today||(x.date===today&&x.e<min)));
   const pct=due.length?Math.round(due.filter(x=>x.done).length/due.length*100):null;
-  const totalReq=active().reduce((a,s)=>a+required(s.c).total,0),allDone=S.plan.filter(x=>x.done&&!isG(x.code)&&isOn(x.code)).length;
+  const totalReq=active().reduce((a,s)=>a+required(s.c).total,0),allDone=S.plan.filter(x=>x.done&&!isG(x.code)&&!isT(x.code)&&isOn(x.code)).length;
   const cov=totalReq?Math.min(100,Math.round(allDone/totalReq*100)):0;
   const risk=riskList()[0];
-  const hrs=(td.length*S.settings.slot/60);
+  const hrs=(td.length*S.settings.slot/60),tdT=td.filter(x=>x.kind==='task').length;
+  const {date:td0}=nowInfo(),nt=(S.tasks||[]).filter(t=>t.status==='open'&&t.due>=td0).sort((a,b)=>a.due<b.due?-1:1)[0];
   return `<div class="dash">
-  <div class="tile"><span class="lab">วันนี้ต้องอ่าน</span><span class="big">${+hrs.toFixed(1)} <small>ชม. · ${td.length} ช่วง</small></span>
-    <span class="sub">${td.length?(left.length?`เสร็จ ${tdDone} เหลือ ${left.length} · ถัดไป ${hm(next.s)} ${esc(M(next.code).sh)}`:`ครบแล้ว ${tdDone}/${td.length} ช่วง เยี่ยมมาก`):'วันนี้ไม่มีช่วงอ่าน'}</span></div>
+  <div class="tile"><span class="lab">${tdT?'วันนี้ต้องทำ':'วันนี้ต้องอ่าน'}</span><span class="big">${+hrs.toFixed(1)} <small>ชม. · ${td.length} ช่วง</small></span>
+    <span class="sub">${tdT?`อ่าน ${td.length-tdT} · ทำงาน ${tdT} · `:''}${td.length?(left.length?`เสร็จ ${tdDone} เหลือ ${left.length} · ถัดไป ${hm(next.s)} ${esc(M(next.code).sh)}`:`ครบแล้ว ${tdDone}/${td.length} ช่วง เยี่ยมมาก`):'วันนี้ไม่มีช่วงอ่าน'}</span></div>
   ${risk?`<div class="tile risk" style="--sc:${risk.gap>0?'var(--warn)':col(risk.s.c)}"><span class="lab">วิชาที่เสี่ยงที่สุด</span><span class="big">${esc(risk.s.sh)}</span><span class="sub">${risk.why}</span></div>`:''}
+  ${nt?`<div class="tile risk" style="--sc:var(--warn)"><span class="lab">งานใกล้ส่งที่สุด</span><span class="big">${esc(nt.name)}</span><span class="sub">${esc(tSubName(nt))} · ส่ง ${dueText(nt)} · ${dueLabel(nt)}</span></div>`:''}
   ${goalOn()?goalTile():''}
   <div class="tile"><span class="lab">ทำตามแผน</span><span class="big">${pct==null?'–':pct+'%'} <small>${pct==null?'ยังไม่ถึงเวลาอ่าน':'ของช่วงที่ถึงเวลาแล้ว'}</small></span>
     <div class="pbar" title="ความคืบหน้ารวม"><i style="width:${cov}%"></i></div><span class="sub">อ่านไปแล้ว ${cov}% ของทั้งหมดก่อนสอบ</span></div>
@@ -552,13 +769,15 @@ function viewDay(){
   let strip='';
   for(let d=start;d<=end;d=addD(d,1)){
     const dt=pd(d),n=S.plan.filter(x=>x.date===d).length,ex=active().some(s=>S.subjects[s.c].exam===d)||(goalOn()&&S.goal.examDate===d)||(S.goal?.deadlines||[]).some(x=>x.date===d);
-    strip+=`<button class="day${ex?' exam':''}" data-day="${d}" aria-pressed="${d===sel}"><div class="dw">${DW[dt.getDay()]}</div><div class="dn">${dt.getDate()}</div><div class="dots">${'<i></i>'.repeat(Math.min(n,6))}</div></button>`;
+    const du=!ex&&(S.tasks||[]).some(t=>t.status==='open'&&t.due===d);
+    strip+=`<button class="day${ex?' exam':du?' due':''}" data-day="${d}" aria-pressed="${d===sel}"><div class="dw">${DW[dt.getDay()]}</div><div class="dn">${dt.getDate()}</div><div class="dots">${'<i></i>'.repeat(Math.min(n,6))}</div></button>`;
   }
   const dt=pd(sel),wd=dt.getDay(),items=[];
   classesOn(sel,true).forEach(k=>items.push({t:'cls',s:toMin(k.s),e:toMin(k.e),k}));
   active().forEach(s=>{const x=S.subjects[s.c];if(x.exam===sel)items.push({t:'exam',s:toMin(x.et),e:toMin(x.ee),c:s.c,real:x.real})});
   if(goalOn()&&S.goal.examDate===sel)items.push({t:'gexam',s:8*60,e:16*60});
   (S.goal?.deadlines||[]).filter(x=>x.date===sel).forEach(x=>items.push({t:'dl',s:-1,e:-1,x}));
+  (S.tasks||[]).filter(t=>t.status==='open'&&t.due===sel).forEach(t=>items.push({t:'tdue',s:t.dueT?toMin(t.dueT):-1,e:-1,task:t}));
   S.plan.filter(x=>x.date===sel&&isOn(x.code)).forEach(x=>items.push({t:'study',s:x.s,e:x.e,x}));
   items.sort((a,b)=>a.s-b.s);
   const studyN=items.filter(i=>i.t==='study').length,doneN=items.filter(i=>i.t==='study'&&i.x.done).length;
@@ -568,7 +787,10 @@ function viewDay(){
     if(i.t==='gexam')return `<div class="row examrow"><div class="t">ทั้งวัน</div><div class="main"><div class="title">${esc(S.goal.title||LV().goalTitle)}</div><div class="tip">วันสอบเป้าหมาย นอนให้พอ เตรียมบัตรและอุปกรณ์ตั้งแต่คืนก่อน</div></div><div></div></div>`;
     if(i.t==='dl')return `<div class="row examrow" style="border-width:1px"><div class="t">วันสำคัญ</div><div class="main"><div class="title">📌 ${esc(i.x.title)}</div></div><div></div></div>`;
     if(i.t==='exam')return `<div class="row examrow">${tm}<div class="main"><div class="chip"><span class="sw" style="background:${col(i.c)}"></span>${i.c}</div><div class="title">สอบ ${esc(M(i.c).th)}${i.real?'':' <span class="kind">วันตัวอย่าง</span>'}</div><div class="tip">นอนให้พอ เตรียมบัตรนักศึกษาและอุปกรณ์ตั้งแต่คืนก่อน</div></div><div></div></div>`;
+    if(i.t==='tdue'){const t=i.task;return `<div class="row tduerow"><div class="t">${t.dueT||'วันนี้'}</div><div class="main"><div class="chip"><span class="sw" style="background:${tCol(t)}"></span>${esc(tSubName(t))}</div><div class="title">ส่งงาน: ${esc(t.name)}</div><div class="tip">${t.teacher?esc(t.teacher)+' · ':''}${t.ready?'ทำเสร็จแล้ว อย่าลืมพกไปส่ง':'กำหนดส่งวันนี้'}</div></div><div><button class="btn sm danger" data-tsent="${t.id}">ส่งแล้ว</button></div></div>`}
     const x=i.x,past=!x.done&&(x.date<today||(x.date===today&&x.e<min)),moved=past&&x.moved,missed=past&&!x.moved;
+    if(x.kind==='task'){const t=tById(x.task);if(!t)return '';
+      return `<div class="row study task${x.done?' done':''}${missed?' missed':''}${moved?' moved':''}" style="--sc:var(--warn)"><div class="t"><b>${hm(x.s)}</b><span>ถึง ${hm(x.e)}</span></div><div class="main"><div class="chip"><span class="sw" style="background:${tCol(t)}"></span>${esc(tSubName(t))}<span class="kind tk">${t.type==='quiz'?'เตรียมสอบย่อย':'ทำงาน'}</span></div><div class="title">${esc(t.name)}${x.part?` · ช่วง ${x.part}/${t.size||1}`:''}</div>${missed?'<div class="tip" style="color:var(--warn)">ยังไม่ได้ทำ แอปจะหาเวลาใหม่ให้</div>':`<div class="tip" style="color:var(--warn)">ส่ง ${dueText(t)} · ${dueLabel(t)}${t.group?' · งานกลุ่ม':''}</div>`}${x.done?'<div class="donebadge">✓ ทำช่วงนี้เสร็จแล้ว</div>':''}${!x.done&&t.status==='open'&&!t.ready?`<div class="rate"><button data-tready="${t.id}">งานเสร็จทั้งชิ้นแล้ว</button><button data-tman="${t.id}">ดูงาน</button></div>`:''}${x.done?'':`<details class="edit"><summary>แก้ช่วงนี้</summary><div class="form"><input type="time" data-stime="${x.id}" value="${hm(x.s)}" aria-label="เวลาเริ่ม"><button class="btn sm" data-delslot="${x.id}">ลบช่วงนี้</button></div></details>`}</div><button class="check" data-tick="${x.id}" aria-pressed="${x.done}" aria-label="${x.done?'ยกเลิกติ๊ก':'ติ๊กว่าทำเสร็จ'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>`}
     const rate=x.done?`<div class="rate"><span class="small muted">รอบนี้รู้สึกว่า</span>${[['easy','ง่าย'],['ok','พอได้'],['hard','ยาก']].map(([k,l])=>`<button data-rate="${k}" data-id="${x.id}" aria-pressed="${x.rating===k}">${l}</button>`).join('')}</div>`:'';
     return `<div class="row study${x.done?' done':''}${missed?' missed':''}${moved?' moved':''}" style="--sc:${col(x.code)}"><div class="t"><b>${hm(x.s)}</b><span>ถึง ${hm(x.e)}</span></div><div class="main"><div class="chip"><span class="sw" style="background:${col(x.code)}"></span>${esc(M(x.code).sh)}<span class="kind ${x.kind}${x.eve?' eve':''}">${x.eve?'ก่อนสอบ · ':''}${x.kind==='goal'?esc(LV().goalTab):KIND[x.kind]}</span></div><div class="title">${slotTitle(x)}</div>${moved?'<div class="tip">ยกไปวันถัดไปแล้ว ถ้าทำไปแล้วกดติ๊กได้</div>':missed?'<div class="tip" style="color:var(--warn)">ยังไม่ได้ทำ</div>':`<div class="tip">${x.kind==='goal'?PTIP[x.phase]:TIP[x.kind]}${x.pinned?' · <span style="color:var(--accent)">ตั้งเอง</span>':''}</div>`}${x.done?'<div class="donebadge">✓ อ่านเสร็จแล้ว</div>':''}${rate}${x.done?'':`<details class="edit"><summary>แก้ช่วงนี้</summary><div class="form"><input type="time" data-stime="${x.id}" value="${hm(x.s)}" aria-label="เวลาเริ่ม"><select data-ssubj="${x.id}" aria-label="วิชา">${planSubj().map(s=>`<option value="${esc(s.c)}" ${s.c===x.code?'selected':''}>${esc(s.sh)}</option>`).join('')}</select><button class="btn sm" data-delslot="${x.id}">ลบช่วงนี้</button></div></details>`}</div><button class="check" data-tick="${x.id}" aria-pressed="${x.done}" aria-label="${x.done?'ยกเลิกติ๊ก':'ติ๊กว่าอ่านเสร็จ'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>`;
   }).join('');
@@ -771,18 +993,20 @@ function render(){
   header();
   $('yr').textContent=new Date().getFullYear();
   $('lineFoot').hidden=!LINE_OA;
+  {const n=tOverdue().length,b=$('tbadge');b.textContent=n;b.hidden=!n}
   document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
   $('wrap').dataset.level=S.level||'';$('tabs').hidden=!S.level;$('goaltab').textContent=S.level?LV().goalTab:'เป้าหมาย';
   if(!S.level&&tab!=='sched'&&tab!=='fb'){$('banner').style.display='none';$('view').innerHTML=picker();return}
   if(tab==='goal'&&!S.goal)S.goal=newGoal(S.level);
-  $('view').innerHTML=tab==='day'?viewDay():tab==='plan'?viewPlan():tab==='subj'?viewSubj():tab==='fb'?viewFb():tab==='goal'?viewGoal():viewSched();
+  $('view').innerHTML=tab==='day'?viewDay():tab==='plan'?viewPlan():tab==='subj'?viewSubj():tab==='fb'?viewFb():tab==='task'?viewTask():tab==='goal'?viewGoal():viewSched();
   if(tab==='fb')fbUpdate();
   const a=document.querySelector('.day[aria-pressed="true"]');if(a)a.scrollIntoView({block:'nearest',inline:'center'});
 }
 
 document.addEventListener('click',e=>{
   const t=e.target.closest('button');if(!t)return;
-  if(t.dataset.tab){tab=t.dataset.tab;render();return}
+  if(t.dataset.tab){tab=t.dataset.tab;tv=null;draft=null;render();return}
+  if(taskClick(t))return;
   if(t.dataset.level){const lv=t.dataset.level,first=!S.level;S.level=lv;S.goal=newGoal(lv);
     if(first&&!S.subjList.length){S.settings={...S.settings,...LEVELS[lv].settings,capDays:[...LEVELS[lv].settings.capDays]}}
     if(first)tab='day';generate();render();window.scrollTo(0,0);return}
@@ -872,16 +1096,19 @@ document.addEventListener('click',e=>{
     S.exceptions.push({id:uid(),type:'extra',date:sel,s:st,e:en,c,label:c?'':($('x-label').value.trim()||'นัดพิเศษ')});generate();render();return}
   if(act==='replan'){const {date:today,min}=nowInfo();S.plan.forEach(x=>{if(!x.done&&(x.date<today||(x.date===today&&x.e<min)))x.moved=true});generate();render()}
   if(t.dataset.askdel){confirmDel=t.dataset.askdel;render();return}
-  if(t.dataset.delsubj){const c=t.dataset.delsubj;S.subjList=S.subjList.filter(x=>x.c!==c);delete S.subjects[c];S.plan=S.plan.filter(x=>x.code!==c);S.classes.forEach(k=>{if(k.c===c)k.c=''});confirmDel=null;generate();render();return}
+  if(t.dataset.delsubj){const c=t.dataset.delsubj;S.subjList=S.subjList.filter(x=>x.c!==c);delete S.subjects[c];S.plan=S.plan.filter(x=>x.code!==c);S.classes.forEach(k=>{if(k.c===c)k.c=''});(S.tasks||[]).forEach(x=>{if(x.c===c)x.c=''});confirmDel=null;generate();render();return}
   if(t.dataset.confirm){S.subjects[t.dataset.confirm].real=true;save();render();return}
   if(act==='reset'){confirmReset=true;render()}
   if(act==='reset-no'){confirmReset=false;render()}
   if(act==='reset-yes'){confirmReset=false;S=blank();save();sel=nowInfo().date;tab='day';render()}
 });
-document.addEventListener('input',e=>{if(tab==='fb')fbUpdate()});
+document.addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.td&&draft&&t.dataset.td!=='due'){if(t.type==='checkbox')draft[t.dataset.td]=t.checked;else{draft[t.dataset.td]=t.value;if(t.dataset.td==='teacher')draft.tt=true}return}if(tab==='fb')fbUpdate()});
 document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.tnbox){if(d.open)openTN=d.dataset.tnbox;else if(openTN===d.dataset.tnbox)openTN=null}},true);
 document.addEventListener('change',e=>{
   const t=e.target;
+  if(t.dataset.td==='due'&&draft){draft.due=t.value;draft.dueT='';render();return}
+  if(t.dataset.td==='group'&&draft){draft.group=t.checked;return}
+  if(t.dataset.tmovedate&&t.value){const x=tById(t.dataset.tmovedate);if(x){x.due=t.value;x.dueT='';x.status='open'}generate();render();return}
   if(t.dataset.stime||t.dataset.ssubj){const x=S.plan.find(p=>p.id===(t.dataset.stime||t.dataset.ssubj));if(!x||!t.value)return;
     if(t.dataset.stime){const a=toMin(t.value);x.s=a;x.e=a+S.settings.slot}
     else{x.code=t.value;Object.assign(x,nextKind(x.code,x.id));x.eve=false}
