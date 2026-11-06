@@ -214,6 +214,7 @@ tr.tnrow td{padding-top:0;background:var(--bg)}
 .site-by{font-size:.9rem}
 .site-addr{font-size:.85rem;color:var(--muted);max-width:34em;text-wrap:balance}
 .site-addr span{white-space:nowrap}
+.site-ver{font-size:.72rem;color:var(--muted);font-family:var(--mono);opacity:.8}
 .site-copy{font-size:.78rem;color:var(--muted);margin-top:6px}
 .tbadge{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:99px;background:var(--exam);color:var(--surface);font-size:.7rem;line-height:18px;text-align:center;font-weight:600}
 .btn.danger{background:var(--exam);border-color:var(--exam);color:var(--surface)}
@@ -310,6 +311,7 @@ a.btn{text-decoration:none;display:inline-block}
     <div class="site-by">โดย <b>ปรุงยาเภสัช</b></div>
     <div class="site-addr">📍 <span>3/5 หมู่ 1</span> <span>ตำบลอิปัน</span> <span>อำเภอพระแสง</span> <span>จังหวัดสุราษฎร์ธานี</span></div>
     <div class="site-copy">© <span id="yr">2026</span> ปรุงยาเภสัช สงวนลิขสิทธิ์</div>
+    <div class="site-ver">เวอร์ชัน <span id="appver"></span></div>
   </footer>
 </div>
 
@@ -384,6 +386,8 @@ if(!S.since){S.since=ds(new Date());try{localStorage.setItem(KEY,JSON.stringify(
 // ใส่ลิงก์ Google Form ตรงนี้ถ้ามี เช่น 'https://forms.gle/xxxx' ถ้าว่างไว้ ผู้ใช้จะส่งความเห็นผ่าน LINE แทน
 const FEEDBACK_FORM='';
 // ใส่ลิงก์ LINE OA ตรงนี้ เช่น 'https://lin.ee/xxxx' ถ้าว่างไว้ ปุ่มติดตาม LINE จะซ่อนทั้งหมด
+// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v8)
+const APP_VER='v8';
 const LINE_OA='';
 // กลุ่ม LINE OpenChat ของผู้ใช้แอป (ห้องเดียว ม.ต้น + ม.ปลาย) ใส่ลิงก์เชิญ เช่น 'https://line.me/ti/g2/xxxx' ถ้าว่างไว้ ปุ่มเข้ากลุ่มจะซ่อนทั้งหมด
 const LINE_GROUP='';
@@ -717,6 +721,8 @@ function header(){
   if(S.sample)h+=`<div class="banner info"><span class="small">ตอนนี้เป็น<b>ข้อมูลตัวอย่าง</b> พร้อมใช้จริงเมื่อไรให้ลบตัวอย่างแล้วเริ่มกรอกของตัวเอง</span><button class="btn" data-act="clearsample">ลบตัวอย่าง เริ่มของฉัน</button></div>`;
   const odT=tOverdue();
   if(odT.length&&tab!=='task'){const o=odT[0];h+=`<div class="banner" style="background:var(--exam-soft)"><span class="small"><b style="color:var(--exam)">ค้างส่ง ${odT.length} ชิ้น:</b> ${esc(o.name)} (${esc(tSubName(o))}) ${dueLabel(o)}${odT.length>1?` และอีก ${odT.length-1} ชิ้น`:''}</span><span style="display:flex;gap:6px;flex-wrap:wrap">${odT.length===1?`<button class="btn danger" data-tsent="${o.id}">ส่งแล้ว</button><button class="btn" data-tman="${o.id}">จัดการ</button>`:'<button class="btn danger" data-go="task">ดูงานค้าง</button>'}</span></div>`}
+  const am=S.autoMsg;
+  if(am&&am.date===today&&!am.seen)h+=`<div class="banner info"><span class="small">มี <b>${am.n} ช่วง</b>ที่ผ่านไปแล้วแต่ยังไม่ได้ติ๊ก แอปย้ายเนื้อหาที่ค้างมาไว้ในแผนข้างหน้าให้แล้ว ถ้าอ่านหรือทำไปแล้ว กลับไปติ๊กย้อนหลังได้ แผนจะปรับให้อีกครั้ง</span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-act="amview">ดูวันที่ค้าง</button><button class="btn" data-act="amok">รับทราบ</button></span></div>`;
   if(missed)h+=`<div class="banner"><span class="small">มี ${missed} ช่วงอ่านที่ผ่านไปแล้วแต่ยังไม่ได้ติ๊ก งานที่ค้างจะถูกยกไปวันถัดไป</span><button class="btn primary" data-act="replan">จัดแผนใหม่</button></div>`;
   $('banner').innerHTML=h;$('banner').style.display=h?'flex':'none';$('banner').style.flexDirection='column';$('banner').style.gap='8px';
 }
@@ -1009,7 +1015,7 @@ function viewFb(){
 }
 function render(){
   header();
-  $('yr').textContent=new Date().getFullYear();
+  $('yr').textContent=new Date().getFullYear();$('appver').textContent=APP_VER;
   $('lineFoot').hidden=!LINE_OA;$('grpFoot').hidden=!LINE_GROUP;
   {const n=tOverdue().length,b=$('tbadge');b.textContent=n;b.hidden=!n}
   document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
@@ -1079,6 +1085,8 @@ document.addEventListener('click',e=>{
     S.dayCap[sel]=Math.max(capFor(sel),n+1);generate();render();return}
   if(act==='addk'){S.classes.push({id:uid(),d:1,s:'08:00',e:'09:00',c:S.subjList[0]?.c||''});save();render();return}
   if(act==='startadd'){tab='subj';showAdd=true;render();setTimeout(()=>{const i=$('n-th');if(i)i.focus()},0);return}
+  if(act==='amok'){if(S.autoMsg)S.autoMsg.seen=true;save();render();return}
+  if(act==='amview'){if(S.autoMsg){S.autoMsg.seen=true;tab='day';tv=null;sel=S.autoMsg.from}save();render();window.scrollTo(0,0);return}
   if(act==='lineoa'){openLine();return}
   if(act==='grpshow'){grpOpen=true;grpMsg='';render();window.scrollTo(0,0);return}
   if(act==='grpclose'){grpOpen=false;render();return}
@@ -1162,6 +1170,19 @@ document.addEventListener('change',e=>{
 });
 
 if(S.subjList.length&&!S.plan.length)generate();
+// เปิดแอปครั้งแรกของวัน: ช่วงที่ผ่านไปแล้วแต่ยังไม่ติ๊ก ถือว่ายังไม่ได้ทำ แล้วจัดแผนข้างหน้าใหม่ให้อัตโนมัติ
+function dailyCheck(){
+  const {date:today}=nowInfo();
+  if(S.lastOpen===today)return false;
+  S.lastOpen=today;
+  if(!S.setupDone){save();return false}
+  const miss=S.plan.filter(x=>!x.done&&!x.moved&&x.date<today&&isOn(x.code));
+  miss.forEach(x=>x.moved=true);
+  if(miss.length)S.autoMsg={date:today,n:miss.length,from:miss[miss.length-1].date};
+  sel=today;generate();return true;
+}
+dailyCheck();
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&dailyCheck())render()});
 render();
 </script>
 
