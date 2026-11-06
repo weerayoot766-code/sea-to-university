@@ -77,6 +77,12 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--bg)}
 .banner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-radius:10px;background:var(--warn-soft);color:var(--fg)}
 .banner.info{background:var(--accent-soft)}
+.ig{border:2px solid var(--accent);background:var(--surface);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.ig h2{margin:0;font-size:1.05rem}
+.ig ol{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:8px}
+.ig li{line-height:1.5}
+.ig .shr{display:inline-flex;vertical-align:-5px;width:24px;height:24px;align-items:center;justify-content:center;border-radius:6px;background:var(--accent-soft);color:var(--accent)}
+.ig .acts{display:flex;gap:8px;flex-wrap:wrap}
 .strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
 .day{flex:0 0 auto;width:52px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 0;text-align:center;cursor:pointer;color:var(--fg)}
 .day .dw{font-size:.75rem;color:var(--muted)}
@@ -295,6 +301,7 @@ a.btn{text-decoration:none;display:inline-block}
     <button role="tab" data-tab="goal" aria-selected="false" id="goaltab">เป้าหมาย</button>
     <button role="tab" data-tab="sched" aria-selected="false">ตารางเรียนและตั้งค่า</button>
   </nav>
+  <div id="installGuide" class="ig" hidden></div>
   <div id="banner"></div>
   <main id="view"></main>
   <div class="foot"><button class="btn line" data-act="grpshow" id="grpFoot" hidden>👥 เข้ากลุ่มเพื่อนอ่านหนังสือ</button><button class="btn line" data-act="lineoa" id="lineFoot" hidden>🔔 ติดตามข่าวและฟีเจอร์ใหม่ทาง LINE</button><button class="btn" data-tab="fb">💬 ส่งความเห็นเกี่ยวกับแอป</button></div>
@@ -1161,9 +1168,31 @@ render();
 <script>
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 let deferredPrompt=null;const ib=document.getElementById('installBtn');
+// iPhone/iPad และเบราว์เซอร์ในแอป (LINE, Facebook, IG) ไม่มีหน้าต่างติดตั้งอัตโนมัติ จึงแสดงวิธีติดตั้งเองแทน
+const ua=navigator.userAgent||'';
+const isIOS=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const inApp=/\bLine\/|FBAN|FBAV|FB_IAB|Instagram|TikTok/i.test(ua);
+const installed=()=>navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
+const ig=document.getElementById('installGuide');
+const shareIco='<span class="shr" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7.5 7.5L12 3l4.5 4.5"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg></span>';
+function guideHTML(){
+  if(inApp)return `<h2>เปิดในเบราว์เซอร์ก่อน แล้วค่อยติดตั้ง</h2><p class="small" style="margin:0">ตอนนี้เปิดแอปอยู่ในหน้าเว็บของ LINE หรือแอปโซเชียล ซึ่งติดตั้งลงหน้าจอโฮมไม่ได้</p>
+  <ol><li>กดปุ่ม <b>⋯</b> หรือ <b>⋮</b> ที่มุมจอ</li><li>เลือก <b>เปิดใน${isIOS?' Safari':'เบราว์เซอร์'}</b> (หรือ “เปิดด้วยเบราว์เซอร์อื่น”)</li><li>พอเปิดใน${isIOS?' Safari ':' Chrome '}แล้ว กดปุ่ม <b>ติดตั้งแอป</b> ด้านบนอีกครั้ง</li></ol>
+  <p class="small muted" style="margin:0">ไม่เจอเมนู? คัดลอกลิงก์ไปวางใน${isIOS?' Safari ':' Chrome '}เองได้</p>
+  <div class="acts"><button class="btn" id="igCopy">คัดลอกลิงก์</button><button class="btn" id="igClose">ปิด</button></div><span class="small ok" id="igMsg"></span>`;
+  return `<h2>ติดตั้ง Sea To University ลงหน้าจอโฮม</h2>
+  <ol><li>กดปุ่มแชร์ ${shareIco} ${/ipad/i.test(ua)||navigator.maxTouchPoints>1&&!/iphone/i.test(ua)?'ที่แถบด้านบน':'ที่แถบด้านล่างของ Safari'} <span class="small muted">(ถ้าไม่เห็น ให้กด <b>⋯</b> ก่อน)</span></li><li>เลื่อนหาแล้วเลือก <b>เพิ่มไปยังหน้าจอโฮม</b> (Add to Home Screen)</li><li>กด <b>เพิ่ม</b> ที่มุมขวาบน</li></ol>
+  <p class="small muted" style="margin:0">เปิดจากไอคอนบนหน้าจอโฮมทุกครั้ง แอปจะเปิดเต็มจอ ใช้ได้แม้ไม่มีเน็ต และข้อมูลอยู่ครบกว่าเปิดผ่าน Safari</p>
+  <div class="acts"><button class="btn" id="igClose">เข้าใจแล้ว</button></div>`;
+}
+function showGuide(){ig.innerHTML=guideHTML();ig.hidden=false;ig.scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('igClose').onclick=()=>{ig.hidden=true};
+  const c=document.getElementById('igCopy');if(c)c.onclick=()=>{const m=document.getElementById('igMsg'),u=location.href.split('#')[0];
+    (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(u):Promise.reject()).then(()=>{m.textContent='คัดลอกลิงก์แล้ว'},()=>{m.textContent=u})}}
+if(!installed()&&(isIOS||inApp))ib.hidden=false;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;ib.hidden=false});
-ib.addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;ib.hidden=true});
-window.addEventListener('appinstalled',()=>{ib.hidden=true});
+ib.addEventListener('click',async()=>{if(!deferredPrompt){if(ig.hidden)showGuide();else ig.hidden=true;return}deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;ib.hidden=true});
+window.addEventListener('appinstalled',()=>{ib.hidden=true;ig.hidden=true});
 </script>
 </body>
 </html>
