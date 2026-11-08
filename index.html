@@ -410,8 +410,8 @@ if(!S.since){S.since=ds(new Date());try{localStorage.setItem(KEY,JSON.stringify(
 // ใส่ลิงก์ Google Form ตรงนี้ถ้ามี เช่น 'https://forms.gle/xxxx' ถ้าว่างไว้ ผู้ใช้จะส่งความเห็นผ่าน LINE แทน
 const FEEDBACK_FORM='';
 // ใส่ลิงก์ LINE OA ตรงนี้ เช่น 'https://lin.ee/xxxx' ถ้าว่างไว้ ปุ่มติดตาม LINE จะซ่อนทั้งหมด
-// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v10)
-const APP_VER='v10';
+// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v11)
+const APP_VER='v11';
 const LINE_OA='';
 // กลุ่ม LINE OpenChat ของผู้ใช้แอป (ห้องเดียว ม.ต้น + ม.ปลาย) ใส่ลิงก์เชิญ เช่น 'https://line.me/ti/g2/xxxx' ถ้าว่างไว้ ปุ่มเข้ากลุ่มจะซ่อนทั้งหมด
 const LINE_GROUP='';
@@ -526,7 +526,7 @@ function viewTcas(){
 // ===== แถบข่าวสาร =====
 // ข่าวที่เขียนเอง: แก้ไฟล์ news.json บน GitHub ได้เลย ไม่ต้องแก้ index.html และไม่ต้องเปลี่ยนเวอร์ชันใน sw.js
 // ข่าวอัตโนมัติ: นับถอยหลังวันสำคัญ TCAS จากตาราง TCAS.cal ด้านบน (เฉพาะ ม.ปลาย) อัปเดตเองทุกวัน
-let newsFeed=[],newsIdx=0,newsHold=false;
+let newsFeed=[],newsIdx=0,newsUntil=0,newsHover=false;
 function loadNews(){
   if(location.protocol==='file:')return;
   fetch('news.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&Array.isArray(j.items)){newsFeed=j.items;renderNews()}}).catch(()=>{});
@@ -548,7 +548,9 @@ function renderNews(){
   el.innerHTML=`<span class="nic">${x.hot?'ด่วน':'ข่าว'}</span><span class="ntx" aria-live="polite">${esc(x.text)}${x.link?` <a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.linkText)} ›</a>`:''}</span>
   <span class="nnav">${it.length>1?`<button data-news="-1" aria-label="ข่าวก่อนหน้า">‹</button><span class="ncnt">${newsIdx+1}/${it.length}</span><button data-news="1" aria-label="ข่าวถัดไป">›</button>`:''}<button data-newshide="${esc(x.id)}" aria-label="ซ่อนข่าวนี้">×</button></span>`;
 }
-setInterval(()=>{if(newsHold||document.hidden||!(window.matchMedia&&matchMedia('(prefers-reduced-motion: no-preference)').matches))return;const n=S.level?newsItems().length:0;if(n>1){newsIdx=(newsIdx+1)%n;renderNews()}},8000);
+// เลื่อนข่าวเองทุก 7 วินาที หยุดชั่วคราวตอนเอาเมาส์ชี้ และ 20 วินาทีหลังกดเลื่อนเอง
+setInterval(()=>{if(newsHover||Date.now()<newsUntil||document.hidden)return;const n=S.level?newsItems().length:0;if(n>1){newsIdx=(newsIdx+1)%n;renderNews()}},7000);
+(()=>{const el=document.getElementById('news');if(!el)return;el.addEventListener('mouseenter',()=>{newsHover=true});el.addEventListener('mouseleave',()=>{newsHover=false})})();
 function newGoal(lv){const L=LEVELS[lv];return {on:true,title:'',examDate:'',weeklyHrs:L.weeklyHrs,subjects:[],scores:[],
   deadlines:L.dates.map(t=>({id:uid(),title:t,date:'',done:false})),checklist:L.check.map(t=>({id:uid(),title:t,done:false}))}}
 function freeCi(){const used=new Set([...S.subjList.map(x=>x.ci),...(S.goal?.subjects||[]).map(x=>x.ci)]);for(let i=0;i<12;i++)if(!used.has(i))return i;return (S.subjList.length+(S.goal?.subjects||[]).length)%12}
@@ -1175,7 +1177,7 @@ document.addEventListener('click',e=>{
     S.dayCap[sel]=Math.max(capFor(sel),n+1);generate();render();return}
   if(act==='addk'){S.classes.push({id:uid(),d:1,s:'08:00',e:'09:00',c:S.subjList[0]?.c||''});save();render();return}
   if(act==='startadd'){tab='subj';showAdd=true;render();setTimeout(()=>{const i=$('n-th');if(i)i.focus()},0);return}
-  if(t.dataset.news){const n=newsItems().length;newsIdx=(newsIdx+ +t.dataset.news+n)%n;newsHold=true;renderNews();return}
+  if(t.dataset.news){const n=newsItems().length;newsIdx=(newsIdx+ +t.dataset.news+n)%n;newsUntil=Date.now()+20000;renderNews();return}
   if(t.dataset.newshide){S.newsHidden=(S.newsHidden||[]).concat([t.dataset.newshide]).slice(-100);save();newsIdx=0;renderNews();return}
   if(act==='amok'){if(S.autoMsg)S.autoMsg.seen=true;save();render();return}
   if(act==='amview'){if(S.autoMsg){S.autoMsg.seen=true;tab='day';tv=null;sel=S.autoMsg.from}save();render();window.scrollTo(0,0);return}
