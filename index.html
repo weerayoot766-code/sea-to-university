@@ -15,6 +15,7 @@
 <title>Sea To University</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,500;0,600;0,700;1,500;1,600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>try{var t=localStorage.getItem('sea2uni-theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <style>
 html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0}
@@ -29,7 +30,7 @@ img{max-width:100%}
   --body:"IBM Plex Sans Thai",system-ui,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,monospace;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+@media (prefers-color-scheme:dark){:root:not([data-theme]){
   --bg:#0d1720; --surface:#14222e; --line:#24384a; --fg:#e4eef5; --muted:#93a8b8;
   --accent:#62b4ec; --accent-soft:#16324a; --teal:#4fd1c7; --teal-soft:#123a3a; --warn:#f0965e; --warn-soft:#3a2518; --exam:#f27b91; --exam-soft:#3d1c24; --olive:#8fc8f2; --sand:#5fd0dc;
   --c0:#6cc48a; --c1:#a6cc5c; --c2:#8ea4f2; --c3:#cf8de2; --c4:#eba06a; --c5:#ee84b0; --c6:#5fc6d6; --c7:#e0c454; --c8:#d1ab78; --c9:#a9b3f0; --c10:#66d1ac; --c11:#ee9a86; color-scheme:dark}}
@@ -37,6 +38,24 @@ img{max-width:100%}
   --bg:#0d1720; --surface:#14222e; --line:#24384a; --fg:#e4eef5; --muted:#93a8b8;
   --accent:#62b4ec; --accent-soft:#16324a; --teal:#4fd1c7; --teal-soft:#123a3a; --warn:#f0965e; --warn-soft:#3a2518; --exam:#f27b91; --exam-soft:#3d1c24; --olive:#8fc8f2; --sand:#5fd0dc;
   --c0:#6cc48a; --c1:#a6cc5c; --c2:#8ea4f2; --c3:#cf8de2; --c4:#eba06a; --c5:#ee84b0; --c6:#5fc6d6; --c7:#e0c454; --c8:#d1ab78; --c9:#a9b3f0; --c10:#66d1ac; --c11:#ee9a86; color-scheme:dark}
+:root[data-theme="sakura"]{--bg:#fdf1f6; --surface:#ffffff; --line:#f1d2e0; --fg:#3b1a2b; --muted:#7f5567;
+  --accent:#c03a78; --accent-soft:#fbe0ec; --teal:#c03a78; --teal-soft:#fbe0ec; --olive:#a3305f; --sand:#d0558c}
+:root[data-theme="mint"]{--bg:#ecf8f2; --surface:#ffffff; --line:#cbe7d9; --fg:#11302a; --muted:#4c6c61;
+  --accent:#12805d; --accent-soft:#d8f1e5; --teal:#12805d; --teal-soft:#d8f1e5; --olive:#0d6448; --sand:#1c9a72}
+:root[data-theme="sunset"]{--bg:#fff4e8; --surface:#ffffff; --line:#f0d9c0; --fg:#3a2414; --muted:#7a5a42;
+  --accent:#c4561a; --accent-soft:#fde4d1; --teal:#c4561a; --teal-soft:#fde4d1; --olive:#9c4012; --sand:#d9702f; --warn:#a13f63; --warn-soft:#f8e0ea}
+:root[data-theme="galaxy"]{--bg:#120d22; --surface:#1d1633; --line:#352a55; --fg:#eee8fc; --muted:#a99dcb;
+  --accent:#b097ff; --accent-soft:#2d2352; --teal:#b097ff; --teal-soft:#2d2352; --olive:#cbb9ff; --sand:#e59bff; --warn:#f0965e; --warn-soft:#3a2518; --exam:#f27b91; --exam-soft:#3d1c24;
+  --c0:#6cc48a; --c1:#a6cc5c; --c2:#8ea4f2; --c3:#cf8de2; --c4:#eba06a; --c5:#ee84b0; --c6:#5fc6d6; --c7:#e0c454; --c8:#d1ab78; --c9:#a9b3f0; --c10:#66d1ac; --c11:#ee9a86; color-scheme:dark}
+:root[data-theme="ocean-night"]{--bg:#06181d; --surface:#0c252c; --line:#1b3f48; --fg:#e2f5f7; --muted:#8fb3b9;
+  --accent:#3fd0c9; --accent-soft:#0f3a3d; --teal:#3fd0c9; --teal-soft:#0f3a3d; --olive:#7fe3dd; --sand:#7fd6ff; --warn:#f0965e; --warn-soft:#3a2518; --exam:#f27b91; --exam-soft:#3d1c24;
+  --c0:#6cc48a; --c1:#a6cc5c; --c2:#8ea4f2; --c3:#cf8de2; --c4:#eba06a; --c5:#ee84b0; --c6:#5fc6d6; --c7:#e0c454; --c8:#d1ab78; --c9:#a9b3f0; --c10:#66d1ac; --c11:#ee9a86; color-scheme:dark}
+.thlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.thbtn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:inherit;font-size:.85rem;cursor:pointer;min-height:44px}
+.thbtn[aria-pressed="true"]{border:2px solid var(--accent);font-weight:600}
+.thsw{width:56px;height:36px;border-radius:10px;border:1px solid rgba(0,0,0,.12);position:relative;overflow:hidden}
+.thsw i{position:absolute;left:8px;right:8px;bottom:7px;height:8px;border-radius:4px}
+.thsw b{position:absolute;right:8px;top:6px;width:12px;height:12px;border-radius:50%}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.55}
 .wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
@@ -251,10 +270,21 @@ tr.tnrow td{padding-top:0;background:var(--bg)}
 .repcta{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
 .repcta>div{display:flex;flex-direction:column}
 .repnick{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.repnick input{font:inherit;min-height:40px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);width:160px}
-.dayhead.dh{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.dayhead.dh .addk{font-weight:500}
-.dayhead.we>span{color:var(--accent)}
-.knone{padding:2px 0 6px}
+/* สีประจำวันแบบไทย */
+.d1{--dc:#f2c230;--dt:#3a2c00}.d2{--dc:#e85d9c;--dt:#fff}.d3{--dc:#2f9e5a;--dt:#fff}.d4{--dc:#f08a24;--dt:#3a1d00}
+.d5{--dc:#3aa0e0;--dt:#062c45}.d6{--dc:#8a4fd1;--dt:#fff}.d0{--dc:#e0433a;--dt:#fff}
+.weekblk{display:flex;flex-direction:column;gap:10px}
+.dayblk{border-radius:16px;padding:4px 12px 8px;background:color-mix(in srgb,var(--dc) 10%,var(--surface));border:1.5px solid color-mix(in srgb,var(--dc) 45%,var(--line))}
+.dayblk .krow{border-bottom:1px dashed color-mix(in srgb,var(--dc) 35%,var(--line))}
+.dayblk .krow:last-child{border-bottom:0}
+.dayhead.dh{display:flex;align-items:center;gap:10px;padding:8px 0 6px}
+.dbadge{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:38px;padding:0 6px;border-radius:12px;background:var(--dc);color:var(--dt);font-family:var(--display);font-weight:700;font-size:1rem;box-shadow:0 2px 0 color-mix(in srgb,var(--dc) 60%,#000)}
+.dayhead .dname{font-size:1.05rem}
+.dsum{font-family:var(--body,inherit);font-weight:500;font-size:.75rem;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--dc) 22%,var(--surface));color:var(--fg)}
+.dayhead.dh .addk{margin-left:auto;font-weight:600;border-color:color-mix(in srgb,var(--dc) 60%,var(--line))}
+.dayhead.dh .addk:hover{background:var(--dc);color:var(--dt);border-color:var(--dc)}
+.knone{padding:2px 0 6px;color:var(--muted)}
+.ktime{display:inline-flex;align-items:center;gap:6px;flex-wrap:nowrap}
 .site-ver{font-size:.72rem;color:var(--muted);font-family:var(--mono);opacity:.8}
 .site-copy{font-size:.78rem;color:var(--muted);margin-top:6px}
 .tbadge{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:99px;background:var(--exam);color:var(--surface);font-size:.7rem;line-height:18px;text-align:center;font-weight:600}
@@ -347,7 +377,7 @@ a.btn{text-decoration:none;display:inline-block}
   <div id="installGuide" class="ig" hidden></div>
   <div id="banner"></div>
   <main id="view"></main>
-  <div class="foot"><button class="btn primary" data-act="repopen" id="repFoot" hidden>📤 ส่งรายงานให้ผู้ปกครอง</button><button class="btn line" data-act="grpshow" id="grpFoot" hidden>👥 เข้ากลุ่มเพื่อนอ่านหนังสือ</button><button class="btn line" data-act="lineoa" id="lineFoot" hidden>🔔 ติดตามข่าวและฟีเจอร์ใหม่ทาง LINE</button><button class="btn" data-tab="fb">💬 ส่งความเห็นเกี่ยวกับแอป</button></div>
+  <div class="foot"><button class="btn" data-act="themego">🎨 เปลี่ยนธีมสี</button><button class="btn primary" data-act="repopen" id="repFoot" hidden>📤 ส่งรายงานให้ผู้ปกครอง</button><button class="btn line" data-act="grpshow" id="grpFoot" hidden>👥 เข้ากลุ่มเพื่อนอ่านหนังสือ</button><button class="btn line" data-act="lineoa" id="lineFoot" hidden>🔔 ติดตามข่าวและฟีเจอร์ใหม่ทาง LINE</button><button class="btn" data-tab="fb">💬 ส่งความเห็นเกี่ยวกับแอป</button></div>
   <footer class="site">
     <div class="site-name">Sea To University</div>
     <div class="site-by">โดย <b>ปรุงยาเภสัช</b></div>
@@ -429,8 +459,8 @@ if(!S.since){S.since=ds(new Date());try{localStorage.setItem(KEY,JSON.stringify(
 // ใส่ลิงก์ Google Form ตรงนี้ถ้ามี เช่น 'https://forms.gle/xxxx' ถ้าว่างไว้ ผู้ใช้จะส่งความเห็นผ่าน LINE แทน
 const FEEDBACK_FORM='';
 // ใส่ลิงก์ LINE OA ตรงนี้ เช่น 'https://lin.ee/xxxx' ถ้าว่างไว้ ปุ่มติดตาม LINE จะซ่อนทั้งหมด
-// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v13)
-const APP_VER='v13';
+// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v15)
+const APP_VER='v15';
 const LINE_OA='';
 // กลุ่ม LINE OpenChat ของผู้ใช้แอป (ห้องเดียว ม.ต้น + ม.ปลาย) ใส่ลิงก์เชิญ เช่น 'https://line.me/ti/g2/xxxx' ถ้าว่างไว้ ปุ่มเข้ากลุ่มจะซ่อนทั้งหมด
 const LINE_GROUP='';
@@ -658,6 +688,25 @@ function repClick(t){
   if(act==='pclose'){const was=pvPreview;hideParent();if(!was){history.replaceState(null,'',location.pathname+location.search)}render();return true}
   return false;
 }
+// ===== ธีมสี (เก็บแยกในคีย์ sea2uni-theme เฉพาะเครื่องนี้) =====
+const THEMES=[
+  {k:'auto',n:'ตามเครื่อง',bg:'linear-gradient(135deg,#f1f6f9 50%,#0d1720 50%)',bar:'#16679f',dot:'#62b4ec'},
+  {k:'light',n:'ทะเลสว่าง',bg:'#f1f6f9',bar:'#16679f',dot:'#1a8aa0'},
+  {k:'dark',n:'ทะเลกลางคืน',bg:'#0d1720',bar:'#62b4ec',dot:'#5fd0dc'},
+  {k:'sakura',n:'ซากุระ',bg:'#fdf1f6',bar:'#c03a78',dot:'#d0558c'},
+  {k:'mint',n:'มินต์',bg:'#ecf8f2',bar:'#12805d',dot:'#1c9a72'},
+  {k:'sunset',n:'พระอาทิตย์ตก',bg:'#fff4e8',bar:'#c4561a',dot:'#d9702f'},
+  {k:'galaxy',n:'กาแล็กซี',bg:'#120d22',bar:'#b097ff',dot:'#e59bff'},
+  {k:'ocean-night',n:'ทะเลเรืองแสง',bg:'#06181d',bar:'#3fd0c9',dot:'#7fd6ff'}];
+const curTheme=()=>{try{return localStorage.getItem('sea2uni-theme')||'auto'}catch(e){return 'auto'}};
+function applyTheme(k){
+  try{localStorage.setItem('sea2uni-theme',k)}catch(e){}
+  if(k==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',k);
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#16679f');
+}
+function themePicker(){const c=curTheme();
+  return `<div class="section" id="themeSec"><h2>ธีมสีของแอป</h2><p class="small muted" style="margin:0">เลือกได้ตามชอบ “ตามเครื่อง” จะสว่างหรือมืดตามการตั้งค่าของมือถือ ธีมนี้ใช้เฉพาะเครื่องนี้</p>
+  <div class="thlist">${THEMES.map(t=>`<button class="thbtn" data-theme-pick="${t.k}" aria-pressed="${c===t.k}"><span class="thsw" style="background:${t.bg}"><b style="background:${t.dot}"></b><i style="background:${t.bar}"></i></span>${t.n}</button>`).join('')}</div></div>`}
 function newGoal(lv){const L=LEVELS[lv];return {on:true,title:'',examDate:'',weeklyHrs:L.weeklyHrs,subjects:[],scores:[],
   deadlines:L.dates.map(t=>({id:uid(),title:t,date:'',done:false})),checklist:L.check.map(t=>({id:uid(),title:t,done:false}))}}
 function freeCi(){const used=new Set([...S.subjList.map(x=>x.ci),...(S.goal?.subjects||[]).map(x=>x.ci)]);for(let i=0;i<12;i++)if(!used.has(i))return i;return (S.subjList.length+(S.goal?.subjects||[]).length)%12}
@@ -1088,18 +1137,20 @@ function viewSched(){
   const {date:today}=nowInfo();
   const order=[1,2,3,4,5,6,0];
   const krow=k=>`<div class="krow"><select data-k="${k.id}" data-kf="d" aria-label="วัน">${order.map(d=>`<option value="${d}" ${k.d===d?'selected':''}>${DWL[d]}</option>`).join('')}</select>
-    <input type="time" data-k="${k.id}" data-kf="s" value="${k.s}" aria-label="เริ่ม"><span>–</span><input type="time" data-k="${k.id}" data-kf="e" value="${k.e}" aria-label="จบ">
+    <span class="ktime"><input type="time" data-k="${k.id}" data-kf="s" value="${k.s}" aria-label="เริ่ม"><span>–</span><input type="time" data-k="${k.id}" data-kf="e" value="${k.e}" aria-label="จบ"></span>
     <select class="grow" data-k="${k.id}" data-kf="c" aria-label="วิชา">${subjOpts(k.c)}</select>${k.c?'':`<input class="grow" data-k="${k.id}" data-kf="label" value="${k.label||''}" placeholder="ชื่อคาบ/กิจกรรม">`}
     <button class="btn sm" data-delk="${k.id}">ลบ</button></div>`;
   // แสดงครบ 7 วัน (รวมเสาร์-อาทิตย์) แต่ละวันมีปุ่มเพิ่มคาบของวันนั้น
+  // สีประจำวันแบบไทย: จันทร์เหลือง อังคารชมพู พุธเขียว พฤหัสส้ม ศุกร์ฟ้า เสาร์ม่วง อาทิตย์แดง
   const week=order.map(d=>{const ks=S.classes.filter(k=>k.d===d).sort((p,q)=>toMin(p.s)-toMin(q.s));
-    return `<div class="dayhead dh${d===0||d===6?' we':''}"><span>${DWL[d]}</span><button class="btn sm addk" data-addk="${d}" aria-label="เพิ่มคาบวัน${DWL[d]}">+ เพิ่มคาบ</button></div>${ks.length?ks.map(krow).join(''):'<div class="small muted knone">ไม่มีคาบ</div>'}`}).join('');
+    const mins=ks.reduce((a,k)=>a+Math.max(0,toMin(k.e)-toMin(k.s)),0);
+    return `<div class="dayblk d${d}"><div class="dayhead dh"><span class="dbadge" aria-hidden="true">${DW[d].replace('.','')}</span><span class="dname">${DWL[d]}</span><span class="dsum">${ks.length?`${ks.length} คาบ · ${+(mins/60).toFixed(1)} ชม.`:'ว่าง'}</span><button class="btn sm addk" data-addk="${d}" aria-label="เพิ่มคาบวัน${DWL[d]}">+ เพิ่มคาบ</button></div>${ks.length?ks.map(krow).join(''):'<div class="small knone">ยังไม่มีคาบ กด “+ เพิ่มคาบ” ถ้ามีเรียนพิเศษหรือกิจกรรม</div>'}</div>`}).join('');
   const exs=S.exceptions.filter(x=>x.date>=today).sort((p,q)=>p.date<q.date?-1:1).map(x=>{
     const ref=x.type==='cancel'?S.classes.find(k=>k.id===x.ref):null;
     return `<div class="krow"><span class="mono small" style="min-width:96px">${thDate(x.date)}</span><span class="grow">${x.type==='cancel'?`งดคาบ ${ref?clsName(ref)+' '+ref.s:''}`:`เพิ่ม ${clsName(x)} ${x.s}–${x.e}`}</span><button class="btn sm" data-delex="${x.id}">ยกเลิก</button></div>`}).join('');
   const st=S.settings,f=(k,l,t,extra='')=>`<label for="st-${k}">${l}<input id="st-${k}" type="${t}" data-s="${k}" value="${st[k]}" ${extra}></label>`;
-  return `<div class="section"><h2>ตารางเรียนประจำสัปดาห์</h2><p class="small muted" style="margin:0">แก้วัน เวลา หรือวิชาได้เลย แผนอ่านจะจัดใหม่ทันที ระบบเว้นเวลาก่อนและหลังคาบ 15 นาทีไว้เดินทาง ถ้าเปลี่ยนแค่บางวัน (งดคาบ/เรียนชดเชย) ให้ทำที่แท็บแผนรายวันของวันนั้น</p>
-  <div class="klist">${week}</div>
+  return `${themePicker()}<div class="section"><h2>ตารางเรียนประจำสัปดาห์</h2><p class="small muted" style="margin:0">แก้วัน เวลา หรือวิชาได้เลย แผนอ่านจะจัดใหม่ทันที ระบบเว้นเวลาก่อนและหลังคาบ 15 นาทีไว้เดินทาง ถ้าเปลี่ยนแค่บางวัน (งดคาบ/เรียนชดเชย) ให้ทำที่แท็บแผนรายวันของวันนั้น</p>
+  <div class="weekblk">${week}</div>
   <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="schoolweek">ใส่เวลาโรงเรียน จ.–ศ. 08:00–16:00</button></div></div>
   ${exs?`<div class="section"><h2>เปลี่ยนเฉพาะวัน</h2><div class="klist">${exs}</div></div>`:''}
   <div class="section"><h2>เวลาอ่านหนังสือ</h2><div class="settings">
@@ -1293,6 +1344,8 @@ document.addEventListener('click',e=>{
     S.classes.push({id:uid(),d,s:hm(st),e:hm(Math.min(st+60,1439)),c:S.subjList[0]?.c||''});save();generate();render();return}
   if(act==='addk'){S.classes.push({id:uid(),d:1,s:'08:00',e:'09:00',c:S.subjList[0]?.c||''});save();render();return}
   if(act==='startadd'){tab='subj';showAdd=true;render();setTimeout(()=>{const i=$('n-th');if(i)i.focus()},0);return}
+  if(t.dataset.themePick){applyTheme(t.dataset.themePick);render();return}
+  if(t.dataset.act==='themego'){tab='sched';tv=null;render();const e=$('themeSec');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});return}
   if(repClick(t))return;
   if(t.dataset.news){const n=newsItems().length;newsIdx=(newsIdx+ +t.dataset.news+n)%n;newsUntil=Date.now()+20000;renderNews();return}
   if(t.dataset.newshide){S.newsHidden=(S.newsHidden||[]).concat([t.dataset.newshide]).slice(-100);save();newsIdx=0;renderNews();return}
@@ -1392,7 +1445,7 @@ function dailyCheck(){
   if(miss.length)S.autoMsg={date:today,n:miss.length,from:miss[miss.length-1].date};
   sel=today;generate();return true;
 }
-dailyCheck();loadNews();
+dailyCheck();loadNews();applyTheme(curTheme());
 document.addEventListener('click',e=>{if(e.target.closest('#repLine')){S.lastReport=nowInfo().date;save()}});
 window.addEventListener('hashchange',()=>{if(!routeHash())render()});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;if(dailyCheck())render();loadNews()});
