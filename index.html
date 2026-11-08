@@ -305,6 +305,7 @@ tr.tnrow td{padding-top:0;background:var(--bg)}
 .frate{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.frate .btn{min-height:44px}
 .fdone{font-size:3.5rem}
 .privacy h3{margin:10px 0 0;font-size:1rem}.privacy p,.privacy ul{margin:0}.privacy li{margin:2px 0}
+@media (pointer:coarse){input,select,textarea{font-size:16px!important}}
 .site-ver{font-size:.72rem;color:var(--muted);font-family:var(--mono);opacity:.8}
 .site-copy{font-size:.78rem;color:var(--muted);margin-top:6px}
 .tbadge{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:99px;background:var(--exam);color:var(--surface);font-size:.7rem;line-height:18px;text-align:center;font-weight:600}
@@ -480,8 +481,8 @@ if(!S.since){S.since=ds(new Date());try{localStorage.setItem(KEY,JSON.stringify(
 // ใส่ลิงก์ Google Form ตรงนี้ถ้ามี เช่น 'https://forms.gle/xxxx' ถ้าว่างไว้ ผู้ใช้จะส่งความเห็นผ่าน LINE แทน
 const FEEDBACK_FORM='';
 // ใส่ลิงก์ LINE OA ตรงนี้ เช่น 'https://lin.ee/xxxx' ถ้าว่างไว้ ปุ่มติดตาม LINE จะซ่อนทั้งหมด
-// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v19)
-const APP_VER='v19';
+// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v20)
+const APP_VER='v20';
 const LINE_OA='';
 // กลุ่ม LINE OpenChat ของผู้ใช้แอป (ห้องเดียว ม.ต้น + ม.ปลาย) ใส่ลิงก์เชิญ เช่น 'https://line.me/ti/g2/xxxx' ถ้าว่างไว้ ปุ่มเข้ากลุ่มจะซ่อนทั้งหมด
 const LINE_GROUP='';
@@ -1356,27 +1357,42 @@ function backupView(){
   <div class="bk"><b>1. สำรองจากเครื่องนี้</b><span class="small muted">ตอนนี้มี ${st.subj} วิชา ติ๊กแล้ว ${st.done} ช่วง</span>
   <div class="row2"><button class="btn primary" data-act="bkcopy">คัดลอกรหัสสำรอง</button><button class="btn" data-act="bkfile">บันทึกเป็นไฟล์</button>${canShareFile()?'<button class="btn" data-act="bkshare">ส่งไฟล์เก็บไว้ (LINE/ไดรฟ์)</button>':''}</div>
   <span class="small muted">แนะนำ: ส่งไฟล์สำรองเก็บไว้ในแชท LINE ของตัวเอง (Keep) เดือนละครั้ง และติดตั้งแอปลงหน้าจอโฮม ข้อมูลจะไม่ถูกล้างง่าย</span>
-  ${bkCode?`<textarea id="bk-out" readonly aria-label="รหัสสำรอง">${esc(bkCode)}</textarea><span class="small muted">ส่งรหัสนี้ทาง LINE หรือเก็บไว้ในโน้ต รหัสยาว ให้คัดลอกให้ครบทั้งหมด</span>`:''}</div>
-  <div class="bk"><b>2. นำเข้าในเครื่องอื่น</b><textarea id="bk-in" placeholder="วางรหัสสำรองที่นี่" aria-label="วางรหัสสำรอง"></textarea>
+  ${bkCode?`<textarea id="bk-out" readonly aria-label="รหัสสำรอง">${esc(bkCode)}</textarea><span class="small muted">รหัสยาว ${bkCode.length.toLocaleString()} ตัวอักษร ส่งทาง LINE หรือเก็บไว้ในโน้ต ${bkCode.length>4500?'<b>รหัสยาวมาก LINE อาจแบ่งเป็นหลายข้อความ แนะนำใช้ “บันทึกเป็นไฟล์” หรือ “ส่งไฟล์เก็บไว้” แทน</b>':''}</span>`:''}</div>
+  <div class="bk"><b>2. นำเข้าในเครื่องอื่น</b><textarea id="bk-in" placeholder="วางรหัสสำรองที่นี่" aria-label="วางรหัสสำรอง" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
   <div class="row2"><button class="btn primary" data-act="bkcheck">นำเข้ารหัส</button><label class="btn" for="bk-file" style="cursor:pointer">เลือกไฟล์สำรอง</label><input type="file" id="bk-file" accept=".json,application/json,text/plain" hidden></div>
   ${imp}${prev?'<div class="row2"><span class="small muted">นำเข้าผิด? ย้อนกลับเป็นข้อมูลก่อนนำเข้าได้</span><button class="btn sm" data-act="impundo">ย้อนกลับ</button></div>':''}</div>
   ${msg}
   <div class="row2" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${confirmReset?'<span class="small">ลบข้อมูลทั้งหมดในเครื่องนี้และเริ่มจากหน้าว่าง?</span><button class="btn" data-act="reset-yes">ลบทั้งหมด</button><button class="btn" data-act="reset-no">ยกเลิก</button>':'<button class="btn" data-act="reset">ลบข้อมูลทั้งหมด เริ่มใหม่</button>'}</div></div>`;
 }
-const encodeBk=()=>'S2U1:'+btoa(unescape(encodeURIComponent(JSON.stringify(S))));
-function decodeBk(txt){
-  txt=(txt||'').trim();if(!txt)throw new Error('ยังไม่ได้วางรหัส');
-  let obj;
-  if(txt.startsWith('{'))obj=JSON.parse(txt);
-  else{const m=txt.replace(/\s+/g,'').match(/S2U1:([A-Za-z0-9+/=]+)/);if(!m)throw new Error('รหัสไม่ถูกต้อง ต้องขึ้นต้นด้วย S2U1:');
-    obj=JSON.parse(decodeURIComponent(escape(atob(m[1]))));}
+// รหัสสำรอง: S2U2 = บีบอัด gzip (สั้นกว่าเดิมหลายเท่า ส่งทาง LINE ได้ในข้อความเดียว) · S2U1 = แบบเดิม ยังนำเข้าได้
+const hasCS=typeof CompressionStream!=='undefined'&&typeof DecompressionStream!=='undefined';
+const u8b64=u=>{let s='';for(let i=0;i<u.length;i+=32768)s+=String.fromCharCode.apply(null,u.subarray(i,i+32768));return btoa(s)};
+const b64u8=b=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
+async function gz(str){return new Uint8Array(await new Response(new Blob([str]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer())}
+async function gunz(u){return await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('gzip'))).text()}
+let bkReady=null;
+// เตรียมรหัสแบบบีบอัดไว้ล่วงหน้า เพื่อให้ปุ่มคัดลอกทำงานได้ทันทีบนมือถือ
+function prepBk(){if(!hasCS)return;const src=JSON.stringify(S);if(bkReady&&bkReady.src===src)return;gz(src).then(u=>{bkReady={src,code:'S2U2:'+u8b64(u)}}).catch(()=>{})}
+const encodeBk=()=>{const src=JSON.stringify(S);if(bkReady&&bkReady.src===src)return bkReady.code;return 'S2U1:'+btoa(unescape(encodeURIComponent(src)))};
+const BK_SPLIT='ถ้าส่งรหัสผ่าน LINE แล้วถูกแบ่งเป็นหลายข้อความ ให้คัดลอกทุกข้อความมาวางต่อกันตามลำดับ หรือใช้ปุ่ม “เลือกไฟล์สำรอง” แทน';
+async function decodeBkAsync(txt){
+  txt=(txt||'').replace(/[​-‍⁠﻿ ]/g,'').replace(/：/g,':').trim();
+  if(!txt)throw new Error('ยังไม่ได้วางรหัส');
+  let json;
+  if(txt.startsWith('{'))json=txt;
+  else{
+    const m=txt.replace(/\s+/g,'').match(/S2U([12]):([A-Za-z0-9+/=]+)/i);
+    if(!m)throw new Error('ไม่พบรหัสสำรอง (ต้องขึ้นต้นด้วย S2U) '+BK_SPLIT);
+    if(m[1]==='2'&&!hasCS)throw new Error('เบราว์เซอร์นี้เก่าเกินไปสำหรับรหัสแบบใหม่ อัปเดตเบราว์เซอร์ หรือใช้ปุ่ม “เลือกไฟล์สำรอง”');
+    try{json=m[1]==='2'?await gunz(b64u8(m[2])):decodeURIComponent(escape(atob(m[2])))}catch(e){throw new Error('รหัสไม่ครบหรือถูกตัด '+BK_SPLIT)}
+  }
+  let obj;try{obj=JSON.parse(json)}catch(e){throw new Error('รหัสไม่ครบหรือถูกตัด '+BK_SPLIT)}
   const n=normalize(obj);if(!n)throw new Error('ไม่ใช่ข้อมูลของ Sea To University');
   return n;
 }
 function stageImport(txt){
-  try{const n=decodeBk(txt);pendingImport={data:n,st:stats(n)};bkMsg=null}
-  catch(e){pendingImport=null;bkMsg={t:'นำเข้าไม่ได้: '+(e.message||'รหัสไม่สมบูรณ์ ลองคัดลอกใหม่ให้ครบ'),err:true}}
-  render();
+  decodeBkAsync(txt).then(n=>{pendingImport={data:n,st:stats(n)};bkMsg=null;render()})
+    .catch(e=>{pendingImport=null;bkMsg={t:'นำเข้าไม่ได้: '+(e.message||'รหัสไม่สมบูรณ์ ลองคัดลอกใหม่ให้ครบ'),err:true};render()});
 }
 
 function spark(g){
@@ -1449,6 +1465,7 @@ function render(){
   $('yr').textContent=new Date().getFullYear();$('appver').textContent=APP_VER;
   renderNews();
   $('repFoot').hidden=!S.setupDone;
+  if(tab==='sched')prepBk();
   $('lineFoot').hidden=!LINE_OA;$('grpFoot').hidden=!LINE_GROUP;
   {const n=tOverdue().length,b=$('tbadge');b.textContent=n;b.hidden=!n}
   document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
