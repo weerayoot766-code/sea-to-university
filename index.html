@@ -480,8 +480,8 @@ if(!S.since){S.since=ds(new Date());try{localStorage.setItem(KEY,JSON.stringify(
 // ใส่ลิงก์ Google Form ตรงนี้ถ้ามี เช่น 'https://forms.gle/xxxx' ถ้าว่างไว้ ผู้ใช้จะส่งความเห็นผ่าน LINE แทน
 const FEEDBACK_FORM='';
 // ใส่ลิงก์ LINE OA ตรงนี้ เช่น 'https://lin.ee/xxxx' ถ้าว่างไว้ ปุ่มติดตาม LINE จะซ่อนทั้งหมด
-// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v18)
-const APP_VER='v18';
+// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v19)
+const APP_VER='v19';
 const LINE_OA='';
 // กลุ่ม LINE OpenChat ของผู้ใช้แอป (ห้องเดียว ม.ต้น + ม.ปลาย) ใส่ลิงก์เชิญ เช่น 'https://line.me/ti/g2/xxxx' ถ้าว่างไว้ ปุ่มเข้ากลุ่มจะซ่อนทั้งหมด
 const LINE_GROUP='';
@@ -1243,7 +1243,7 @@ function viewDay(){
   return `${summary()}<div class="section"><div class="strip" id="strip">${strip}</div></div>
   <div class="section"><div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px"><h2>วัน${DWL[wd]}ที่ ${dt.getDate()} ${MON[dt.getMonth()]}${sel===today?' · วันนี้':''}</h2><span class="muted small mono">${doneN}/${studyN} ช่วงอ่าน · ${+(studyN*S.settings.slot/60).toFixed(1)} ชม.</span></div>
   <div class="daytools"><div class="step"><span>อ่านวันนี้</span><button data-cap="-1" aria-label="ลดหนึ่งช่วง">−</button><b>${capFor(sel)}</b><button data-cap="1" aria-label="เพิ่มหนึ่งช่วง">+</button><span>ช่วง</span>${S.dayCap[sel]!=null?'<button class="btn sm" data-act="capreset" style="width:auto;height:auto">ใช้ค่าปกติ</button>':''}</div>
-  <span class="small muted">${studyN<capFor(sel)&&sel>=today?`วันนี้มีเวลาว่างพอแค่ ${studyN} ช่วง`:`ค่าปกติวัน${DWL[wd]} ${S.settings.capDays[wd]} ช่วง`}</span></div>
+  <span class="small muted">${studyN<capFor(sel)&&sel>=today?(()=>{const fr=freeSlots(sel,sel===today?nowInfo().min:null).length;return fr<capFor(sel)?`วันนี้มีเวลาว่างพอแค่ ${fr} ช่วง`:studyN?`วันนี้อ่าน ${studyN} ช่วงก็พอ แผนกระจายส่วนที่เหลือไปวันอื่นแล้ว`:'วันนี้ไม่ต้องอ่านเพิ่ม แผนกระจายไปวันอื่นแล้ว'})():`ค่าปกติวัน${DWL[wd]} ${S.settings.capDays[wd]} ช่วง`}</span></div>
   <div class="timeline">${rows||'<div class="empty">ไม่มีช่วงอ่านในวันนี้</div>'}</div>
   ${sel>=today?calBox():''}
   <details class="addbox"><summary>เพิ่มช่วงอ่านเองตามเวลาที่ต้องการ</summary><div class="form">
