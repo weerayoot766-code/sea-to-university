@@ -285,6 +285,26 @@ tr.tnrow td{padding-top:0;background:var(--bg)}
 .dayhead.dh .addk:hover{background:var(--dc);color:var(--dt);border-color:var(--dc)}
 .knone{padding:2px 0 6px;color:var(--muted)}
 .ktime{display:inline-flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.linkbtn{font:inherit;background:none;border:0;padding:4px 2px;color:var(--accent);text-decoration:underline;cursor:pointer;min-height:32px}
+.calbox{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 14px;border-radius:12px;border:1px dashed var(--line);background:var(--surface)}
+.calbox>div{display:flex;flex-direction:column;gap:2px;flex:1 1 220px}
+.tile.streak{background:linear-gradient(135deg,color-mix(in srgb,#f08a24 14%,var(--surface)),var(--surface));border-color:color-mix(in srgb,#f08a24 40%,var(--line))}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.badge{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--surface);opacity:.6}
+.badge.on{opacity:1;border-color:color-mix(in srgb,#f2c230 60%,var(--line));background:color-mix(in srgb,#f2c230 12%,var(--surface))}
+.badge .bic{font-size:1.7rem;line-height:1.2}
+.bnew{border:2px solid color-mix(in srgb,#f2c230 70%,var(--line))}
+.focusbtn{margin-top:6px;align-self:flex-start;border-color:var(--accent);color:var(--accent);font-weight:600}
+.focus{position:fixed;inset:0;z-index:50;background:color-mix(in srgb,var(--bg) 96%,transparent);display:flex;align-items:center;justify-content:center;padding:20px 16px;overflow:auto}
+.fbox{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.fbox h2{margin:0;font-size:1.25rem}
+.fring{position:relative;width:min(240px,70vw);aspect-ratio:1}
+.fring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.fbg{fill:none;stroke:var(--line);stroke-width:12}.ffg{fill:none;stroke:var(--accent);stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset .5s linear}
+.ftime{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2.8rem;font-weight:500}
+.frate{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.frate .btn{min-height:44px}
+.fdone{font-size:3.5rem}
+.privacy h3{margin:10px 0 0;font-size:1rem}.privacy p,.privacy ul{margin:0}.privacy li{margin:2px 0}
 .site-ver{font-size:.72rem;color:var(--muted);font-family:var(--mono);opacity:.8}
 .site-copy{font-size:.78rem;color:var(--muted);margin-top:6px}
 .tbadge{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:99px;background:var(--exam);color:var(--surface);font-size:.7rem;line-height:18px;text-align:center;font-weight:600}
@@ -383,10 +403,11 @@ a.btn{text-decoration:none;display:inline-block}
     <div class="site-by">โดย <b>ปรุงยาเภสัช</b></div>
     <div class="site-addr">📍 <span>3/5 หมู่ 1</span> <span>ตำบลอิปัน</span> <span>อำเภอพระแสง</span> <span>จังหวัดสุราษฎร์ธานี</span></div>
     <div class="site-copy">© <span id="yr">2026</span> ปรุงยาเภสัช สงวนลิขสิทธิ์</div>
-    <div class="site-ver">เวอร์ชัน <span id="appver"></span></div>
+    <div class="site-ver">เวอร์ชัน <span id="appver"></span> · <button class="linkbtn" data-act="privacy">นโยบายความเป็นส่วนตัว</button></div>
   </footer>
 </div>
 <div class="wrap pview" id="parentView" hidden></div>
+<div id="focus" class="focus" hidden role="dialog" aria-modal="true" aria-label="ตัวจับเวลาอ่าน"></div>
 
 <script>
 const CLASSES=[],SUBJ=[];
@@ -459,8 +480,8 @@ if(!S.since){S.since=ds(new Date());try{localStorage.setItem(KEY,JSON.stringify(
 // ใส่ลิงก์ Google Form ตรงนี้ถ้ามี เช่น 'https://forms.gle/xxxx' ถ้าว่างไว้ ผู้ใช้จะส่งความเห็นผ่าน LINE แทน
 const FEEDBACK_FORM='';
 // ใส่ลิงก์ LINE OA ตรงนี้ เช่น 'https://lin.ee/xxxx' ถ้าว่างไว้ ปุ่มติดตาม LINE จะซ่อนทั้งหมด
-// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v15)
-const APP_VER='v15';
+// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v16)
+const APP_VER='v16';
 const LINE_OA='';
 // กลุ่ม LINE OpenChat ของผู้ใช้แอป (ห้องเดียว ม.ต้น + ม.ปลาย) ใส่ลิงก์เชิญ เช่น 'https://line.me/ti/g2/xxxx' ถ้าว่างไว้ ปุ่มเข้ากลุ่มจะซ่อนทั้งหมด
 const LINE_GROUP='';
@@ -707,6 +728,159 @@ function applyTheme(k){
 function themePicker(){const c=curTheme();
   return `<div class="section" id="themeSec"><h2>ธีมสีของแอป</h2><p class="small muted" style="margin:0">เลือกได้ตามชอบ “ตามเครื่อง” จะสว่างหรือมืดตามการตั้งค่าของมือถือ ธีมนี้ใช้เฉพาะเครื่องนี้</p>
   <div class="thlist">${THEMES.map(t=>`<button class="thbtn" data-theme-pick="${t.k}" aria-pressed="${c===t.k}"><span class="thsw" style="background:${t.bg}"><b style="background:${t.dot}"></b><i style="background:${t.bar}"></i></span>${t.n}</button>`).join('')}</div></div>`}
+// ===== ตั้งค่าที่แก้ได้ =====
+// ใส่ token ของ Cloudflare Web Analytics (นับจำนวนผู้เข้า ไม่เก็บคุกกี้ ไม่ระบุตัวตน) ถ้าว่างไว้ จะไม่โหลดอะไรเลย
+const CF_BEACON_TOKEN='';
+const PRIVACY_UPDATED='8 พ.ย. 2569';
+if(CF_BEACON_TOKEN&&location.protocol!=='file:'){const sc=document.createElement('script');sc.defer=true;sc.src='https://static.cloudflareinsights.com/beacon.min.js';sc.setAttribute('data-cf-beacon',JSON.stringify({token:CF_BEACON_TOKEN}));document.head.appendChild(sc)}
+
+// ===== 1) กันข้อมูลหาย: เตือนสำรองทุก 30 วัน =====
+const bkAge=()=>{const {date:today}=nowInfo();return S.lastBackup?dIdx(today)-dIdx(S.lastBackup):null};
+function bkDue(){
+  const {date:today}=nowInfo();if(!S.setupDone)return false;
+  if(S.bkSnooze&&dIdx(today)-dIdx(S.bkSnooze)<7)return false;
+  const done=S.plan.filter(x=>x.done).length,age=bkAge();
+  return age==null?done>=5:age>=30;
+}
+const markBackup=()=>{S.lastBackup=nowInfo().date;save()};
+const canShareFile=()=>{try{return !!(navigator.canShare&&navigator.canShare({files:[new File(['x'],'a.json',{type:'application/json'})]}))}catch(e){return false}};
+function shareBackupFile(){
+  const f=new File([JSON.stringify(S)],`sea2uni-${nowInfo().date}.json`,{type:'application/json'});
+  return navigator.share({files:[f],title:'ไฟล์สำรอง Sea To University'});
+}
+
+// ===== 2) ส่งแผน 7 วันลงปฏิทินมือถือ (.ics) =====
+const icsEsc=t=>String(t).replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n');
+const icsDT=(d,m)=>d.replace(/-/g,'')+'T'+pad(Math.floor(m/60))+pad(m%60)+'00';
+function icsTitle(x){
+  if(x.kind==='task'){const t=tById(x.task);return `ทำงาน: ${t?t.name:'งานที่ต้องส่ง'}`}
+  return `อ่าน${M(x.code).sh} · ${slotTitle(x)}`;
+}
+function buildICS(){
+  const {date:today,min}=nowInfo(),end=addD(today,6);
+  const ev=S.plan.filter(x=>!x.done&&isOn(x.code)&&x.date<=end&&(x.date>today||(x.date===today&&x.s>=min)));
+  const now=new Date(),stamp=now.toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
+  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Sea To University//TH','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:Sea To University'];
+  ev.forEach(x=>{L.push('BEGIN:VEVENT',`UID:${x.id}-${x.date}@sea2uni`,`DTSTAMP:${stamp}`,`DTSTART:${icsDT(x.date,x.s)}`,`DTEND:${icsDT(x.date,x.e)}`,
+    `SUMMARY:${icsEsc('📚 '+icsTitle(x))}`,`DESCRIPTION:${icsEsc('จาก Sea To University · อ่านเสร็จแล้วอย่าลืมเปิดแอปมาติ๊กนะ')}`,
+    'BEGIN:VALARM','ACTION:DISPLAY','TRIGGER:-PT10M',`DESCRIPTION:${icsEsc('อีก 10 นาที: '+icsTitle(x))}`,'END:VALARM','END:VEVENT')});
+  L.push('END:VCALENDAR');
+  return {text:L.join('\r\n'),n:ev.length};
+}
+let calMsg='';
+function exportCalendar(){
+  const {text,n}=buildICS();
+  if(!n){calMsg='ยังไม่มีช่วงอ่านใน 7 วันข้างหน้า';render();return}
+  const name=`sea2uni-${nowInfo().date}.ics`,blob=new Blob([text],{type:'text/calendar;charset=utf-8'});
+  try{const f=new File([blob],name,{type:'text/calendar'});
+    if(isIOS&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:'แผนอ่าน 7 วัน'}).catch(()=>{});calMsg=`ส่ง ${n} ช่วงไปแล้ว เลือก “ปฏิทิน” เพื่อเพิ่ม`;render();return}}catch(e){}
+  const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),3000);
+  calMsg=`ได้ไฟล์ ${n} ช่วงแล้ว แตะไฟล์ที่ดาวน์โหลดเพื่อเพิ่มลงปฏิทิน มือถือจะเตือนก่อนเวลาอ่าน 10 นาที`;render();
+}
+function calBox(){return `<div class="calbox"><div><b>📅 เพิ่มแผน 7 วันลงปฏิทินมือถือ</b><span class="small muted">ปฏิทินจะเด้งเตือนก่อนเวลาอ่าน 10 นาที แม้ไม่ได้เปิดแอป ถ้าแผนเปลี่ยน กดเพิ่มใหม่ได้</span>${calMsg?`<span class="small" style="color:var(--accent)">${esc(calMsg)}</span>`:''}</div><button class="btn" data-act="calexport">เพิ่มลงปฏิทิน</button></div>`}
+
+// ===== 4) สถิติต่อเนื่องและเหรียญรางวัล =====
+function streakInfo(){
+  const {date:today}=nowInfo(),days=new Set(S.plan.filter(x=>x.done).map(x=>x.date));
+  let cur=0,d=days.has(today)?today:addD(today,-1);while(days.has(d)){cur++;d=addD(d,-1)}
+  const all=[...days].sort();let best=0,run=0,prev=null;all.forEach(x=>{run=prev&&addD(prev,1)===x?run+1:1;best=Math.max(best,run);prev=x});
+  return {cur,best,today:days.has(today)};
+}
+const BADGES=[
+  ['first','🌱','ก้าวแรก','อ่านจบช่วงแรก'],
+  ['s3','🔥','ไฟเริ่มติด','อ่านต่อเนื่อง 3 วัน'],
+  ['s7','⚡','หนึ่งสัปดาห์เต็ม','อ่านต่อเนื่อง 7 วัน'],
+  ['s30','🏆','ยอดนักสู้','อ่านต่อเนื่อง 30 วัน'],
+  ['h10','📘','สิบชั่วโมงแรก','อ่านรวม 10 ชั่วโมง'],
+  ['h50','📚','หนอนหนังสือ','อ่านรวม 50 ชั่วโมง'],
+  ['h100','🎓','ร้อยชั่วโมงทอง','อ่านรวม 100 ชั่วโมง'],
+  ['week','⭐','ทำตามแผนครบ','ทำครบทุกช่วงใน 7 วัน (อย่างน้อย 10 ช่วง)'],
+  ['hard','💪','ไม่ยอมแพ้','กด “ยาก” แล้วยังอ่านต่อ 10 ครั้ง'],
+  ['t5','📝','ส่งตรงเวลา','ส่งงานตรงเวลา 5 ชิ้น'],
+  ['t20','🏅','มือโปรเรื่องงาน','ส่งงานตรงเวลา 20 ชิ้น'],
+  ['mock','🎯','ลองสนามจริง','บันทึกคะแนนสอบซ้อมครั้งแรก']];
+function earnedBadges(){
+  const {date:today}=nowInfo(),dn=S.plan.filter(x=>x.done),hrs=dn.reduce((a,x)=>a+(x.e-x.s),0)/60,st=streakInfo();
+  const w=weekStats(addD(today,-6),today),ontime=(S.tasks||[]).filter(t=>t.status==='sent'&&(t.sentDate||'')<=t.due).length;
+  const ok={first:dn.length>=1,s3:st.best>=3,s7:st.best>=7,s30:st.best>=30,h10:hrs>=10,h50:hrs>=50,h100:hrs>=100,
+    week:w.p>=10&&w.d===w.p,hard:dn.filter(x=>x.rating==='hard').length>=10,t5:ontime>=5,t20:ontime>=20,mock:((S.goal&&S.goal.scores)||[]).length>=1};
+  return BADGES.filter(b=>ok[b[0]]).map(b=>b[0]);
+}
+function streakTile(){const s=streakInfo(),n=earnedBadges().length;
+  return `<div class="tile streak"><span class="lab">อ่านต่อเนื่อง</span><span class="big">${s.cur?'🔥 ':''}${s.cur} <small>วัน</small></span><span class="sub">${s.cur&&!s.today?'อ่านวันนี้สักช่วงเพื่อไม่ให้ไฟดับ · ':''}สูงสุด ${s.best} วัน · เหรียญ ${n}/${BADGES.length}</span></div>`}
+function badgeSection(){const got=new Set(earnedBadges());
+  return `<div class="section"><h2>เหรียญรางวัล <span class="small muted">${got.size}/${BADGES.length}</span></h2><div class="bgrid">${BADGES.map(([k,ic,n,d])=>`<div class="badge${got.has(k)?' on':''}"><span class="bic" aria-hidden="true">${got.has(k)?ic:'🔒'}</span><b>${n}</b><span class="small muted">${d}</span></div>`).join('')}</div></div>`}
+function newBadgeBanner(){
+  const seen=new Set(S.badges||[]),fresh=earnedBadges().filter(k=>!seen.has(k));if(!fresh.length)return '';
+  const list=fresh.map(k=>BADGES.find(b=>b[0]===k)).map(b=>`${b[1]} ${b[2]}`).join(' · ');
+  return `<div class="banner info bnew"><span><b>🎉 ได้เหรียญใหม่!</b> <span class="small">${esc(list)}</span></span><button class="btn primary" data-act="badgeok">เยี่ยม!</button></div>`;
+}
+
+// ===== 5) ตัวจับเวลาตอนอ่าน =====
+let fx=null; // {id,end,left,paused,total}
+let wakeLock=null;
+function focusOpen(id){
+  const x=S.plan.find(p=>p.id===id);if(!x)return;
+  const total=(x.e-x.s)*60000;fx={id,total,end:Date.now()+total,left:total,paused:false,doneShown:false};
+  try{if(navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>{wakeLock=l}).catch(()=>{})}catch(e){}
+  focusDraw();
+}
+function focusClose(){fx=null;const o=$('focus');if(o){o.hidden=true;o.innerHTML=''}try{if(wakeLock){wakeLock.release();wakeLock=null}}catch(e){}}
+function focusLeft(){return fx.paused?fx.left:Math.max(0,fx.end-Date.now())}
+function beep(){try{const A=window.AudioContext||window.webkitAudioContext;const c=new A();[0,0.25,0.5].forEach(t=>{const o=c.createOscillator(),g=c.createGain();o.frequency.value=880;g.gain.value=.15;o.connect(g);g.connect(c.destination);o.start(c.currentTime+t);o.stop(c.currentTime+t+.15)})}catch(e){}try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}}
+function focusDraw(){
+  const o=$('focus');if(!o||!fx)return;const x=S.plan.find(p=>p.id===fx.id);if(!x){focusClose();return}
+  const left=focusLeft(),pct=1-left/fx.total,mm=Math.floor(left/60000),ss=Math.floor(left%60000/1000);
+  const isTask=x.kind==='task',t=isTask?tById(x.task):null,title=isTask?(t?t.name:'งานที่ต้องส่ง'):slotTitle(x);
+  o.hidden=false;
+  if(left<=0||fx.finished){
+    if(!fx.finished){fx.finished=true;if(!x.done){x.done=true;save()}beep()}
+    o.innerHTML=`<div class="fbox"><div class="fdone">🎉</div><h2>เก่งมาก! ${isTask?'ทำช่วงนี้เสร็จแล้ว':'อ่านจบช่วงนี้แล้ว'}</h2><p class="small muted">แอปติ๊กให้แล้ว</p>
+    ${!isTask?`<p style="margin:0">รอบนี้รู้สึกว่า</p><div class="frate">${[['easy','😊 ง่าย'],['ok','🙂 พอได้'],['hard','😵 ยาก']].map(([k,l])=>`<button class="btn" data-rate="${k}" data-id="${x.id}">${l}</button>`).join('')}</div>`:''}
+    <button class="btn" data-act="fclose">${isTask?'ปิด':'ข้าม'}</button></div>`;return;
+  }
+  const R=88,C=2*Math.PI*R;
+  o.innerHTML=`<div class="fbox"><div class="small muted">${esc(M(x.code).sh)} · ${hm(x.s)}–${hm(x.e)}</div><h2>${title}</h2>
+  <div class="fring"><svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="${R}" class="fbg"/><circle cx="100" cy="100" r="${R}" class="ffg" style="stroke-dasharray:${C};stroke-dashoffset:${C*(1-pct)}"/></svg><div class="ftime mono" role="timer" aria-live="off">${pad(mm)}:${pad(ss)}</div></div>
+  <p class="small muted" style="margin:0">${fx.paused?'หยุดพักอยู่':'วางมือถือไว้ แล้วตั้งใจอ่าน ครบเวลาแล้วจะมีเสียงเตือน'}</p>
+  <div class="frate"><button class="btn primary" data-act="fpause">${fx.paused?'▶ อ่านต่อ':'⏸ พัก'}</button><button class="btn" data-act="ffinish">✓ อ่านจบแล้ว</button><button class="btn" data-act="fclose">ยกเลิก</button></div></div>`;
+}
+setInterval(()=>{if(fx&&!fx.paused&&!fx.finished)focusDraw()},500);
+document.addEventListener('visibilitychange',()=>{if(fx&&document.visibilityState==='visible'){try{if(navigator.wakeLock&&!fx.finished)navigator.wakeLock.request('screen').then(l=>{wakeLock=l}).catch(()=>{})}catch(e){}focusDraw()}});
+
+// ===== 3) นโยบายความเป็นส่วนตัว =====
+function viewPrivacy(){
+  return `<div class="section privacy"><h2>นโยบายความเป็นส่วนตัว</h2><p class="small muted" style="margin:0">ปรับปรุงล่าสุด ${PRIVACY_UPDATED}</p>
+  <h3>ข้อมูลอะไรบ้างที่แอปเก็บ</h3><p>วิชา วันสอบ ตารางเรียน แผนอ่าน การติ๊ก งานที่ต้องส่ง คะแนนสอบซ้อม และชื่อเล่นที่ใส่เอง แอปไม่ขอชื่อจริง เบอร์โทร อีเมล หรือที่อยู่</p>
+  <h3>ข้อมูลเก็บที่ไหน</h3><p>เก็บในเบราว์เซอร์ของเครื่องนี้เท่านั้น ไม่มีการส่งขึ้นเซิร์ฟเวอร์ของเรา ผู้พัฒนาแอปมองไม่เห็นข้อมูลของคุณ</p>
+  <h3>ข้อมูลจะออกจากเครื่องเมื่อไร</h3><ul>
+  <li>เมื่อคุณกด <b>ส่งรายงานให้ผู้ปกครอง</b> ข้อมูลสรุป 7 วันจะอยู่ในลิงก์ที่คุณส่งเอง ใครได้ลิงก์ก็เปิดดูได้ จึงควรส่งให้ผู้ปกครองเท่านั้น</li>
+  <li>เมื่อคุณกด <b>สำรองข้อมูล</b> หรือ <b>เพิ่มลงปฏิทิน</b> ไฟล์จะอยู่ที่ที่คุณเลือกบันทึกหรือส่งไป</li>
+  <li>เมื่อกดปุ่มที่เปิด LINE หรือเว็บไซต์อื่น ข้อมูลจะเป็นไปตามนโยบายของเว็บนั้น</li></ul>
+  <h3>สิ่งที่แอปโหลดจากภายนอก</h3><ul><li>ฟอนต์จาก Google Fonts</li><li>ข่าวสารในแอป (ไฟล์ news.json) จาก GitHub Pages ที่แอปตั้งอยู่</li>
+  ${CF_BEACON_TOKEN?'<li>Cloudflare Web Analytics นับจำนวนผู้เข้าใช้แบบรวม ไม่ใช้คุกกี้ และไม่ระบุตัวตน</li>':''}</ul>
+  <p class="small muted" style="margin:0">บริการเหล่านี้อาจเห็นที่อยู่ IP ตามปกติของการใช้อินเทอร์เน็ต แต่ไม่ได้รับข้อมูลแผนอ่านของคุณ</p>
+  <h3>สำหรับผู้ใช้ที่อายุต่ำกว่า 20 ปี</h3><p>แอปไม่เก็บข้อมูลส่วนบุคคลไว้บนเซิร์ฟเวอร์ ถ้าอนาคตมีระบบบัญชีหรือเก็บข้อมูลออนไลน์ จะแจ้งและขอความยินยอมจากผู้ปกครองก่อน</p>
+  <h3>ลบข้อมูล</h3><p>ลบได้ทั้งหมดด้วยปุ่ม “ลบข้อมูลทั้งหมด เริ่มใหม่” ท้ายแท็บตารางเรียน หรือลบข้อมูลเว็บไซต์ในการตั้งค่าเบราว์เซอร์</p>
+  <h3>ติดต่อ</h3><p>ปรุงยาเภสัช 3/5 หมู่ 1 ตำบลอิปัน อำเภอพระแสง จังหวัดสุราษฎร์ธานี</p>
+  <button class="btn" data-act="privback">← กลับ</button></div>`;
+}
+let prevTab='day';
+function featClick(t){
+  const act=t.dataset.act,{date:today}=nowInfo();
+  if(act==='bkgo'){tab='sched';tv=null;render();const e=$('bkSec');if(e)e.scrollIntoView({behavior:'smooth',block:'start'});return true}
+  if(act==='bklater'){S.bkSnooze=today;save();render();return true}
+  if(act==='bkshare'){shareBackupFile().then(()=>{markBackup();bkMsg={t:'ส่งไฟล์สำรองแล้ว เก็บไว้ในแชทหรือที่เก็บไฟล์ที่เลือก'};render()}).catch(()=>{});return true}
+  if(act==='calexport'){exportCalendar();return true}
+  if(act==='badgeok'){S.badges=[...new Set([...(S.badges||[]),...earnedBadges()])];save();render();return true}
+  if(t.dataset.focus){focusOpen(t.dataset.focus);return true}
+  if(act==='fpause'&&fx){if(fx.paused){fx.end=Date.now()+fx.left;fx.paused=false}else{fx.left=focusLeft();fx.paused=true}focusDraw();return true}
+  if(act==='ffinish'&&fx){fx.left=0;fx.paused=false;fx.end=Date.now();fx.finished=false;focusDraw();render();return true}
+  if(act==='fclose'){focusClose();render();return true}
+  if(act==='privacy'){if(tab!=='privacy')prevTab=tab;tab='privacy';tv=null;render();window.scrollTo(0,0);return true}
+  if(act==='privback'){tab=prevTab||'day';render();return true}
+  return false;
+}
 function newGoal(lv){const L=LEVELS[lv];return {on:true,title:'',examDate:'',weeklyHrs:L.weeklyHrs,subjects:[],scores:[],
   deadlines:L.dates.map(t=>({id:uid(),title:t,date:'',done:false})),checklist:L.check.map(t=>({id:uid(),title:t,done:false}))}}
 function freeCi(){const used=new Set([...S.subjList.map(x=>x.ci),...(S.goal?.subjects||[]).map(x=>x.ci)]);for(let i=0;i<12;i++)if(!used.has(i))return i;return (S.subjList.length+(S.goal?.subjects||[]).length)%12}
@@ -964,6 +1138,9 @@ function header(){
   if(odT.length&&tab!=='task'){const o=odT[0];h+=`<div class="banner" style="background:var(--exam-soft)"><span class="small"><b style="color:var(--exam)">ค้างส่ง ${odT.length} ชิ้น:</b> ${esc(o.name)} (${esc(tSubName(o))}) ${dueLabel(o)}${odT.length>1?` และอีก ${odT.length-1} ชิ้น`:''}</span><span style="display:flex;gap:6px;flex-wrap:wrap">${odT.length===1?`<button class="btn danger" data-tsent="${o.id}">ส่งแล้ว</button><button class="btn" data-tman="${o.id}">จัดการ</button>`:'<button class="btn danger" data-go="task">ดูงานค้าง</button>'}</span></div>`}
   if(repOpen&&S.setupDone)h+=repPanel();
   else if(S.setupDone&&new Date().getDay()===0&&S.repAskDay!==today&&S.lastReport!==today&&S.plan.some(x=>x.done&&x.date>=addD(today,-6)))h+=`<div class="banner info"><span class="small">วันอาทิตย์แล้ว ส่งรายงานการอ่านสัปดาห์นี้ให้ผู้ปกครองดูไหม</span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn primary" data-act="repopen">📤 ส่งรายงาน</button><button class="btn" data-act="repskip">ไม่ใช่ตอนนี้</button></span></div>`;
+  h+=newBadgeBanner();
+  // เตือนสำรองข้อมูล: ไม่ขึ้นซ้อนกับแถบเหรียญใหม่หรือแถบส่งรายงานวันอาทิตย์ จะได้ไม่รกเกินไป
+  if(!h.includes('data-act="badgeok"')&&!h.includes('data-act="repskip"')&&bkDue()){const a=bkAge();h+=`<div class="banner"><span class="small"><b>สำรองข้อมูลไว้กันหาย</b> ${a==null?'ยังไม่เคยสำรองเลย':`สำรองครั้งล่าสุด ${a} วันก่อน`} ถ้ามือถือหายหรือเบราว์เซอร์ล้างข้อมูล แผนทั้งหมดจะหายไป ใช้เวลาแค่ 10 วินาที</span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn primary" data-act="bkgo">สำรองตอนนี้</button><button class="btn" data-act="bklater">ไว้ทีหลัง</button></span></div>`}
   const am=S.autoMsg;
   if(am&&am.date===today&&!am.seen)h+=`<div class="banner info"><span class="small">มี <b>${am.n} ช่วง</b>ที่ผ่านไปแล้วแต่ยังไม่ได้ติ๊ก แอปย้ายเนื้อหาที่ค้างมาไว้ในแผนข้างหน้าให้แล้ว ถ้าอ่านหรือทำไปแล้ว กลับไปติ๊กย้อนหลังได้ แผนจะปรับให้อีกครั้ง</span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-act="amview">ดูวันที่ค้าง</button><button class="btn" data-act="amok">รับทราบ</button></span></div>`;
   if(missed)h+=`<div class="banner"><span class="small">มี ${missed} ช่วงอ่านที่ผ่านไปแล้วแต่ยังไม่ได้ติ๊ก งานที่ค้างจะถูกยกไปวันถัดไป</span><button class="btn primary" data-act="replan">จัดแผนใหม่</button></div>`;
@@ -1023,6 +1200,7 @@ function summary(){
     <span class="sub">${tdT?`อ่าน ${td.length-tdT} · ทำงาน ${tdT} · `:''}${td.length?(left.length?`เสร็จ ${tdDone} เหลือ ${left.length} · ถัดไป ${hm(next.s)} ${esc(M(next.code).sh)}`:`ครบแล้ว ${tdDone}/${td.length} ช่วง เยี่ยมมาก`):'วันนี้ไม่มีช่วงอ่าน'}</span></div>
   ${risk?`<div class="tile risk" style="--sc:${risk.gap>0?'var(--warn)':col(risk.s.c)}"><span class="lab">วิชาที่เสี่ยงที่สุด</span><span class="big">${esc(risk.s.sh)}</span><span class="sub">${risk.why}</span></div>`:''}
   ${nt?`<div class="tile risk" style="--sc:var(--warn)"><span class="lab">งานใกล้ส่งที่สุด</span><span class="big">${esc(nt.name)}</span><span class="sub">${esc(tSubName(nt))} · ส่ง ${dueText(nt)} · ${dueLabel(nt)}</span></div>`:''}
+  ${streakTile()}
   ${goalOn()?goalTile():''}
   <div class="tile"><span class="lab">ทำตามแผน</span><span class="big">${pct==null?'–':pct+'%'} <small>${pct==null?'ยังไม่ถึงเวลาอ่าน':'ของช่วงที่ถึงเวลาแล้ว'}</small></span>
     <div class="pbar" title="ความคืบหน้ารวม"><i style="width:${cov}%"></i></div><span class="sub">อ่านไปแล้ว ${cov}% ของทั้งหมดก่อนสอบ</span></div>
@@ -1056,9 +1234,9 @@ function viewDay(){
     if(i.t==='tdue'){const t=i.task;return `<div class="row tduerow"><div class="t">${t.dueT||'วันนี้'}</div><div class="main"><div class="chip"><span class="sw" style="background:${tCol(t)}"></span>${esc(tSubName(t))}</div><div class="title">ส่งงาน: ${esc(t.name)}</div><div class="tip">${t.teacher?esc(t.teacher)+' · ':''}${t.ready?'ทำเสร็จแล้ว อย่าลืมพกไปส่ง':'กำหนดส่งวันนี้'}</div></div><div><button class="btn sm danger" data-tsent="${t.id}">ส่งแล้ว</button></div></div>`}
     const x=i.x,past=!x.done&&(x.date<today||(x.date===today&&x.e<min)),moved=past&&x.moved,missed=past&&!x.moved;
     if(x.kind==='task'){const t=tById(x.task);if(!t)return '';
-      return `<div class="row study task${x.done?' done':''}${missed?' missed':''}${moved?' moved':''}" style="--sc:var(--warn)"><div class="t"><b>${hm(x.s)}</b><span>ถึง ${hm(x.e)}</span></div><div class="main"><div class="chip"><span class="sw" style="background:${tCol(t)}"></span>${esc(tSubName(t))}<span class="kind tk">${t.type==='quiz'?'เตรียมสอบย่อย':'ทำงาน'}</span></div><div class="title">${esc(t.name)}${x.part?` · ช่วง ${x.part}/${t.size||1}`:''}</div>${missed?'<div class="tip" style="color:var(--warn)">ยังไม่ได้ทำ แอปจะหาเวลาใหม่ให้</div>':`<div class="tip" style="color:var(--warn)">ส่ง ${dueText(t)} · ${dueLabel(t)}${t.group?' · งานกลุ่ม':''}</div>`}${x.done?'<div class="donebadge">✓ ทำช่วงนี้เสร็จแล้ว</div>':''}${!x.done&&t.status==='open'&&!t.ready?`<div class="rate"><button data-tready="${t.id}">งานเสร็จทั้งชิ้นแล้ว</button><button data-tman="${t.id}">ดูงาน</button></div>`:''}${x.done?'':`<details class="edit"><summary>แก้ช่วงนี้</summary><div class="form"><input type="time" data-stime="${x.id}" value="${hm(x.s)}" aria-label="เวลาเริ่ม"><button class="btn sm" data-delslot="${x.id}">ลบช่วงนี้</button></div></details>`}</div><button class="check" data-tick="${x.id}" aria-pressed="${x.done}" aria-label="${x.done?'ยกเลิกติ๊ก':'ติ๊กว่าทำเสร็จ'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>`}
+      return `<div class="row study task${x.done?' done':''}${missed?' missed':''}${moved?' moved':''}" style="--sc:var(--warn)"><div class="t"><b>${hm(x.s)}</b><span>ถึง ${hm(x.e)}</span></div><div class="main"><div class="chip"><span class="sw" style="background:${tCol(t)}"></span>${esc(tSubName(t))}<span class="kind tk">${t.type==='quiz'?'เตรียมสอบย่อย':'ทำงาน'}</span></div><div class="title">${esc(t.name)}${x.part?` · ช่วง ${x.part}/${t.size||1}`:''}</div>${missed?'<div class="tip" style="color:var(--warn)">ยังไม่ได้ทำ แอปจะหาเวลาใหม่ให้</div>':`<div class="tip" style="color:var(--warn)">ส่ง ${dueText(t)} · ${dueLabel(t)}${t.group?' · งานกลุ่ม':''}</div>`}${x.done?'<div class="donebadge">✓ ทำช่วงนี้เสร็จแล้ว</div>':''}${!x.done&&t.status==='open'&&!t.ready?`<div class="rate"><button data-tready="${t.id}">งานเสร็จทั้งชิ้นแล้ว</button><button data-tman="${t.id}">ดูงาน</button></div>`:''}${!x.done&&x.date===today?`<button class="btn sm focusbtn" data-focus="${x.id}">▶ เริ่มจับเวลา</button>`:''}${x.done?'':`<details class="edit"><summary>แก้ช่วงนี้</summary><div class="form"><input type="time" data-stime="${x.id}" value="${hm(x.s)}" aria-label="เวลาเริ่ม"><button class="btn sm" data-delslot="${x.id}">ลบช่วงนี้</button></div></details>`}</div><button class="check" data-tick="${x.id}" aria-pressed="${x.done}" aria-label="${x.done?'ยกเลิกติ๊ก':'ติ๊กว่าทำเสร็จ'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>`}
     const rate=x.done?`<div class="rate"><span class="small muted">รอบนี้รู้สึกว่า</span>${[['easy','ง่าย'],['ok','พอได้'],['hard','ยาก']].map(([k,l])=>`<button data-rate="${k}" data-id="${x.id}" aria-pressed="${x.rating===k}">${l}</button>`).join('')}</div>`:'';
-    return `<div class="row study${x.done?' done':''}${missed?' missed':''}${moved?' moved':''}" style="--sc:${col(x.code)}"><div class="t"><b>${hm(x.s)}</b><span>ถึง ${hm(x.e)}</span></div><div class="main"><div class="chip"><span class="sw" style="background:${col(x.code)}"></span>${esc(M(x.code).sh)}<span class="kind ${x.kind}${x.eve?' eve':''}">${x.eve?'ก่อนสอบ · ':''}${x.kind==='goal'?esc(LV().goalTab):KIND[x.kind]}</span></div><div class="title">${slotTitle(x)}</div>${moved?'<div class="tip">ยกไปวันถัดไปแล้ว ถ้าทำไปแล้วกดติ๊กได้</div>':missed?'<div class="tip" style="color:var(--warn)">ยังไม่ได้ทำ</div>':`<div class="tip">${x.kind==='goal'?PTIP[x.phase]:TIP[x.kind]}${x.pinned?' · <span style="color:var(--accent)">ตั้งเอง</span>':''}</div>`}${x.done?'<div class="donebadge">✓ อ่านเสร็จแล้ว</div>':''}${rate}${x.done?'':`<details class="edit"><summary>แก้ช่วงนี้</summary><div class="form"><input type="time" data-stime="${x.id}" value="${hm(x.s)}" aria-label="เวลาเริ่ม"><select data-ssubj="${x.id}" aria-label="วิชา">${planSubj().map(s=>`<option value="${esc(s.c)}" ${s.c===x.code?'selected':''}>${esc(s.sh)}</option>`).join('')}</select><button class="btn sm" data-delslot="${x.id}">ลบช่วงนี้</button></div></details>`}</div><button class="check" data-tick="${x.id}" aria-pressed="${x.done}" aria-label="${x.done?'ยกเลิกติ๊ก':'ติ๊กว่าอ่านเสร็จ'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>`;
+    return `<div class="row study${x.done?' done':''}${missed?' missed':''}${moved?' moved':''}" style="--sc:${col(x.code)}"><div class="t"><b>${hm(x.s)}</b><span>ถึง ${hm(x.e)}</span></div><div class="main"><div class="chip"><span class="sw" style="background:${col(x.code)}"></span>${esc(M(x.code).sh)}<span class="kind ${x.kind}${x.eve?' eve':''}">${x.eve?'ก่อนสอบ · ':''}${x.kind==='goal'?esc(LV().goalTab):KIND[x.kind]}</span></div><div class="title">${slotTitle(x)}</div>${moved?'<div class="tip">ยกไปวันถัดไปแล้ว ถ้าทำไปแล้วกดติ๊กได้</div>':missed?'<div class="tip" style="color:var(--warn)">ยังไม่ได้ทำ</div>':`<div class="tip">${x.kind==='goal'?PTIP[x.phase]:TIP[x.kind]}${x.pinned?' · <span style="color:var(--accent)">ตั้งเอง</span>':''}</div>`}${x.done?'<div class="donebadge">✓ อ่านเสร็จแล้ว</div>':''}${rate}${!x.done&&x.date===today?`<button class="btn sm focusbtn" data-focus="${x.id}">▶ เริ่มจับเวลา</button>`:''}${x.done?'':`<details class="edit"><summary>แก้ช่วงนี้</summary><div class="form"><input type="time" data-stime="${x.id}" value="${hm(x.s)}" aria-label="เวลาเริ่ม"><select data-ssubj="${x.id}" aria-label="วิชา">${planSubj().map(s=>`<option value="${esc(s.c)}" ${s.c===x.code?'selected':''}>${esc(s.sh)}</option>`).join('')}</select><button class="btn sm" data-delslot="${x.id}">ลบช่วงนี้</button></div></details>`}</div><button class="check" data-tick="${x.id}" aria-pressed="${x.done}" aria-label="${x.done?'ยกเลิกติ๊ก':'ติ๊กว่าอ่านเสร็จ'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>`;
   }).join('');
   const rc=recallFor(sel);
   const recall=rc.length?`<div class="section"><h2>ทบทวนความจำ <span class="muted small">${rc.length} ข้อ · ข้อละ 10 นาที</span></h2><p class="small muted" style="margin:0">ปิดชีท แล้วเขียนหรือพูดสรุปบทนั้นจากความจำ จากนั้นเปิดชีทตรวจว่าลืมอะไร</p><div class="recall">${rc.map(r=>`<label><input type="checkbox" data-recall="${r.id}" ${S.recall[r.id]?'checked':''}><span><span class="sw" style="background:${col(r.code)}"></span> ${esc(M(r.code).sh)} บทที่ ${r.topic}${tName(r.code,r.topic)?' · '+esc(tName(r.code,r.topic)):''}${hardTopics(r.code).includes(r.topic)?'<span class="hardtag">ยาก</span>':''} <span class="muted small">(อ่านไปเมื่อ ${r.k} วันก่อน)</span></span></label>`).join('')}</div></div>`:'';
@@ -1067,6 +1245,7 @@ function viewDay(){
   <div class="daytools"><div class="step"><span>อ่านวันนี้</span><button data-cap="-1" aria-label="ลดหนึ่งช่วง">−</button><b>${capFor(sel)}</b><button data-cap="1" aria-label="เพิ่มหนึ่งช่วง">+</button><span>ช่วง</span>${S.dayCap[sel]!=null?'<button class="btn sm" data-act="capreset" style="width:auto;height:auto">ใช้ค่าปกติ</button>':''}</div>
   <span class="small muted">${studyN<capFor(sel)&&sel>=today?`วันนี้มีเวลาว่างพอแค่ ${studyN} ช่วง`:`ค่าปกติวัน${DWL[wd]} ${S.settings.capDays[wd]} ช่วง`}</span></div>
   <div class="timeline">${rows||'<div class="empty">ไม่มีช่วงอ่านในวันนี้</div>'}</div>
+  ${sel>=today?calBox():''}
   <details class="addbox"><summary>เพิ่มช่วงอ่านเองตามเวลาที่ต้องการ</summary><div class="form">
   <select id="o-c" aria-label="วิชา">${planSubj().map(s=>`<option value="${esc(s.c)}">${esc(s.sh)}</option>`).join('')}</select>
   <input type="time" id="o-s" value="20:00" aria-label="เวลาเริ่ม"><span class="small muted">ยาว ${S.settings.slot} นาที</span>
@@ -1094,6 +1273,7 @@ function viewPlan(){
   }
   const total=S.plan.filter(x=>x.date>=today).length;
   return `<div class="repcta"><div><b>ส่งรายงานให้ผู้ปกครอง</b><span class="small muted">สรุป 7 วันล่าสุด ส่งเป็นลิงก์ทาง LINE ผู้ปกครองเปิดดูได้ทันที</span></div><button class="btn primary" data-act="repopen">📤 ส่งรายงาน</button></div>
+  ${badgeSection()}
   <div class="section"><h2>ความครอบคลุมแต่ละวิชา</h2><p class="small muted" style="margin:0">จำนวนช่วง (ช่วงละ ${S.settings.slot} นาที) ที่ควรใช้ คำนวณจากจำนวนบท ความมั่นใจ และหน่วยกิต ถ้าขาด ให้เพิ่มชั่วโมงอ่านต่อวันในแท็บตั้งค่า</p>
   <div class="tablebox"><table><thead><tr><th>วิชา</th><th>วันสอบ</th><th>ควรใช้</th><th>จัดไว้</th><th>ทำแล้ว</th><th>สถานะ</th></tr></thead><tbody>${cov}</tbody></table></div></div>
   <div class="section"><h2>รายวัน <span class="muted small">รวม ${total} ช่วง · ${Math.round(total*S.settings.slot/60)} ชม.</span></h2><div>${days}</div></div>
@@ -1169,10 +1349,13 @@ function backupView(){
   const st=stats(S);let prev=null;try{prev=localStorage.getItem(KEY+'-before-import')}catch(e){}
   const msg=bkMsg?`<div class="msg${bkMsg.err?' err':''}">${esc(bkMsg.t)}</div>`:'';
   const imp=pendingImport?`<div class="confirmbox"><span class="small">ข้อมูลสำรองมี ${pendingImport.st.subj} วิชา ติ๊กแล้ว ${pendingImport.st.done} ช่วง จะแทนที่ข้อมูลในเครื่องนี้ (${st.subj} วิชา ติ๊กแล้ว ${st.done} ช่วง)</span><button class="btn sm primary" data-act="impyes">แทนที่ด้วยข้อมูลสำรอง</button><button class="btn sm" data-act="impno">ยกเลิก</button></div>`:'';
-  return `<div class="section"><h2>สำรองและย้ายข้อมูล</h2>
+  const ag=bkAge();
+  return `<div class="section" id="bkSec"><h2>สำรองและย้ายข้อมูล</h2>
+  <div class="small ${ag==null||ag>=30?'bad':'ok'}">${ag==null?'ยังไม่เคยสำรองข้อมูล':ag===0?'สำรองล่าสุดวันนี้':`สำรองล่าสุด ${ag} วันก่อน`}</div>
   <p class="small muted" style="margin:0">ข้อมูลทั้งหมดเก็บอยู่ในเบราว์เซอร์ของเครื่องนี้เท่านั้น ควรสำรองไว้เป็นระยะ ใช้ย้ายไปเครื่องใหม่ หรือส่งให้ผู้ปกครองดูความคืบหน้าก็ได้</p>
   <div class="bk"><b>1. สำรองจากเครื่องนี้</b><span class="small muted">ตอนนี้มี ${st.subj} วิชา ติ๊กแล้ว ${st.done} ช่วง</span>
-  <div class="row2"><button class="btn primary" data-act="bkcopy">คัดลอกรหัสสำรอง</button><button class="btn" data-act="bkfile">บันทึกเป็นไฟล์</button></div>
+  <div class="row2"><button class="btn primary" data-act="bkcopy">คัดลอกรหัสสำรอง</button><button class="btn" data-act="bkfile">บันทึกเป็นไฟล์</button>${canShareFile()?'<button class="btn" data-act="bkshare">ส่งไฟล์เก็บไว้ (LINE/ไดรฟ์)</button>':''}</div>
+  <span class="small muted">แนะนำ: ส่งไฟล์สำรองเก็บไว้ในแชท LINE ของตัวเอง (Keep) เดือนละครั้ง และติดตั้งแอปลงหน้าจอโฮม ข้อมูลจะไม่ถูกล้างง่าย</span>
   ${bkCode?`<textarea id="bk-out" readonly aria-label="รหัสสำรอง">${esc(bkCode)}</textarea><span class="small muted">ส่งรหัสนี้ทาง LINE หรือเก็บไว้ในโน้ต รหัสยาว ให้คัดลอกให้ครบทั้งหมด</span>`:''}</div>
   <div class="bk"><b>2. นำเข้าในเครื่องอื่น</b><textarea id="bk-in" placeholder="วางรหัสสำรองที่นี่" aria-label="วางรหัสสำรอง"></textarea>
   <div class="row2"><button class="btn primary" data-act="bkcheck">นำเข้ารหัส</button><label class="btn" for="bk-file" style="cursor:pointer">เลือกไฟล์สำรอง</label><input type="file" id="bk-file" accept=".json,application/json,text/plain" hidden></div>
@@ -1272,13 +1455,15 @@ function render(){
   $('wrap').dataset.level=S.level||'';$('tabs').hidden=!S.level;$('goaltab').textContent=S.level?LV().goalTab:'เป้าหมาย';
   if(!S.level&&tab!=='sched'&&tab!=='fb'){$('banner').style.display='none';$('view').innerHTML=picker();return}
   if(tab==='goal'&&!S.goal)S.goal=newGoal(S.level);
-  $('view').innerHTML=tab==='day'?viewDay():tab==='plan'?viewPlan():tab==='subj'?viewSubj():tab==='fb'?viewFb():tab==='task'?viewTask():tab==='goal'?viewGoal():viewSched();
+  $('view').innerHTML=tab==='day'?viewDay():tab==='plan'?viewPlan():tab==='subj'?viewSubj():tab==='fb'?viewFb():tab==='privacy'?viewPrivacy():tab==='task'?viewTask():tab==='goal'?viewGoal():viewSched();
   if(tab==='fb')fbUpdate();
   const a=document.querySelector('.day[aria-pressed="true"]');if(a)a.scrollIntoView({block:'nearest',inline:'center'});
 }
 
 document.addEventListener('click',e=>{
   const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.rate&&t.closest('#focus'))focusClose();
+  if(featClick(t))return;
   if(t.dataset.tab){tab=t.dataset.tab;tv=null;draft=null;render();return}
   if(taskClick(t))return;
   if(t.dataset.level){const lv=t.dataset.level,first=!S.level;S.level=lv;S.goal=newGoal(lv);
@@ -1374,12 +1559,12 @@ document.addEventListener('click',e=>{
     S.sample=false;showAdd=true;generate();render();
     const m=$('n-msg');if(m){m.style.color='var(--accent)';m.textContent=`เพิ่ม ${th} แล้ว เพิ่มวิชาต่อไปได้เลย`}
     return}
-  if(act==='bkcopy'){bkCode=encodeBk();const done=()=>{bkMsg={t:'คัดลอกรหัสสำรองแล้ว นำไปวางใน LINE หรือโน้ตได้เลย'};render()};
+  if(act==='bkcopy'){bkCode=encodeBk();const done=()=>{markBackup();bkMsg={t:'คัดลอกรหัสสำรองแล้ว นำไปวางใน LINE หรือโน้ตได้เลย'};render()};
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(bkCode).then(done,()=>{bkMsg={t:'คัดลอกอัตโนมัติไม่ได้ กดค้างที่ช่องรหัสแล้วเลือกคัดลอก'};render();const o=$('bk-out');if(o){o.focus();o.select()}});
     else{bkMsg={t:'กดค้างที่ช่องรหัสแล้วเลือกคัดลอก'};render();const o=$('bk-out');if(o){o.focus();o.select()}}
     return}
   if(act==='bkfile'){try{const b=new Blob([JSON.stringify(S)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');
-    a.href=u;a.download=`sea2uni-${nowInfo().date}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);
+    a.href=u;a.download=`sea2uni-${nowInfo().date}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);markBackup();
     bkMsg={t:'บันทึกไฟล์แล้ว ดูได้ในโฟลเดอร์ดาวน์โหลด ถ้าไม่มีไฟล์ ให้ใช้ปุ่มคัดลอกรหัสสำรองแทน'}}catch(e){bkMsg={t:'บันทึกไฟล์ไม่ได้ ใช้ปุ่มคัดลอกรหัสสำรองแทน',err:true}}render();return}
   if(act==='bkcheck'){stageImport($('bk-in').value);return}
   if(act==='impno'){pendingImport=null;render();return}
