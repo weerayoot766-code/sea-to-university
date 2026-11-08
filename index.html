@@ -480,8 +480,8 @@ if(!S.since){S.since=ds(new Date());try{localStorage.setItem(KEY,JSON.stringify(
 // ใส่ลิงก์ Google Form ตรงนี้ถ้ามี เช่น 'https://forms.gle/xxxx' ถ้าว่างไว้ ผู้ใช้จะส่งความเห็นผ่าน LINE แทน
 const FEEDBACK_FORM='';
 // ใส่ลิงก์ LINE OA ตรงนี้ เช่น 'https://lin.ee/xxxx' ถ้าว่างไว้ ปุ่มติดตาม LINE จะซ่อนทั้งหมด
-// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v16)
-const APP_VER='v16';
+// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v17)
+const APP_VER='v17';
 const LINE_OA='';
 // กลุ่ม LINE OpenChat ของผู้ใช้แอป (ห้องเดียว ม.ต้น + ม.ปลาย) ใส่ลิงก์เชิญ เช่น 'https://line.me/ti/g2/xxxx' ถ้าว่างไว้ ปุ่มเข้ากลุ่มจะซ่อนทั้งหมด
 const LINE_GROUP='';
@@ -730,7 +730,7 @@ function themePicker(){const c=curTheme();
   <div class="thlist">${THEMES.map(t=>`<button class="thbtn" data-theme-pick="${t.k}" aria-pressed="${c===t.k}"><span class="thsw" style="background:${t.bg}"><b style="background:${t.dot}"></b><i style="background:${t.bar}"></i></span>${t.n}</button>`).join('')}</div></div>`}
 // ===== ตั้งค่าที่แก้ได้ =====
 // ใส่ token ของ Cloudflare Web Analytics (นับจำนวนผู้เข้า ไม่เก็บคุกกี้ ไม่ระบุตัวตน) ถ้าว่างไว้ จะไม่โหลดอะไรเลย
-const CF_BEACON_TOKEN='';
+const CF_BEACON_TOKEN='867dad1285a445069968e6518f0e582c';
 const PRIVACY_UPDATED='8 พ.ย. 2569';
 if(CF_BEACON_TOKEN&&location.protocol!=='file:'){const sc=document.createElement('script');sc.defer=true;sc.src='https://static.cloudflareinsights.com/beacon.min.js';sc.setAttribute('data-cf-beacon',JSON.stringify({token:CF_BEACON_TOKEN}));document.head.appendChild(sc)}
 
