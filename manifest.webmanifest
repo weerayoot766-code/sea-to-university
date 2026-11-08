@@ -3,7 +3,7 @@
   "short_name": "Sea2Uni",
   "description": "วางแผนอ่านหนังสือสำหรับนักเรียน ม.ต้น และ ม.ปลาย ทั้งสอบในโรงเรียน สอบเข้า ม.4 และ TCAS",
   "lang": "th",
-  "start_url": "./",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

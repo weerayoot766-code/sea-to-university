@@ -38,8 +38,8 @@
 ## กฎสำคัญเวลาแก้แอป
 - **ห้ามเปลี่ยนชื่อ `sea2uni-v1`** ใน `index.html` เป็นที่เก็บข้อมูลของผู้ใช้ เปลี่ยนแล้วข้อมูลทุกคนจะหาย
 - **แก้ `index.html` ทุกครั้ง ต้องเปลี่ยนเลขเวอร์ชัน 2 ที่ให้ตรงกัน**
-  - `const CACHE = 'sea2uni-v17'` ใน `sw.js`
-  - `const APP_VER='v17'` ใน `index.html` (เลขที่แสดงท้ายแอป)
+  - `const CACHE = 'sea2uni-v18'` ใน `sw.js`
+  - `const APP_VER='v18'` ใน `index.html` (เลขที่แสดงท้ายแอป)
 - **แก้แค่ `news.json` ไม่ต้องเปลี่ยนเวอร์ชัน**
 
 ## ลงข่าวใน `news.json`
@@ -63,4 +63,7 @@
 | `LINE_OA` | ลิงก์ LINE Official Account (ว่าง = ซ่อนปุ่ม) |
 | `LINE_GROUP`, `LINE_GROUP_CODE` | ลิงก์และรหัส OpenChat ของผู้ใช้แอป (ว่าง = ซ่อนปุ่ม) |
 | `CF_BEACON_TOKEN` | token ของ Cloudflare Web Analytics (ว่าง = ไม่นับสถิติ) |
+
+## ดูสถิติใน Cloudflare Web Analytics
+กรอง Path ให้เห็นเฉพาะแอปนี้ · `/sea-to-university/index.html` = เปิดจากแอปที่ติดตั้งลงหน้าจอโฮม (ตั้งไว้ใน `start_url` ของ `manifest.webmanifest`) · `/sea-to-university/` = เปิดผ่านเบราว์เซอร์หรือลิงก์
 | `TCAS` | รายวิชาและวันสอบ TCAS ปีปัจจุบัน แก้ตรงนี้เมื่อขึ้นปีใหม่ |
