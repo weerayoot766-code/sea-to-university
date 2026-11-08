@@ -214,6 +214,18 @@ tr.tnrow td{padding-top:0;background:var(--bg)}
 .site-by{font-size:.9rem}
 .site-addr{font-size:.85rem;color:var(--muted);max-width:34em;text-wrap:balance}
 .site-addr span{white-space:nowrap}
+.tcas{display:flex;flex-direction:column;gap:14px;margin-top:6px}
+.tgrp{display:flex;flex-direction:column;gap:8px}
+.tgh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.tgh b{font-family:var(--display);font-size:1rem}
+.tbtns{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.tbtn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;font:inherit;padding:10px 12px;min-height:72px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.tbtn:hover{border-color:var(--accent)}
+.tbtn .tc{font-family:var(--display);font-weight:700;font-size:1.05rem;color:var(--accent)}
+.tbtn .tl{font-size:.82rem;line-height:1.35}
+.tbtn .td{font-size:.72rem;color:var(--muted);margin-top:auto}
+.tbtn[aria-pressed="true"]{border:2px solid var(--accent);background:var(--accent-soft);cursor:default}
+.tsrc{line-height:1.5}
+.tcas>.btn{align-self:flex-start}
 .site-ver{font-size:.72rem;color:var(--muted);font-family:var(--mono);opacity:.8}
 .site-copy{font-size:.78rem;color:var(--muted);margin-top:6px}
 .tbadge{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:99px;background:var(--exam);color:var(--surface);font-size:.7rem;line-height:18px;text-align:center;font-weight:600}
@@ -386,8 +398,8 @@ if(!S.since){S.since=ds(new Date());try{localStorage.setItem(KEY,JSON.stringify(
 // ใส่ลิงก์ Google Form ตรงนี้ถ้ามี เช่น 'https://forms.gle/xxxx' ถ้าว่างไว้ ผู้ใช้จะส่งความเห็นผ่าน LINE แทน
 const FEEDBACK_FORM='';
 // ใส่ลิงก์ LINE OA ตรงนี้ เช่น 'https://lin.ee/xxxx' ถ้าว่างไว้ ปุ่มติดตาม LINE จะซ่อนทั้งหมด
-// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v8)
-const APP_VER='v8';
+// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v9)
+const APP_VER='v9';
 const LINE_OA='';
 // กลุ่ม LINE OpenChat ของผู้ใช้แอป (ห้องเดียว ม.ต้น + ม.ปลาย) ใส่ลิงก์เชิญ เช่น 'https://line.me/ti/g2/xxxx' ถ้าว่างไว้ ปุ่มเข้ากลุ่มจะซ่อนทั้งหมด
 const LINE_GROUP='';
@@ -466,6 +478,39 @@ const PHASE={base:'ทบทวนเนื้อหา',prac:'ทำโจท�
 const PTIP={base:'ทบทวนเนื้อหาทีละหัวข้อ สรุปสูตรหรือคำสำคัญลงสมุด',prac:'ทำโจทย์แนวข้อสอบ จดข้อที่ผิดไว้ทบทวน',mock:'ทำข้อสอบเก่าแบบจับเวลาจริง แล้วบันทึกคะแนนในแท็บเป้าหมาย'};
 const schoolSoon=d=>active().some(s=>{const e=S.subjects[s.c].exam;return e>=d&&e<=addD(d,7)});
 const planEnd=()=>[lastExam(),...S.plan.map(x=>x.date)].sort().pop();
+// สนามสอบ TCAS70 (ตรวจล่าสุด 8 พ.ย. 2569) ปีหน้าแก้แค่ตรงนี้: ชื่อรุ่น วันสอบ และรายวิชา
+const TCAS={ver:'TCAS70',checked:'8 พ.ย. 2569',groups:[
+  {k:'TGAT',title:'TGAT ความถนัดทั่วไป',note:'คณะส่วนใหญ่ใช้ สอบ 30 ม.ค. 70',items:[
+    ['TGAT1','การสื่อสารภาษาอังกฤษ','TGAT1 การสื่อสารภาษาอังกฤษ','2027-01-30'],
+    ['TGAT2','การคิดอย่างมีเหตุผล','TGAT2 การคิดอย่างมีเหตุผล','2027-01-30'],
+    ['TGAT3','สมรรถนะการทำงาน','TGAT3 สมรรถนะการทำงาน','2027-01-30']]},
+  {k:'TPAT',title:'TPAT ความถนัดทางวิชาชีพ',note:'เลือกตามสายคณะที่อยากเข้า',items:[
+    ['TPAT1','วิชาเฉพาะ กสพท (กลุ่มแพทย์) · สมัครที่เว็บ กสพท','TPAT1 กสพท (แพทย์)','2027-02-13'],
+    ['TPAT2','ศิลปกรรมศาสตร์','TPAT2 ศิลปกรรมศาสตร์','2027-01-31'],
+    ['TPAT3','วิทยาศาสตร์ เทคโนโลยี วิศวกรรมศาสตร์','TPAT3 วิทยาศาสตร์ เทคโนโลยี วิศวกรรม','2027-01-30'],
+    ['TPAT4','สถาปัตยกรรมศาสตร์','TPAT4 สถาปัตยกรรมศาสตร์','2027-02-01'],
+    ['TPAT5','ครุศาสตร์-ศึกษาศาสตร์','TPAT5 ครุศาสตร์-ศึกษาศาสตร์','2027-01-31']]},
+  {k:'A-Level',title:'A-Level วิชาการ',note:'สอบ 13–15 มี.ค. 70 เลือกเฉพาะวิชาที่คณะใช้',items:[
+    ['คณิต 1','คณิตศาสตร์ประยุกต์ 1','A-Level คณิตศาสตร์ประยุกต์ 1','2027-03-14'],
+    ['คณิต 2','คณิตศาสตร์ประยุกต์ 2','A-Level คณิตศาสตร์ประยุกต์ 2','2027-03-15'],
+    ['วิทย์ประยุกต์','วิทยาศาสตร์ประยุกต์','A-Level วิทยาศาสตร์ประยุกต์','2027-03-15'],
+    ['ฟิสิกส์','ฟิสิกส์','A-Level ฟิสิกส์','2027-03-13'],
+    ['เคมี','เคมี','A-Level เคมี','2027-03-14'],
+    ['ชีวะ','ชีววิทยา','A-Level ชีววิทยา','2027-03-13'],
+    ['สังคม','สังคมศึกษา','A-Level สังคมศึกษา','2027-03-13'],
+    ['ไทย','ภาษาไทย','A-Level ภาษาไทย','2027-03-13'],
+    ['อังกฤษ','ภาษาอังกฤษ','A-Level ภาษาอังกฤษ','2027-03-14'],
+    ['ภาษาที่ 2','ภาษาต่างประเทศ (ฝรั่งเศส เยอรมัน ญี่ปุ่น จีน ฯลฯ)','A-Level ภาษาต่างประเทศ','2027-03-15']]}],
+  cal:[['ปิดรับสมัครสอบ TGAT/TPAT (myTCAS)','2026-11-10'],['ปิดรับสมัครสอบ A-Level (myTCAS)','2027-01-20'],['สอบ TGAT/TPAT','2027-01-30'],['สอบ TPAT1 กสพท','2027-02-13'],
+    ['ประกาศคะแนน TGAT/TPAT','2027-02-28'],['สอบ A-Level','2027-03-13'],['รอบ 2 Quota','2027-03-13'],['ประกาศคะแนน A-Level','2027-04-20'],['รอบ 3 Admission','2027-05-07'],['รอบ 4 Direct Admission','2027-05-29']]};
+const tcasItem=name=>{for(const g of TCAS.groups)for(const it of g.items)if(it[2]===name)return it;return null};
+function viewTcas(){
+  const have=new Set(S.goal.subjects.map(x=>x.name)),{date:today}=nowInfo();
+  return `<div class="tcas">${TCAS.groups.map(g=>`<div class="tgrp"><div class="tgh"><b>${g.title}</b><span class="small muted">${g.note}</span></div><div class="tbtns">${g.items.map(it=>{const on=have.has(it[2]);
+    return `<button class="tbtn" data-tcas="${esc(it[2])}" aria-pressed="${on}"><span class="tc">${on?'✓ ':''}${esc(it[0])}</span><span class="tl">${esc(it[1])}</span><span class="td">${it[3]<today?'สอบแล้ว':'สอบ '+thDate(it[3])}</span></button>`}).join('')}</div></div>`).join('')}
+  <div class="tsrc small muted">ข้อมูลวิชาและวันสอบ ${TCAS.ver} ตรวจล่าสุด ${TCAS.checked} · ยืนยันอีกครั้งที่ <a href="https://www.mytcas.com" target="_blank" rel="noopener">mytcas.com</a> · TPAT1 สมัครแยกที่เว็บ กสพท</div>
+  <button class="btn" data-act="tcascal">ใส่ปฏิทิน ${TCAS.ver} ลงวันสำคัญ</button></div>`;
+}
 function newGoal(lv){const L=LEVELS[lv];return {on:true,title:'',examDate:'',weeklyHrs:L.weeklyHrs,subjects:[],scores:[],
   deadlines:L.dates.map(t=>({id:uid(),title:t,date:'',done:false})),checklist:L.check.map(t=>({id:uid(),title:t,done:false}))}}
 function freeCi(){const used=new Set([...S.subjList.map(x=>x.ci),...(S.goal?.subjects||[]).map(x=>x.ci)]);for(let i=0;i<12;i++)if(!used.has(i))return i;return (S.subjList.length+(S.goal?.subjects||[]).length)%12}
@@ -982,7 +1027,7 @@ function viewGoal(){
   <p class="small muted" style="margin:0">แอปแบ่งชั่วโมงต่อสัปดาห์ตามสัดส่วนคะแนน และให้เวลาเพิ่มกับวิชาที่คะแนนซ้อมยังห่างจากเป้า ช่วงที่ใกล้สอบในโรงเรียน (7 วัน) จะลดเวลาเตรียมสอบลงชั่วคราว</p></div>
   <div class="section"><h2>วิชาที่ต้องสอบ ${g.subjects.length?`<span class="small muted">สัดส่วนรวม ${sum}%</span>`:''}</h2>
   ${g.subjects.length?`<div class="tablebox"><table><thead><tr><th>วิชา</th><th>สัดส่วน</th><th>เป้าหมาย</th><th>ล่าสุด</th><th>แนวโน้ม</th><th>ต่อสัปดาห์</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`:''}
-  <span class="small muted">แตะเพื่อเพิ่มวิชา</span>${quickChips(L.goal,'gadd')}
+  ${S.level==='upper'?`<span class="small muted">แตะสนามสอบที่ต้องใช้ แอปจะเพิ่มเป็นวิชาเตรียมสอบให้</span>${viewTcas()}`:`<span class="small muted">แตะเพื่อเพิ่มวิชา</span>${quickChips(L.goal,'gadd')}`}
   <div class="form"><input id="g-new" placeholder="วิชาอื่น ๆ" aria-label="ชื่อวิชาอื่น"><button class="btn" data-act="gaddcustom">เพิ่ม</button></div></div>
   <div class="section"><h2>บันทึกคะแนนสอบซ้อม</h2><p class="small muted" style="margin:0">ทำข้อสอบเก่าหรือสนามสอบจำลองแล้วบันทึกที่นี่ เส้นประในกราฟคือคะแนนเป้าหมาย</p>
   ${g.subjects.length?`<div class="form"><select id="sc-c" aria-label="วิชา">${g.subjects.map(x=>`<option value="${esc(x.c)}">${esc(x.sh)}</option>`).join('')}</select><input type="date" id="sc-d" value="${today}" aria-label="วันที่"><input type="number" id="sc-v" placeholder="ได้" min="0" style="width:80px" aria-label="คะแนนที่ได้"><span>/</span><input type="number" id="sc-m" value="100" min="1" style="width:80px" aria-label="คะแนนเต็ม"><button class="btn primary" data-act="addscore">บันทึก</button><span class="small" id="sc-msg" style="color:var(--warn)"></span></div>`:'<div class="empty">เพิ่มวิชาก่อน แล้วค่อยบันทึกคะแนน</div>'}
@@ -1037,6 +1082,9 @@ document.addEventListener('click',e=>{
   if(t.dataset.qadd){const th=t.dataset.qadd;if(S.subjList.some(x=>x.th===th))return;const c='S'+uid().slice(1),today=nowInfo().date;
     S.subjList.push({c,th,sh:shortName(th),cr:3,ci:freeCi(),auto:true});
     S.subjects[c]={exam:addD(today,28),et:'09:00',ee:'10:30',real:false,topics:5,conf:3,on:true};generate();render();return}
+  if(t.dataset.tcas){const name=t.dataset.tcas,it=tcasItem(name);if(S.goal.subjects.some(x=>x.name===name))return;
+    S.goal.subjects.push({c:uid().slice(1),name,sh:shortName(name),weight:20,target:70,ci:freeCi(),adj:0});
+    if(it&&!S.goal.examDate&&it[3]>=nowInfo().date)S.goal.examDate=it[3];if(!S.goal.title)S.goal.title=TCAS.ver;generate();render();return}
   if(t.dataset.gadd){const name=t.dataset.gadd;if(S.goal.subjects.some(x=>x.name===name))return;
     S.goal.subjects.push({c:uid().slice(1),name,sh:shortName(name),weight:20,target:70,ci:freeCi(),adj:0});generate();render();return}
   if(t.dataset.gdel){S.goal.subjects=S.goal.subjects.filter(x=>x.c!==t.dataset.gdel);S.goal.scores=S.goal.scores.filter(x=>x.c!==t.dataset.gdel);S.plan=S.plan.filter(x=>x.code!=='G:'+t.dataset.gdel);generate();render();return}
@@ -1070,6 +1118,9 @@ document.addEventListener('click',e=>{
   const act=t.dataset.act;
   if(act==='setupdone'){S.setupDone=true;generate();render();window.scrollTo(0,0);return}
   if(act==='schoolweek'){[1,2,3,4,5].forEach(d=>{if(!S.classes.some(k=>k.d===d&&k.label==='โรงเรียน'))S.classes.push({id:uid(),d,s:'08:00',e:'16:00',c:'',label:'โรงเรียน'})});generate();render();return}
+  if(act==='tcascal'){const {date:today}=nowInfo();let n=0;
+    TCAS.cal.forEach(([title,date])=>{const x=S.goal.deadlines.find(d=>d.title===title);if(x){if(!x.date){x.date=date;n++}}else{S.goal.deadlines.push({id:uid(),title,date,done:date<today});n++}});
+    if(!S.goal.examDate)S.goal.examDate='2027-01-30';generate();render();return}
   if(act==='gaddcustom'){const n=$('g-new').value.trim();if(!n||S.goal.subjects.some(x=>x.name===n))return;S.goal.subjects.push({c:uid().slice(1),name:n,sh:shortName(n),weight:20,target:70,ci:freeCi(),adj:0});generate();render();return}
   if(act==='addscore'){const c=$('sc-c').value,d=$('sc-d').value,v=parseFloat($('sc-v').value),m=parseFloat($('sc-m').value)||100;
     if(!d||isNaN(v)||v<0||v>m){$('sc-msg').textContent='ใส่คะแนนที่ได้ ไม่เกินคะแนนเต็ม';return}
