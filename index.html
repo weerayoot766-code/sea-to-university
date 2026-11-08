@@ -237,6 +237,20 @@ tr.tnrow td{padding-top:0;background:var(--bg)}
 .news .nnav button:hover{background:var(--accent-soft);color:var(--fg)}
 .news .ncnt{font-size:.72rem;color:var(--muted);font-family:var(--mono);min-width:26px;text-align:center}
 @media (prefers-reduced-motion:no-preference){.news .ntx{animation:nfade .35s ease}@keyframes nfade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}}
+.pmode #wrap{display:none}
+.pview .phd{display:flex;gap:14px;align-items:center}.pview .plogo{width:56px;height:56px;border-radius:14px}
+.pview h1{margin:2px 0;font-family:var(--display);font-size:1.5rem;line-height:1.25}
+.pbars{display:flex;flex-direction:column;gap:6px}
+.pbr{display:grid;grid-template-columns:minmax(64px,30%) minmax(0,1fr) auto;gap:8px;align-items:center}
+.pbr .pk{font-size:.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pbr .pt{height:10px;border-radius:5px;background:var(--line);overflow:hidden}.pbr .pt i{display:block;height:100%;background:var(--accent);border-radius:5px}
+.plist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.plist>div{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;padding:10px 12px;border-bottom:1px solid var(--line)}.plist>div:last-child{border-bottom:0}
+.plist>div>span:last-child{margin-left:auto}
+.plist.od{border-color:var(--exam)}.pbad{color:var(--exam);font-weight:600}
+.repcta{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+.repcta>div{display:flex;flex-direction:column}
+.repnick{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.repnick input{font:inherit;min-height:40px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);width:160px}
 .site-ver{font-size:.72rem;color:var(--muted);font-family:var(--mono);opacity:.8}
 .site-copy{font-size:.78rem;color:var(--muted);margin-top:6px}
 .tbadge{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:99px;background:var(--exam);color:var(--surface);font-size:.7rem;line-height:18px;text-align:center;font-weight:600}
@@ -329,7 +343,7 @@ a.btn{text-decoration:none;display:inline-block}
   <div id="installGuide" class="ig" hidden></div>
   <div id="banner"></div>
   <main id="view"></main>
-  <div class="foot"><button class="btn line" data-act="grpshow" id="grpFoot" hidden>👥 เข้ากลุ่มเพื่อนอ่านหนังสือ</button><button class="btn line" data-act="lineoa" id="lineFoot" hidden>🔔 ติดตามข่าวและฟีเจอร์ใหม่ทาง LINE</button><button class="btn" data-tab="fb">💬 ส่งความเห็นเกี่ยวกับแอป</button></div>
+  <div class="foot"><button class="btn primary" data-act="repopen" id="repFoot" hidden>📤 ส่งรายงานให้ผู้ปกครอง</button><button class="btn line" data-act="grpshow" id="grpFoot" hidden>👥 เข้ากลุ่มเพื่อนอ่านหนังสือ</button><button class="btn line" data-act="lineoa" id="lineFoot" hidden>🔔 ติดตามข่าวและฟีเจอร์ใหม่ทาง LINE</button><button class="btn" data-tab="fb">💬 ส่งความเห็นเกี่ยวกับแอป</button></div>
   <footer class="site">
     <div class="site-name">Sea To University</div>
     <div class="site-by">โดย <b>ปรุงยาเภสัช</b></div>
@@ -338,6 +352,7 @@ a.btn{text-decoration:none;display:inline-block}
     <div class="site-ver">เวอร์ชัน <span id="appver"></span></div>
   </footer>
 </div>
+<div class="wrap pview" id="parentView" hidden></div>
 
 <script>
 const CLASSES=[],SUBJ=[];
@@ -410,8 +425,8 @@ if(!S.since){S.since=ds(new Date());try{localStorage.setItem(KEY,JSON.stringify(
 // ใส่ลิงก์ Google Form ตรงนี้ถ้ามี เช่น 'https://forms.gle/xxxx' ถ้าว่างไว้ ผู้ใช้จะส่งความเห็นผ่าน LINE แทน
 const FEEDBACK_FORM='';
 // ใส่ลิงก์ LINE OA ตรงนี้ เช่น 'https://lin.ee/xxxx' ถ้าว่างไว้ ปุ่มติดตาม LINE จะซ่อนทั้งหมด
-// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v11)
-const APP_VER='v11';
+// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v12)
+const APP_VER='v12';
 const LINE_OA='';
 // กลุ่ม LINE OpenChat ของผู้ใช้แอป (ห้องเดียว ม.ต้น + ม.ปลาย) ใส่ลิงก์เชิญ เช่น 'https://line.me/ti/g2/xxxx' ถ้าว่างไว้ ปุ่มเข้ากลุ่มจะซ่อนทั้งหมด
 const LINE_GROUP='';
@@ -551,6 +566,94 @@ function renderNews(){
 // เลื่อนข่าวเองทุก 7 วินาที หยุดชั่วคราวตอนเอาเมาส์ชี้ และ 20 วินาทีหลังกดเลื่อนเอง
 setInterval(()=>{if(newsHover||Date.now()<newsUntil||document.hidden)return;const n=S.level?newsItems().length:0;if(n>1){newsIdx=(newsIdx+1)%n;renderNews()}},7000);
 (()=>{const el=document.getElementById('news');if(!el)return;el.addEventListener('mouseenter',()=>{newsHover=true});el.addEventListener('mouseleave',()=>{newsHover=false})})();
+// ===== รายงานถึงผู้ปกครอง =====
+// ข้อมูลรายงานอยู่ในตัวลิงก์ (#r=...) ไม่ผ่านเซิร์ฟเวอร์ ผู้ปกครองเปิดลิงก์แล้วเห็นหน้ารายงานแบบดูอย่างเดียว
+// รายงานที่ผู้ปกครองกดบันทึก เก็บแยกในคีย์ sea2uni-parent ไม่ยุ่งกับข้อมูลแอปใน sea2uni-v1
+const PKEY='sea2uni-parent';
+let repOpen=false,repMsg='';
+const b64e=o=>{const u=new TextEncoder().encode(JSON.stringify(o));let s='';u.forEach(c=>{s+=String.fromCharCode(c)});return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
+const b64d=t=>{t=t.replace(/-/g,'+').replace(/_/g,'/');const s=atob(t);return JSON.parse(new TextDecoder().decode(Uint8Array.from(s,c=>c.charCodeAt(0))))};
+function weekStats(from,to){
+  const {date:today,min}=nowInfo();
+  const due=S.plan.filter(x=>x.date>=from&&x.date<=to&&isOn(x.code)&&(x.done||x.date<today||(x.date===today&&x.e<=min)));
+  const dn=due.filter(x=>x.done);
+  return {p:due.length,d:dn.length,h:+(dn.reduce((a,x)=>a+(x.e-x.s),0)/60).toFixed(1),days:new Set(dn.map(x=>x.date)).size,dn};
+}
+function buildReport(){
+  const {date:today}=nowInfo(),from=addD(today,-6),w=weekStats(from,today),pw=weekStats(addD(today,-13),addD(today,-7));
+  const by={};w.dn.forEach(x=>{const k=M(x.code).sh;by[k]=(by[k]||0)+(x.e-x.s)});
+  const T=S.tasks||[],open=T.filter(t=>t.status==='open'),sent=T.filter(t=>t.status==='sent');
+  const r={v:1,n:(S.nick||'').trim(),lv:S.level,d:today,f:from,h:w.h,p:w.p,dn:w.d,ds:w.days,ph:pw.p?pw.h:null,
+    subj:Object.entries(by).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([k,m])=>[k,+(m/60).toFixed(1)]),
+    od:open.filter(t=>t.due<today).sort((a,b)=>a.due<b.due?-1:1).slice(0,5).map(t=>[t.name,tSubName(t),t.due]),
+    sn:open.filter(t=>t.due>=today&&t.due<=addD(today,7)).sort((a,b)=>a.due<b.due?-1:1).slice(0,5).map(t=>[t.name,tSubName(t),t.due,t.ready?1:0]),
+    ts:sent.length,to:sent.filter(t=>(t.sentDate||'')<=t.due).length,
+    ex:active().filter(s=>S.subjects[s.c].real&&S.subjects[s.c].exam>=today).map(s=>[s.sh,S.subjects[s.c].exam]).sort((a,b)=>a[1]<b[1]?-1:1).slice(0,4)};
+  if(goalOn())r.g={t:S.goal.title||LV().goalTitle,d:S.goal.examDate,s:S.goal.subjects.slice(0,8).map(x=>[x.sh,latestPct(x),+x.target||0])};
+  return r;
+}
+const repURL=r=>location.origin+location.pathname+'#r='+b64e(r);
+const repPct=r=>r.p?Math.round(r.dn/r.p*100):null;
+function repText(r){const p=repPct(r);
+  return `📚 รายงานการอ่านหนังสือของ${r.n?' '+r.n:'ลูก'} (7 วันล่าสุด)\nอ่านและทำงาน ${r.h} ชม. · ทำตามแผน ${p==null?'–':p+'%'}${r.od.length?`\nงานค้างส่ง ${r.od.length} ชิ้น`:''}\nดูรายงานเต็ม: ${repURL(r)}`}
+const repLineHref=()=>'https://line.me/R/share?text='+encodeURIComponent(repText(buildReport()));
+function repPanel(){
+  const r=buildReport(),p=repPct(r);
+  return `<div class="banner info rep"><div class="small" style="flex:1 1 260px;display:flex;flex-direction:column;gap:6px"><b style="font-size:.95rem">ส่งรายงานให้ผู้ปกครอง</b>
+  <span>ผู้ปกครองจะเห็นสรุป 7 วันล่าสุด ได้แก่ ชั่วโมงที่อ่าน ทำตามแผนกี่ % แยกรายวิชา งานที่ต้องส่ง วันสอบ และคะแนนสอบซ้อม ข้อมูลอื่นในเครื่องจะไม่ถูกส่งไป</span>
+  <label class="repnick">ชื่อที่ให้ผู้ปกครองเห็น <input id="rep-nick" value="${esc(S.nick||'')}" maxlength="30" placeholder="เช่น น้องซี"></label>
+  <span>สรุปตอนนี้: อ่านและทำงาน <b>${r.h} ชม.</b> · ทำตามแผน <b>${p==null?'–':p+'%'}</b>${r.od.length?` · งานค้างส่ง <b>${r.od.length}</b> ชิ้น`:''}</span>
+  ${repMsg?`<span style="color:var(--accent)">${esc(repMsg)}</span>`:''}</div>
+  <span style="display:flex;gap:6px;flex-wrap:wrap"><a class="btn line" id="repLine" href="${esc(repLineHref())}" target="_blank" rel="noopener">ส่งทาง LINE</a>${navigator.share?'<button class="btn" data-act="repshare">แชร์ทางอื่น</button>':''}<button class="btn" data-act="repcopy">คัดลอกลิงก์</button><button class="btn" data-act="repprev">ดูตัวอย่าง</button><button class="btn" data-act="repclose">ปิด</button></span></div>`;
+}
+// ---- หน้ารายงานฝั่งผู้ปกครอง ----
+let pvReport=null,pvPreview=false;
+const pLoad=()=>{try{const j=JSON.parse(localStorage.getItem(PKEY)||'{}');return Array.isArray(j.reports)?j.reports:[]}catch(e){return []}};
+const pSave=list=>{try{localStorage.setItem(PKEY,JSON.stringify({reports:list.slice(-60)}));return true}catch(e){return false}};
+const LVN={lower:'ม.ต้น',upper:'ม.ปลาย'};
+function parentHTML(r,preview){
+  const {date:today}=nowInfo(),p=repPct(r),diff=r.ph==null?null:+(r.h-r.ph).toFixed(1);
+  const hist=pLoad().filter(x=>(x.n||'')===(r.n||'')).sort((a,b)=>a.d<b.d?-1:1);
+  const saved=hist.some(x=>x.d===r.d&&x.h===r.h&&x.dn===r.dn);
+  const mx=Math.max(1,...r.subj.map(x=>x[1]));
+  const dl=d=>{const n=dIdx(d)-dIdx(today);return n<0?`เลยมา ${-n} วัน`:n===0?'วันนี้':n===1?'พรุ่งนี้':`อีก ${n} วัน`};
+  const logo=(document.querySelector('.logo')||{}).src||'';
+  const hmx=Math.max(1,...hist.map(x=>x.h),r.h);
+  return `<header class="phd">${logo?`<img src="${logo}" alt="" class="plogo">`:''}<div><div class="small muted">Sea To University · รายงานสำหรับผู้ปกครอง</div>
+  <h1>รายงานของ${r.n?' '+esc(r.n):'นักเรียน'}</h1><div class="small muted">${LVN[r.lv]||''} · ช่วง ${thDate(r.f)} – ${thDate(r.d)}${preview?' · <b>ตัวอย่างที่ผู้ปกครองจะเห็น</b>':''}</div></div></header>
+  ${r.d<addD(today,-7)?`<div class="banner"><span class="small">รายงานนี้ส่งมาเมื่อ ${thDate(r.d)} ข้อมูลอาจไม่ใช่ล่าสุด ขอให้ลูกกดส่งรายงานใหม่ได้</span></div>`:''}
+  <div class="dash">
+    <div class="tile"><span class="lab">อ่านและทำงาน 7 วัน</span><span class="big">${r.h} <small>ชม.</small></span><span class="sub">${diff==null?'ยังไม่มีข้อมูลสัปดาห์ก่อน':diff>0?`มากกว่าสัปดาห์ก่อน ${diff} ชม.`:diff<0?`น้อยกว่าสัปดาห์ก่อน ${-diff} ชม.`:'เท่ากับสัปดาห์ก่อน'}</span></div>
+    <div class="tile"><span class="lab">ทำตามแผน</span><span class="big">${p==null?'–':p+'%'}</span><div class="pbar"><i style="width:${p||0}%"></i></div><span class="sub">${r.dn} จาก ${r.p} ช่วงที่ถึงเวลาแล้ว</span></div>
+    <div class="tile"><span class="lab">วันที่ได้อ่าน</span><span class="big">${r.ds} <small>/ 7 วัน</small></span><span class="sub">${r.ds>=5?'สม่ำเสมอมาก':r.ds>=3?'กำลังดี':'ยังไม่สม่ำเสมอ'}</span></div>
+  </div>
+  ${r.subj.length?`<div class="section"><h2>แยกตามวิชา (ชั่วโมง)</h2><div class="pbars">${r.subj.map(([k,h])=>`<div class="pbr"><span class="pk">${esc(k)}</span><span class="pt"><i style="width:${Math.round(h/mx*100)}%"></i></span><span class="mono small">${h}</span></div>`).join('')}</div></div>`:''}
+  <div class="section"><h2>งานที่ต้องส่งครู</h2>
+  ${r.od.length?`<div class="plist od">${r.od.map(t=>`<div><b>${esc(t[0])}</b> <span class="small muted">${esc(t[1])}</span><span class="small pbad">ค้างส่ง · ${dl(t[2])}</span></div>`).join('')}</div>`:'<div class="small">ไม่มีงานค้างส่ง</div>'}
+  ${r.sn.length?`<div class="small muted">ใกล้ส่งใน 7 วัน</div><div class="plist">${r.sn.map(t=>`<div><b>${esc(t[0])}</b> <span class="small muted">${esc(t[1])}</span><span class="small">${t[3]?'ทำเสร็จแล้ว รอส่ง':'ส่ง '+thDate(t[2])+' · '+dl(t[2])}</span></div>`).join('')}</div>`:''}
+  ${r.ts?`<div class="small">ส่งงานตรงเวลา <b>${r.to}/${r.ts}</b> ชิ้น</div>`:''}</div>
+  ${r.ex.length?`<div class="section"><h2>สอบในโรงเรียนที่ใกล้ถึง</h2><div class="plist">${r.ex.map(e=>`<div><b>${esc(e[0])}</b><span class="small">${thDate(e[1])} · ${dl(e[1])}</span></div>`).join('')}</div></div>`:''}
+  ${r.g?`<div class="section"><h2>${esc(r.g.t)}</h2><div class="small muted">วันสอบหลัก ${thDate(r.g.d)} · ${dl(r.g.d)}</div><div class="plist">${r.g.s.map(x=>`<div><b>${esc(x[0])}</b><span class="small">${x[1]==null?'ยังไม่มีคะแนนสอบซ้อม':`ซ้อมล่าสุด ${x[1]}% · เป้า ${x[2]}%`}${x[1]!=null&&x[1]>=x[2]?' ✓':''}</span></div>`).join('')}</div></div>`:''}
+  ${hist.length?`<div class="section"><h2>รายงานที่บันทึกไว้ (${hist.length})</h2><div class="pbars">${hist.slice(-8).map(x=>`<div class="pbr"><span class="pk">${thDate(x.d)}</span><span class="pt"><i style="width:${Math.round(x.h/hmx*100)}%"></i></span><span class="mono small">${x.h} ชม.${repPct(x)==null?'':' · '+repPct(x)+'%'}</span></div>`).join('')}</div></div>`:''}
+  <p class="small muted" style="margin:0">ข้อมูลในหน้านี้มาจากลิงก์ที่ลูกส่งมา เป็นข้อมูล ณ วันที่ส่ง ไม่ได้เก็บไว้บนเซิร์ฟเวอร์ใด · คำแนะนำ: ชมความสม่ำเสมอ มากกว่าดูแค่ตัวเลข</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">${preview?'<button class="btn primary" data-act="pclose">ปิดตัวอย่าง</button>':`<button class="btn primary" data-act="psave" ${saved?'disabled':''}>${saved?'✓ บันทึกไว้ในเครื่องแล้ว':'บันทึกรายงานนี้ไว้ดูย้อนหลัง'}</button><button class="btn" data-act="pclose">ปิด</button>`}</div>`;
+}
+function showParent(r,preview){pvReport=r;pvPreview=preview;const pv=$('parentView');pv.innerHTML=parentHTML(r,preview);pv.hidden=false;document.body.classList.add('pmode');window.scrollTo(0,0)}
+function hideParent(){pvReport=null;const pv=$('parentView');pv.hidden=true;pv.innerHTML='';document.body.classList.remove('pmode')}
+function routeHash(){const m=location.hash.match(/^#r=([A-Za-z0-9_-]+)$/);if(m){try{const r=b64d(m[1]);if(r&&r.v===1){showParent(r,false);return true}}catch(e){}}if(pvReport&&!pvPreview)hideParent();return false}
+function repClick(t){
+  const act=t.dataset.act,{date:today}=nowInfo();
+  if(act==='repopen'){repOpen=true;repMsg='';render();window.scrollTo(0,0);return true}
+  if(act==='repclose'){repOpen=false;render();return true}
+  if(act==='repskip'){S.repAskDay=today;save();render();return true}
+  if(act==='repcopy'){const u=repURL(buildReport());S.lastReport=today;save();
+    (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(repText(buildReport())):Promise.reject()).then(()=>{repMsg='คัดลอกข้อความและลิงก์แล้ว นำไปวางในแชทของผู้ปกครองได้เลย';render()},()=>{repMsg='คัดลอกอัตโนมัติไม่ได้ ลองกด “ส่งทาง LINE” แทน';render()});return true}
+  if(act==='repshare'){const r=buildReport();S.lastReport=today;save();navigator.share({title:'รายงานการอ่านหนังสือ',text:repText(r).replace(/\nดูรายงานเต็ม: .*$/,''),url:repURL(r)}).catch(()=>{});return true}
+  if(act==='repprev'){showParent(buildReport(),true);return true}
+  if(act==='psave'){const l=pLoad();l.push(pvReport);pSave(l);showParent(pvReport,false);return true}
+  if(act==='pclose'){const was=pvPreview;hideParent();if(!was){history.replaceState(null,'',location.pathname+location.search)}render();return true}
+  return false;
+}
 function newGoal(lv){const L=LEVELS[lv];return {on:true,title:'',examDate:'',weeklyHrs:L.weeklyHrs,subjects:[],scores:[],
   deadlines:L.dates.map(t=>({id:uid(),title:t,date:'',done:false})),checklist:L.check.map(t=>({id:uid(),title:t,done:false}))}}
 function freeCi(){const used=new Set([...S.subjList.map(x=>x.ci),...(S.goal?.subjects||[]).map(x=>x.ci)]);for(let i=0;i<12;i++)if(!used.has(i))return i;return (S.subjList.length+(S.goal?.subjects||[]).length)%12}
@@ -806,6 +909,8 @@ function header(){
   if(S.sample)h+=`<div class="banner info"><span class="small">ตอนนี้เป็น<b>ข้อมูลตัวอย่าง</b> พร้อมใช้จริงเมื่อไรให้ลบตัวอย่างแล้วเริ่มกรอกของตัวเอง</span><button class="btn" data-act="clearsample">ลบตัวอย่าง เริ่มของฉัน</button></div>`;
   const odT=tOverdue();
   if(odT.length&&tab!=='task'){const o=odT[0];h+=`<div class="banner" style="background:var(--exam-soft)"><span class="small"><b style="color:var(--exam)">ค้างส่ง ${odT.length} ชิ้น:</b> ${esc(o.name)} (${esc(tSubName(o))}) ${dueLabel(o)}${odT.length>1?` และอีก ${odT.length-1} ชิ้น`:''}</span><span style="display:flex;gap:6px;flex-wrap:wrap">${odT.length===1?`<button class="btn danger" data-tsent="${o.id}">ส่งแล้ว</button><button class="btn" data-tman="${o.id}">จัดการ</button>`:'<button class="btn danger" data-go="task">ดูงานค้าง</button>'}</span></div>`}
+  if(repOpen&&S.setupDone)h+=repPanel();
+  else if(S.setupDone&&new Date().getDay()===0&&S.repAskDay!==today&&S.lastReport!==today&&S.plan.some(x=>x.done&&x.date>=addD(today,-6)))h+=`<div class="banner info"><span class="small">วันอาทิตย์แล้ว ส่งรายงานการอ่านสัปดาห์นี้ให้ผู้ปกครองดูไหม</span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn primary" data-act="repopen">📤 ส่งรายงาน</button><button class="btn" data-act="repskip">ไม่ใช่ตอนนี้</button></span></div>`;
   const am=S.autoMsg;
   if(am&&am.date===today&&!am.seen)h+=`<div class="banner info"><span class="small">มี <b>${am.n} ช่วง</b>ที่ผ่านไปแล้วแต่ยังไม่ได้ติ๊ก แอปย้ายเนื้อหาที่ค้างมาไว้ในแผนข้างหน้าให้แล้ว ถ้าอ่านหรือทำไปแล้ว กลับไปติ๊กย้อนหลังได้ แผนจะปรับให้อีกครั้ง</span><span style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn" data-act="amview">ดูวันที่ค้าง</button><button class="btn" data-act="amok">รับทราบ</button></span></div>`;
   if(missed)h+=`<div class="banner"><span class="small">มี ${missed} ช่วงอ่านที่ผ่านไปแล้วแต่ยังไม่ได้ติ๊ก งานที่ค้างจะถูกยกไปวันถัดไป</span><button class="btn primary" data-act="replan">จัดแผนใหม่</button></div>`;
@@ -935,7 +1040,8 @@ function viewPlan(){
     days+=`<div class="planday"><div class="small mono">${thDate(d)}</div><div class="chips">${ex}${Object.entries(cnt).map(([c,n])=>`<span class="pchip"><span class="sw" style="background:${col(c)}"></span>${esc(M(c).sh)} ×${n}</span>`).join('')||(ex?'':'<span class="muted small">พัก</span>')}</div></div>`;
   }
   const total=S.plan.filter(x=>x.date>=today).length;
-  return `<div class="section"><h2>ความครอบคลุมแต่ละวิชา</h2><p class="small muted" style="margin:0">จำนวนช่วง (ช่วงละ ${S.settings.slot} นาที) ที่ควรใช้ คำนวณจากจำนวนบท ความมั่นใจ และหน่วยกิต ถ้าขาด ให้เพิ่มชั่วโมงอ่านต่อวันในแท็บตั้งค่า</p>
+  return `<div class="repcta"><div><b>ส่งรายงานให้ผู้ปกครอง</b><span class="small muted">สรุป 7 วันล่าสุด ส่งเป็นลิงก์ทาง LINE ผู้ปกครองเปิดดูได้ทันที</span></div><button class="btn primary" data-act="repopen">📤 ส่งรายงาน</button></div>
+  <div class="section"><h2>ความครอบคลุมแต่ละวิชา</h2><p class="small muted" style="margin:0">จำนวนช่วง (ช่วงละ ${S.settings.slot} นาที) ที่ควรใช้ คำนวณจากจำนวนบท ความมั่นใจ และหน่วยกิต ถ้าขาด ให้เพิ่มชั่วโมงอ่านต่อวันในแท็บตั้งค่า</p>
   <div class="tablebox"><table><thead><tr><th>วิชา</th><th>วันสอบ</th><th>ควรใช้</th><th>จัดไว้</th><th>ทำแล้ว</th><th>สถานะ</th></tr></thead><tbody>${cov}</tbody></table></div></div>
   <div class="section"><h2>รายวัน <span class="muted small">รวม ${total} ช่วง · ${Math.round(total*S.settings.slot/60)} ชม.</span></h2><div>${days}</div></div>
   <div class="section small muted"><b style="color:var(--fg)">วิธีจัด:</b> ทุกช่วงว่าง ระบบเลือกวิชาที่ได้คะแนนสูงสุดจาก (หน่วยกิต+1) × (6 − ความมั่นใจ) × งานที่เหลือ ÷ วันที่เหลือก่อนสอบ วิชาที่สอบใกล้ ไม่มั่นใจ และเหลือเยอะจะขึ้นก่อน ไม่ให้วิชาเดียวกันติดกันถ้าเลี่ยงได้ และวันก่อนสอบจะเน้นข้อสอบเก่าของวิชานั้น</div>`;
@@ -1102,6 +1208,7 @@ function render(){
   header();
   $('yr').textContent=new Date().getFullYear();$('appver').textContent=APP_VER;
   renderNews();
+  $('repFoot').hidden=!S.setupDone;
   $('lineFoot').hidden=!LINE_OA;$('grpFoot').hidden=!LINE_GROUP;
   {const n=tOverdue().length,b=$('tbadge');b.textContent=n;b.hidden=!n}
   document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
@@ -1177,6 +1284,7 @@ document.addEventListener('click',e=>{
     S.dayCap[sel]=Math.max(capFor(sel),n+1);generate();render();return}
   if(act==='addk'){S.classes.push({id:uid(),d:1,s:'08:00',e:'09:00',c:S.subjList[0]?.c||''});save();render();return}
   if(act==='startadd'){tab='subj';showAdd=true;render();setTimeout(()=>{const i=$('n-th');if(i)i.focus()},0);return}
+  if(repClick(t))return;
   if(t.dataset.news){const n=newsItems().length;newsIdx=(newsIdx+ +t.dataset.news+n)%n;newsUntil=Date.now()+20000;renderNews();return}
   if(t.dataset.newshide){S.newsHidden=(S.newsHidden||[]).concat([t.dataset.newshide]).slice(-100);save();newsIdx=0;renderNews();return}
   if(act==='amok'){if(S.autoMsg)S.autoMsg.seen=true;save();render();return}
@@ -1227,7 +1335,7 @@ document.addEventListener('click',e=>{
   if(act==='reset-no'){confirmReset=false;render()}
   if(act==='reset-yes'){confirmReset=false;S=blank();save();sel=nowInfo().date;tab='day';render()}
 });
-document.addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.td&&draft&&t.dataset.td!=='due'){if(t.type==='checkbox')draft[t.dataset.td]=t.checked;else{draft[t.dataset.td]=t.value;if(t.dataset.td==='teacher')draft.tt=true}return}if(tab==='fb')fbUpdate()});
+document.addEventListener('input',e=>{const t=e.target;if(t.id==='rep-nick'){S.nick=t.value.slice(0,30);save();const a=$('repLine');if(a)a.href=repLineHref();return}if(t.dataset&&t.dataset.td&&draft&&t.dataset.td!=='due'){if(t.type==='checkbox')draft[t.dataset.td]=t.checked;else{draft[t.dataset.td]=t.value;if(t.dataset.td==='teacher')draft.tt=true}return}if(tab==='fb')fbUpdate()});
 document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.tnbox){if(d.open)openTN=d.dataset.tnbox;else if(openTN===d.dataset.tnbox)openTN=null}},true);
 document.addEventListener('change',e=>{
   const t=e.target;
@@ -1276,8 +1384,10 @@ function dailyCheck(){
   sel=today;generate();return true;
 }
 dailyCheck();loadNews();
+document.addEventListener('click',e=>{if(e.target.closest('#repLine')){S.lastReport=nowInfo().date;save()}});
+window.addEventListener('hashchange',()=>{if(!routeHash())render()});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;if(dailyCheck())render();loadNews()});
-render();
+render();routeHash();
 </script>
 
 <script>

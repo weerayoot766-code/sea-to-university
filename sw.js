@@ -1,5 +1,5 @@
 // ให้แอปเปิดได้แม้ออฟไลน์ เปลี่ยนเลขเวอร์ชันทุกครั้งที่อัปเดตไฟล์
-const CACHE = 'sea2uni-v11';
+const CACHE = 'sea2uni-v12';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
