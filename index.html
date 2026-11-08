@@ -251,6 +251,10 @@ tr.tnrow td{padding-top:0;background:var(--bg)}
 .repcta{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
 .repcta>div{display:flex;flex-direction:column}
 .repnick{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.repnick input{font:inherit;min-height:40px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);width:160px}
+.dayhead.dh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dayhead.dh .addk{font-weight:500}
+.dayhead.we>span{color:var(--accent)}
+.knone{padding:2px 0 6px}
 .site-ver{font-size:.72rem;color:var(--muted);font-family:var(--mono);opacity:.8}
 .site-copy{font-size:.78rem;color:var(--muted);margin-top:6px}
 .tbadge{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:99px;background:var(--exam);color:var(--surface);font-size:.7rem;line-height:18px;text-align:center;font-weight:600}
@@ -425,8 +429,8 @@ if(!S.since){S.since=ds(new Date());try{localStorage.setItem(KEY,JSON.stringify(
 // ใส่ลิงก์ Google Form ตรงนี้ถ้ามี เช่น 'https://forms.gle/xxxx' ถ้าว่างไว้ ผู้ใช้จะส่งความเห็นผ่าน LINE แทน
 const FEEDBACK_FORM='';
 // ใส่ลิงก์ LINE OA ตรงนี้ เช่น 'https://lin.ee/xxxx' ถ้าว่างไว้ ปุ่มติดตาม LINE จะซ่อนทั้งหมด
-// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v12)
-const APP_VER='v12';
+// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v13)
+const APP_VER='v13';
 const LINE_OA='';
 // กลุ่ม LINE OpenChat ของผู้ใช้แอป (ห้องเดียว ม.ต้น + ม.ปลาย) ใส่ลิงก์เชิญ เช่น 'https://line.me/ti/g2/xxxx' ถ้าว่างไว้ ปุ่มเข้ากลุ่มจะซ่อนทั้งหมด
 const LINE_GROUP='';
@@ -1087,14 +1091,16 @@ function viewSched(){
     <input type="time" data-k="${k.id}" data-kf="s" value="${k.s}" aria-label="เริ่ม"><span>–</span><input type="time" data-k="${k.id}" data-kf="e" value="${k.e}" aria-label="จบ">
     <select class="grow" data-k="${k.id}" data-kf="c" aria-label="วิชา">${subjOpts(k.c)}</select>${k.c?'':`<input class="grow" data-k="${k.id}" data-kf="label" value="${k.label||''}" placeholder="ชื่อคาบ/กิจกรรม">`}
     <button class="btn sm" data-delk="${k.id}">ลบ</button></div>`;
-  const week=order.map(d=>{const ks=S.classes.filter(k=>k.d===d).sort((p,q)=>toMin(p.s)-toMin(q.s));return ks.length?`<div class="dayhead">${DWL[d]}</div>${ks.map(krow).join('')}`:''}).join('');
+  // แสดงครบ 7 วัน (รวมเสาร์-อาทิตย์) แต่ละวันมีปุ่มเพิ่มคาบของวันนั้น
+  const week=order.map(d=>{const ks=S.classes.filter(k=>k.d===d).sort((p,q)=>toMin(p.s)-toMin(q.s));
+    return `<div class="dayhead dh${d===0||d===6?' we':''}"><span>${DWL[d]}</span><button class="btn sm addk" data-addk="${d}" aria-label="เพิ่มคาบวัน${DWL[d]}">+ เพิ่มคาบ</button></div>${ks.length?ks.map(krow).join(''):'<div class="small muted knone">ไม่มีคาบ</div>'}`}).join('');
   const exs=S.exceptions.filter(x=>x.date>=today).sort((p,q)=>p.date<q.date?-1:1).map(x=>{
     const ref=x.type==='cancel'?S.classes.find(k=>k.id===x.ref):null;
     return `<div class="krow"><span class="mono small" style="min-width:96px">${thDate(x.date)}</span><span class="grow">${x.type==='cancel'?`งดคาบ ${ref?clsName(ref)+' '+ref.s:''}`:`เพิ่ม ${clsName(x)} ${x.s}–${x.e}`}</span><button class="btn sm" data-delex="${x.id}">ยกเลิก</button></div>`}).join('');
   const st=S.settings,f=(k,l,t,extra='')=>`<label for="st-${k}">${l}<input id="st-${k}" type="${t}" data-s="${k}" value="${st[k]}" ${extra}></label>`;
   return `<div class="section"><h2>ตารางเรียนประจำสัปดาห์</h2><p class="small muted" style="margin:0">แก้วัน เวลา หรือวิชาได้เลย แผนอ่านจะจัดใหม่ทันที ระบบเว้นเวลาก่อนและหลังคาบ 15 นาทีไว้เดินทาง ถ้าเปลี่ยนแค่บางวัน (งดคาบ/เรียนชดเชย) ให้ทำที่แท็บแผนรายวันของวันนั้น</p>
-  <div class="klist">${week||'<div class="empty">ยังไม่มีคาบเรียน</div>'}</div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" data-act="addk">เพิ่มคาบเรียน</button><button class="btn" data-act="schoolweek">ใส่เวลาโรงเรียน จ.–ศ. 08:00–16:00</button></div></div>
+  <div class="klist">${week}</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-act="schoolweek">ใส่เวลาโรงเรียน จ.–ศ. 08:00–16:00</button></div></div>
   ${exs?`<div class="section"><h2>เปลี่ยนเฉพาะวัน</h2><div class="klist">${exs}</div></div>`:''}
   <div class="section"><h2>เวลาอ่านหนังสือ</h2><div class="settings">
   ${f('wdStart','วันเรียน เริ่มได้','time')}${f('wdEnd','วันเรียน หยุดอ่าน','time')}
@@ -1282,6 +1288,9 @@ document.addEventListener('click',e=>{
     const n=S.plan.filter(x=>x.date===sel).length;
     S.plan.push({id:uid(),date:sel,s:a,e:a+S.settings.slot,code:c,kind,topic,eve:false,done:false,pinned:true});
     S.dayCap[sel]=Math.max(capFor(sel),n+1);generate();render();return}
+  if('addk' in t.dataset){const d=+t.dataset.addk,ks=S.classes.filter(k=>k.d===d).sort((p,q)=>toMin(p.e)-toMin(q.e)),we=d===0||d===6;
+    let st=ks.length?toMin(ks[ks.length-1].e):(we?540:480);if(st>1320)st=1320;
+    S.classes.push({id:uid(),d,s:hm(st),e:hm(Math.min(st+60,1439)),c:S.subjList[0]?.c||''});save();generate();render();return}
   if(act==='addk'){S.classes.push({id:uid(),d:1,s:'08:00',e:'09:00',c:S.subjList[0]?.c||''});save();render();return}
   if(act==='startadd'){tab='subj';showAdd=true;render();setTimeout(()=>{const i=$('n-th');if(i)i.focus()},0);return}
   if(repClick(t))return;
