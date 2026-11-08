@@ -226,6 +226,17 @@ tr.tnrow td{padding-top:0;background:var(--bg)}
 .tbtn[aria-pressed="true"]{border:2px solid var(--accent);background:var(--accent-soft);cursor:default}
 .tsrc{line-height:1.5}
 .tcas>.btn{align-self:flex-start}
+.news{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;padding:8px 10px 8px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--line);min-height:48px}
+.news.hot{border-color:var(--warn);background:var(--warn-soft)}
+.news .nic{flex:0 0 auto;font-size:.72rem;font-weight:700;letter-spacing:.02em;padding:2px 8px;border-radius:99px;background:var(--accent);color:var(--surface)}
+.news.hot .nic{background:var(--warn)}
+.news .ntx{flex:1 1 200px;min-width:0;font-size:.88rem;line-height:1.45}
+.news .ntx a{font-weight:600;white-space:nowrap}
+.news .nnav{flex:0 0 auto;display:flex;align-items:center;gap:2px;margin-left:auto}
+.news .nnav button{font:inherit;width:32px;height:36px;border:0;border-radius:8px;background:none;color:var(--muted);cursor:pointer;font-size:1.05rem}
+.news .nnav button:hover{background:var(--accent-soft);color:var(--fg)}
+.news .ncnt{font-size:.72rem;color:var(--muted);font-family:var(--mono);min-width:26px;text-align:center}
+@media (prefers-reduced-motion:no-preference){.news .ntx{animation:nfade .35s ease}@keyframes nfade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}}
 .site-ver{font-size:.72rem;color:var(--muted);font-family:var(--mono);opacity:.8}
 .site-copy{font-size:.78rem;color:var(--muted);margin-top:6px}
 .tbadge{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:99px;background:var(--exam);color:var(--surface);font-size:.7rem;line-height:18px;text-align:center;font-weight:600}
@@ -314,6 +325,7 @@ a.btn{text-decoration:none;display:inline-block}
     <button role="tab" data-tab="goal" aria-selected="false" id="goaltab">เป้าหมาย</button>
     <button role="tab" data-tab="sched" aria-selected="false">ตารางเรียนและตั้งค่า</button>
   </nav>
+  <div id="news" class="news" hidden></div>
   <div id="installGuide" class="ig" hidden></div>
   <div id="banner"></div>
   <main id="view"></main>
@@ -398,8 +410,8 @@ if(!S.since){S.since=ds(new Date());try{localStorage.setItem(KEY,JSON.stringify(
 // ใส่ลิงก์ Google Form ตรงนี้ถ้ามี เช่น 'https://forms.gle/xxxx' ถ้าว่างไว้ ผู้ใช้จะส่งความเห็นผ่าน LINE แทน
 const FEEDBACK_FORM='';
 // ใส่ลิงก์ LINE OA ตรงนี้ เช่น 'https://lin.ee/xxxx' ถ้าว่างไว้ ปุ่มติดตาม LINE จะซ่อนทั้งหมด
-// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v9)
-const APP_VER='v9';
+// เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v10)
+const APP_VER='v10';
 const LINE_OA='';
 // กลุ่ม LINE OpenChat ของผู้ใช้แอป (ห้องเดียว ม.ต้น + ม.ปลาย) ใส่ลิงก์เชิญ เช่น 'https://line.me/ti/g2/xxxx' ถ้าว่างไว้ ปุ่มเข้ากลุ่มจะซ่อนทั้งหมด
 const LINE_GROUP='';
@@ -511,6 +523,32 @@ function viewTcas(){
   <div class="tsrc small muted">ข้อมูลวิชาและวันสอบ ${TCAS.ver} ตรวจล่าสุด ${TCAS.checked} · ยืนยันอีกครั้งที่ <a href="https://www.mytcas.com" target="_blank" rel="noopener">mytcas.com</a> · TPAT1 สมัครแยกที่เว็บ กสพท</div>
   <button class="btn" data-act="tcascal">ใส่ปฏิทิน ${TCAS.ver} ลงวันสำคัญ</button></div>`;
 }
+// ===== แถบข่าวสาร =====
+// ข่าวที่เขียนเอง: แก้ไฟล์ news.json บน GitHub ได้เลย ไม่ต้องแก้ index.html และไม่ต้องเปลี่ยนเวอร์ชันใน sw.js
+// ข่าวอัตโนมัติ: นับถอยหลังวันสำคัญ TCAS จากตาราง TCAS.cal ด้านบน (เฉพาะ ม.ปลาย) อัปเดตเองทุกวัน
+let newsFeed=[],newsIdx=0,newsHold=false;
+function loadNews(){
+  if(location.protocol==='file:')return;
+  fetch('news.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&Array.isArray(j.items)){newsFeed=j.items;renderNews()}}).catch(()=>{});
+}
+function newsItems(){
+  const {date:today}=nowInfo(),lv=S.level,hid=new Set(S.newsHidden||[]),out=[];
+  if(lv==='upper')TCAS.cal.forEach(([title,date])=>{const n=dIdx(date)-dIdx(today);if(n<0||n>14)return;
+    out.push({id:'auto:'+title+date,hot:n<=3,sort:n,text:n===0?`วันนี้: ${title}`:n===1?`พรุ่งนี้: ${title}`:`อีก ${n} วัน: ${title} (${thDate(date)})`,link:'https://www.mytcas.com',linkText:'mytcas.com'})});
+  newsFeed.forEach(x=>{if(!x||!x.text)return;if(x.level&&x.level!=='all'&&x.level!==lv)return;
+    if(x.start&&today<x.start)return;if(x.end&&today>x.end)return;
+    out.push({id:'n:'+(x.id||x.text),hot:!!x.hot,sort:x.hot?-1:50,text:String(x.text),link:/^https?:\/\//.test(x.link||'')?x.link:'',linkText:x.linkText||'อ่านต่อ'})});
+  return out.filter(x=>!hid.has(x.id)).sort((a,b)=>a.sort-b.sort);
+}
+function renderNews(){
+  const el=$('news');if(!el)return;const it=S.level?newsItems():[];
+  if(!it.length){el.hidden=true;return}
+  if(newsIdx>=it.length)newsIdx=0;const x=it[newsIdx];
+  el.hidden=false;el.className='news'+(x.hot?' hot':'');
+  el.innerHTML=`<span class="nic">${x.hot?'ด่วน':'ข่าว'}</span><span class="ntx" aria-live="polite">${esc(x.text)}${x.link?` <a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(x.linkText)} ›</a>`:''}</span>
+  <span class="nnav">${it.length>1?`<button data-news="-1" aria-label="ข่าวก่อนหน้า">‹</button><span class="ncnt">${newsIdx+1}/${it.length}</span><button data-news="1" aria-label="ข่าวถัดไป">›</button>`:''}<button data-newshide="${esc(x.id)}" aria-label="ซ่อนข่าวนี้">×</button></span>`;
+}
+setInterval(()=>{if(newsHold||document.hidden||!(window.matchMedia&&matchMedia('(prefers-reduced-motion: no-preference)').matches))return;const n=S.level?newsItems().length:0;if(n>1){newsIdx=(newsIdx+1)%n;renderNews()}},8000);
 function newGoal(lv){const L=LEVELS[lv];return {on:true,title:'',examDate:'',weeklyHrs:L.weeklyHrs,subjects:[],scores:[],
   deadlines:L.dates.map(t=>({id:uid(),title:t,date:'',done:false})),checklist:L.check.map(t=>({id:uid(),title:t,done:false}))}}
 function freeCi(){const used=new Set([...S.subjList.map(x=>x.ci),...(S.goal?.subjects||[]).map(x=>x.ci)]);for(let i=0;i<12;i++)if(!used.has(i))return i;return (S.subjList.length+(S.goal?.subjects||[]).length)%12}
@@ -1061,6 +1099,7 @@ function viewFb(){
 function render(){
   header();
   $('yr').textContent=new Date().getFullYear();$('appver').textContent=APP_VER;
+  renderNews();
   $('lineFoot').hidden=!LINE_OA;$('grpFoot').hidden=!LINE_GROUP;
   {const n=tOverdue().length,b=$('tbadge');b.textContent=n;b.hidden=!n}
   document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
@@ -1136,6 +1175,8 @@ document.addEventListener('click',e=>{
     S.dayCap[sel]=Math.max(capFor(sel),n+1);generate();render();return}
   if(act==='addk'){S.classes.push({id:uid(),d:1,s:'08:00',e:'09:00',c:S.subjList[0]?.c||''});save();render();return}
   if(act==='startadd'){tab='subj';showAdd=true;render();setTimeout(()=>{const i=$('n-th');if(i)i.focus()},0);return}
+  if(t.dataset.news){const n=newsItems().length;newsIdx=(newsIdx+ +t.dataset.news+n)%n;newsHold=true;renderNews();return}
+  if(t.dataset.newshide){S.newsHidden=(S.newsHidden||[]).concat([t.dataset.newshide]).slice(-100);save();newsIdx=0;renderNews();return}
   if(act==='amok'){if(S.autoMsg)S.autoMsg.seen=true;save();render();return}
   if(act==='amview'){if(S.autoMsg){S.autoMsg.seen=true;tab='day';tv=null;sel=S.autoMsg.from}save();render();window.scrollTo(0,0);return}
   if(act==='lineoa'){openLine();return}
@@ -1232,8 +1273,8 @@ function dailyCheck(){
   if(miss.length)S.autoMsg={date:today,n:miss.length,from:miss[miss.length-1].date};
   sel=today;generate();return true;
 }
-dailyCheck();
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&dailyCheck())render()});
+dailyCheck();loadNews();
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;if(dailyCheck())render();loadNews()});
 render();
 </script>
 

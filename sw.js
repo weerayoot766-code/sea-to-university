@@ -1,5 +1,5 @@
 // ให้แอปเปิดได้แม้ออฟไลน์ เปลี่ยนเลขเวอร์ชันทุกครั้งที่อัปเดตไฟล์
-const CACHE = 'sea2uni-v9';
+const CACHE = 'sea2uni-v10';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
@@ -15,6 +15,12 @@ self.addEventListener('fetch', e => {
     // หน้าแอป: ลองโหลดเวอร์ชันล่าสุดก่อน ถ้าออฟไลน์ใช้ตัวที่เก็บไว้
     e.respondWith(fetch(e.request).then(r => { const c = r.clone(); caches.open(CACHE).then(x => x.put('index.html', c)); return r; })
       .catch(() => caches.match('index.html')));
+    return;
+  }
+  // ข่าวสาร: โหลดของใหม่ก่อนเสมอ ถ้าออฟไลน์ใช้ตัวที่เก็บไว้
+  if (new URL(e.request.url).pathname.endsWith('/news.json')) {
+    e.respondWith(fetch(e.request).then(r => { if (r.ok) { const c = r.clone(); caches.open(CACHE).then(x => x.put('news.json', c)); } return r; })
+      .catch(() => caches.match('news.json')));
     return;
   }
   // ไฟล์อื่นและฟอนต์: ใช้ของในแคชก่อน แล้วเก็บของใหม่ไว้
