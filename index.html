@@ -482,7 +482,7 @@ if(!S.since){S.since=ds(new Date());try{localStorage.setItem(KEY,JSON.stringify(
 const FEEDBACK_FORM='';
 // ใส่ลิงก์ LINE OA ตรงนี้ เช่น 'https://lin.ee/xxxx' ถ้าว่างไว้ ปุ่มติดตาม LINE จะซ่อนทั้งหมด
 // เลขเวอร์ชันที่แสดงท้ายแอป ให้ตรงกับชื่อแคชใน sw.js (sea2uni-v20)
-const APP_VER='v20';
+const APP_VER='v21';
 const LINE_OA='';
 // กลุ่ม LINE OpenChat ของผู้ใช้แอป (ห้องเดียว ม.ต้น + ม.ปลาย) ใส่ลิงก์เชิญ เช่น 'https://line.me/ti/g2/xxxx' ถ้าว่างไว้ ปุ่มเข้ากลุ่มจะซ่อนทั้งหมด
 const LINE_GROUP='';
@@ -732,7 +732,7 @@ function themePicker(){const c=curTheme();
 // ===== ตั้งค่าที่แก้ได้ =====
 // ใส่ token ของ Cloudflare Web Analytics (นับจำนวนผู้เข้า ไม่เก็บคุกกี้ ไม่ระบุตัวตน) ถ้าว่างไว้ จะไม่โหลดอะไรเลย
 const CF_BEACON_TOKEN='867dad1285a445069968e6518f0e582c';
-const PRIVACY_UPDATED='8 พ.ย. 2569';
+const PRIVACY_UPDATED='9 พ.ย. 2569';
 if(CF_BEACON_TOKEN&&location.protocol!=='file:'){const sc=document.createElement('script');sc.defer=true;sc.src='https://static.cloudflareinsights.com/beacon.min.js';sc.setAttribute('data-cf-beacon',JSON.stringify({token:CF_BEACON_TOKEN}));document.head.appendChild(sc)}
 
 // ===== 1) กันข้อมูลหาย: เตือนสำรองทุก 30 วัน =====
@@ -853,13 +853,14 @@ document.addEventListener('visibilitychange',()=>{if(fx&&document.visibilityStat
 function viewPrivacy(){
   return `<div class="section privacy"><h2>นโยบายความเป็นส่วนตัว</h2><p class="small muted" style="margin:0">ปรับปรุงล่าสุด ${PRIVACY_UPDATED}</p>
   <h3>ข้อมูลอะไรบ้างที่แอปเก็บ</h3><p>วิชา วันสอบ ตารางเรียน แผนอ่าน การติ๊ก งานที่ต้องส่ง คะแนนสอบซ้อม และชื่อเล่นที่ใส่เอง แอปไม่ขอชื่อจริง เบอร์โทร อีเมล หรือที่อยู่</p>
-  <h3>ข้อมูลเก็บที่ไหน</h3><p>เก็บในเบราว์เซอร์ของเครื่องนี้เท่านั้น ไม่มีการส่งขึ้นเซิร์ฟเวอร์ของเรา ผู้พัฒนาแอปมองไม่เห็นข้อมูลของคุณ</p>
+  <h3>ข้อมูลเก็บที่ไหน</h3><p>เก็บในเบราว์เซอร์ของเครื่องนี้เท่านั้น ข้อมูลการเรียนไม่ถูกส่งขึ้นเซิร์ฟเวอร์ของเรา ผู้พัฒนาแอปมองไม่เห็นข้อมูลของคุณ</p>
   <h3>ข้อมูลจะออกจากเครื่องเมื่อไร</h3><ul>
   <li>เมื่อคุณกด <b>ส่งรายงานให้ผู้ปกครอง</b> ข้อมูลสรุป 7 วันจะอยู่ในลิงก์ที่คุณส่งเอง ใครได้ลิงก์ก็เปิดดูได้ จึงควรส่งให้ผู้ปกครองเท่านั้น</li>
   <li>เมื่อคุณกด <b>สำรองข้อมูล</b> หรือ <b>เพิ่มลงปฏิทิน</b> ไฟล์จะอยู่ที่ที่คุณเลือกบันทึกหรือส่งไป</li>
   <li>เมื่อกดปุ่มที่เปิด LINE หรือเว็บไซต์อื่น ข้อมูลจะเป็นไปตามนโยบายของเว็บนั้น</li></ul>
   <h3>สิ่งที่แอปโหลดจากภายนอก</h3><ul><li>ฟอนต์จาก Google Fonts</li><li>ข่าวสารในแอป (ไฟล์ news.json) จาก GitHub Pages ที่แอปตั้งอยู่</li>
-  ${CF_BEACON_TOKEN?'<li>Cloudflare Web Analytics นับจำนวนผู้เข้าใช้แบบรวม ไม่ใช้คุกกี้ และไม่ระบุตัวตน</li>':''}</ul>
+  ${CF_BEACON_TOKEN?'<li>Cloudflare Web Analytics นับจำนวนผู้เข้าใช้แบบรวม ไม่ใช้คุกกี้ และไม่ระบุตัวตน</li>':''}
+  <li>ตัวนับผู้ใช้ของเรา: วันละครั้งตอนเปิดแอป จะส่ง <b>รหัสเครื่องที่สุ่มขึ้น</b> วันที่เริ่มใช้ ระดับชั้น (ม.ต้น/ม.ปลาย) ประเภทเครื่อง และว่าติดตั้งเป็นแอปหรือไม่ เพื่อนับจำนวนผู้ใช้แบบรวม <b>ไม่มีชื่อ และไม่มีข้อมูลการเรียน</b></li></ul>
   <p class="small muted" style="margin:0">บริการเหล่านี้อาจเห็นที่อยู่ IP ตามปกติของการใช้อินเทอร์เน็ต แต่ไม่ได้รับข้อมูลแผนอ่านของคุณ</p>
   <h3>สำหรับผู้ใช้ที่อายุต่ำกว่า 20 ปี</h3><p>แอปไม่เก็บข้อมูลส่วนบุคคลไว้บนเซิร์ฟเวอร์ ถ้าอนาคตมีระบบบัญชีหรือเก็บข้อมูลออนไลน์ จะแจ้งและขอความยินยอมจากผู้ปกครองก่อน</p>
   <h3>ลบข้อมูล</h3><p>ลบได้ทั้งหมดด้วยปุ่ม “ลบข้อมูลทั้งหมด เริ่มใหม่” ท้ายแท็บตารางเรียน หรือลบข้อมูลเว็บไซต์ในการตั้งค่าเบราว์เซอร์</p>
@@ -1682,6 +1683,76 @@ if(!installed()&&(isIOS||inApp))ib.hidden=false;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;ib.hidden=false});
 ib.addEventListener('click',async()=>{if(!deferredPrompt){if(ig.hidden)showGuide();else ig.hidden=true;return}deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;ib.hidden=true});
 window.addEventListener('appinstalled',()=>{ib.hidden=true;ig.hidden=true});
+</script>
+
+<script>
+// ===== ตัวนับผู้ใช้ (ใช้เซิร์ฟเวอร์เดียวกับ KAOWIN): รหัสเครื่องสุ่ม + วันที่ วันละครั้ง ไม่ส่งชื่อหรือข้อมูลการเรียน =====
+(function(){
+const API='https://kaowin-challenge.weerayoot766.workers.dev';
+const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k)||'';if(v==='')localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return ''}};
+const dstr=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const isInst=()=>navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
+function did(){let d=ls('sea2uni-did');if(!d){d=((crypto.randomUUID&&crypto.randomUUID().replace(/-/g,''))||(Math.random().toString(36).slice(2)+Date.now().toString(36))).toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,20);ls('sea2uni-did',d)}return d}
+async function api(path,body){const r=await fetch(API+path,{method:'POST',body:JSON.stringify(body)});const j=await r.json().catch(()=>({ok:false,error:'net'}));if(!j.ok)throw new Error(j.error||'net');return j}
+function ping(){try{
+  if(!navigator.onLine||location.protocol==='file:')return;const id=did();if(id.length<12)return;
+  const day=dstr(new Date()),inst=isInst()?1:0,k=day+':'+inst;if(ls('sea2uni-ping')===k)return;
+  const ua=navigator.userAgent,os=/iPad|iPhone|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)?'ios':/Android/i.test(ua)?'android':/Windows|Macintosh|Linux|CrOS/.test(ua)?'desktop':'other';
+  let since=day,mode='';try{if(S.since&&S.since<=day)since=S.since;if(S.level==='lower'||S.level==='upper')mode=S.level}catch(e){}
+  api('/ping',{app:'sea',did:id,inst,os,mode,since}).then(()=>ls('sea2uni-ping',k)).catch(()=>{});
+}catch(e){}}
+setTimeout(ping,1500);document.addEventListener('visibilitychange',()=>{if(!document.hidden)ping()});
+
+// ===== สถิติผู้ใช้ (เจ้าของแอป): แตะเลขเวอร์ชันท้ายหน้า 5 ครั้ง → ตั้ง/ใส่รหัส (รหัสเดียวกับ KAOWIN) =====
+const css=document.createElement('style');css.textContent=`
+.stx{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+.stx-in{background:var(--surface,#fff);color:var(--fg,#123);width:100%;max-width:560px;max-height:88vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+.stx h2{margin:0 0 12px;font-size:1.15rem;display:flex;justify-content:space-between;align-items:center}
+.stx-x{border:0;background:transparent;font-size:1.4rem;color:inherit;cursor:pointer}
+.stx-g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stx-t{border:1px solid var(--line,#dde);border-radius:12px;padding:10px 6px;text-align:center}
+.stx-t b{display:block;font-size:1.6rem;line-height:1.2}.stx-t span{font-size:.78rem}.stx-t i{display:block;font-style:normal;font-size:.72rem;color:var(--muted,#678)}
+.stx-d{display:grid;grid-template-columns:44px 1fr 34px 34px;gap:4px;align-items:center;font-size:.8rem;margin-top:6px}
+.stx-bar{display:flex;align-items:center;gap:6px}.stx-bar i{display:block;height:10px;border-radius:5px;background:var(--teal,#16679f)}
+.stx label{display:block;margin:10px 0;font-size:.9rem}.stx input{width:100%;box-sizing:border-box;padding:11px 12px;border-radius:10px;border:1px solid var(--line,#ccd);font:inherit;background:var(--bg,#fff);color:inherit}
+.stx-note{background:var(--warn-soft,#fff3e0);color:var(--warn,#a15c00);border-radius:10px;padding:8px 10px;font-size:.88rem;margin-bottom:8px}
+body.has-stfab footer.site{padding-bottom:72px}
+.stfab{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;border:0;border-radius:999px;padding:11px 16px;font:inherit;font-weight:700;background:linear-gradient(135deg,#ffb020,#ff6a00);color:#fff;box-shadow:0 8px 20px rgba(255,106,0,.35);cursor:pointer}`;
+document.head.append(css);
+let box=null;
+const close=()=>{if(box){box.remove();box=null}};
+function open(title,html){close();box=document.createElement('div');box.className='stx';box.innerHTML=`<div class="stx-in" role="dialog" aria-modal="true"><h2>${title}<button class="stx-x" aria-label="ปิด">×</button></h2><div class="stx-b">${html}</div></div>`;
+  box.addEventListener('click',e=>{if(e.target===box||e.target.closest('.stx-x'))close()});document.body.append(box);return box.querySelector('.stx-b')}
+function form(mode,msg){
+  const b=open(mode==='set'?'🔐 ตั้งรหัสดูสถิติ':'🔐 ใส่รหัสดูสถิติ',`${msg?`<div class="stx-note">${msg}</div>`:''}
+    ${mode==='set'?'<p class="small muted" style="margin:0">ตั้งรหัสครั้งแรก (อย่างน้อย 4 ตัว) ใช้รหัสเดียวกับแอป KAOWIN จดไว้ด้วยนะ</p>':''}
+    <form><label>รหัส<input name="k" type="password" autocomplete="off" minlength="4" required></label>
+    ${mode==='set'?'<label>ใส่รหัสอีกครั้ง<input name="k2" type="password" autocomplete="off" minlength="4" required></label>':''}
+    <button class="btn primary" style="width:100%" type="submit">${mode==='set'?'ตั้งรหัสและดูสถิติ':'ดูสถิติ'}</button></form>`);
+  b.querySelector('form').addEventListener('submit',async e=>{e.preventDefault();const F=e.target.elements,k=F.k.value.trim();
+    if(mode==='set'){if(k!==F.k2.value.trim())return form('set','รหัส 2 ช่องไม่ตรงกัน');
+      try{await api('/admin/setkey',{key:k})}catch(er){return form(er.message==='admin'?'ask':'set',er.message==='short'?'รหัสสั้นไป ใส่อย่างน้อย 4 ตัว':er.message==='admin'?'มีรหัสอยู่แล้ว — ใส่รหัสเดิม (รหัสเดียวกับ KAOWIN)':'เชื่อมต่อไม่ได้ ลองใหม่')}}
+    ls('kaowin.admin',k);show()});
+}
+async function show(){
+  const key=ls('kaowin.admin');const b=open('📊 สถิติผู้ใช้ Sea To University','<p class="muted" style="text-align:center;padding:24px 0">กำลังโหลด…</p>');
+  let r;try{r=await api('/admin/stats',{admin:key,app:'sea'})}catch(e){
+    if(e.message==='nokey')return form('set');
+    if(e.message==='admin'){ls('kaowin.admin','');return form('ask',key?'รหัสไม่ถูกต้อง ลองใหม่':'')}
+    b.innerHTML=`<div class="stx-note">${/not found/.test(e.message)?'เซิร์ฟเวอร์ยังเป็นเวอร์ชันเก่า':'เชื่อมต่อไม่ได้ — ต้องต่ออินเทอร์เน็ต'}</div>`;return}
+  ls('sea2uni-owner','1');fab();
+  const t=r.tot,D=Object.entries(r.days),mx=Math.max(1,...D.map(([,v])=>v.act)),tile=(n,l,s)=>`<div class="stx-t"><b>${n}</b><span>${l}</span>${s?`<i>${s}</i>`:''}</div>`,dd=d=>{const p=d.split('-');return +p[2]+'/'+ +p[1]};
+  b.innerHTML=`<div class="stx-g">${tile(t.devices,'เครื่องทั้งหมด',`ใหม่วันนี้ ${t.newToday} · 7 วัน ${t.new7}`)}${tile(t.installed,'ติดตั้งเป็นแอป',`วันนี้ ${t.instToday}`)}${tile(t.inst7,'ติดตั้ง 7 วัน','')}
+    ${tile(t.dau,'ใช้งานวันนี้','')}${tile(t.wau,'ใช้งาน 7 วัน','')}${tile(t.mau,'ใช้งาน 30 วัน','')}</div>
+    <h3 style="margin:16px 0 4px;font-size:1rem">14 วันล่าสุด</h3>
+    <div class="stx-d"><b>วันที่</b><b>ใช้งาน</b><b>ใหม่</b><b>ติดตั้ง</b>${D.map(([d,v])=>`<span>${dd(d)}</span><span class="stx-bar"><i style="width:${Math.max(2,v.act/mx*100)}%"></i>${v.act}</span><span>${v.nw||''}</span><span>${v.inst||''}</span>`).join('')}</div>
+    <p class="small muted" style="margin-top:12px">ระบบ: ${Object.entries(r.os).map(([k,n])=>`${{ios:'iPhone/iPad',android:'Android',desktop:'คอม',other:'อื่น ๆ'}[k]||k} ${n}`).join(' · ')||'-'}<br>ระดับชั้น: ${Object.entries(r.mode).map(([k,n])=>`${{lower:'ม.ต้น',upper:'ม.ปลาย'}[k]||'ยังไม่เลือก'} ${n}`).join(' · ')||'-'}<br>นับเครื่องละครั้งต่อวันตอนเปิดแอป (ต่อเน็ต) · เครื่องที่ใช้มาก่อนจะถูกนับย้อนไปวันที่เริ่มใช้จริงตอนเปิดแอปครั้งถัดไป</p>`;
+}
+function fab(){let f=document.getElementById('stFab');if(ls('sea2uni-owner')!=='1'){if(f)f.remove();document.body.classList.remove('has-stfab');return}
+  document.body.classList.add('has-stfab');if(!f){f=document.createElement('button');f.id='stFab';f.className='stfab';f.textContent='📊 สถิติผู้ใช้';f.onclick=show;document.body.append(f)}}
+fab();
+const v=document.getElementById('appver');if(v){let n=0,tm=0;v.style.cursor='pointer';v.addEventListener('click',()=>{clearTimeout(tm);tm=setTimeout(()=>n=0,1500);if(++n>=5){n=0;show()}})}
+})();
 </script>
 </body>
 </html>
